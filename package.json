@@ -1,0 +1,11 @@
+{
+    "name": "petcare",
+    "version": "1.0.0",
+    "description": "AI pet health triage platform",
+    "engines": {
+          "node": "22"
+    },
+    "scripts": {
+          "start": "echo 'Static site hosting on Render'"
+    }
+}
