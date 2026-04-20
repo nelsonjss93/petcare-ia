@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PetCare — WhatsApp</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g:#2ECC71;--g2:#27AE60;--g3:#E8FBF0;
+  --cream:#FAFAF8;--ink:#111;--mid:#555;--lite:#999;--w:#fff;--bd:#E8E8E8;
+  --wa-bg:#ECE5DD;--wa-green:#25D366;--wa-dark:#075E54;--wa-light:#DCF8C6;
+  --ease:cubic-bezier(.16,1,.3,1);--ease2:cubic-bezier(.34,1.56,.64,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased;min-height:100vh;}
+#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;will-change:transform;}
+#cur{width:10px;height:10px;background:var(--g);top:0;left:0;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;}
+#cur2{width:34px;height:34px;border:1.5px solid rgba(46,204,113,.4);top:0;left:0;transform:translate(-50%,-50%);transition:width .4s var(--ease),height .4s var(--ease);}
+body.hov #cur{width:18px;height:18px;background:var(--g2);}
+body.hov #cur2{width:56px;height:56px;border-color:rgba(46,204,113,.7);}
+@media(max-width:900px){#cur,#cur2{display:none;}body{cursor:auto;}}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;padding:0 48px;height:68px;background:rgba(250,250,248,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.n-icon{width:34px;height:34px;background:var(--g);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.n-name{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-.5px;}
+.n-back{margin-left:auto;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;padding:8px 16px;border-radius:50px;border:1.5px solid var(--bd);transition:all .2s;cursor:none;}
+.n-back:hover{color:var(--ink);border-color:var(--ink);}
+@media(max-width:900px){nav{padding:0 20px;}}
+
+/* LAYOUT */
+.page{padding-top:68px;min-height:100vh;display:flex;flex-direction:column;}
+.wa-wrap{max-width:1100px;margin:0 auto;padding:48px 24px 80px;width:100%;display:grid;grid-template-columns:340px 1fr;gap:32px;align-items:start;}
+@media(max-width:900px){.wa-wrap{grid-template-columns:1fr;}}
+
+/* PANEL IZQUIERDO — info */
+.wa-info{position:sticky;top:88px;}
+.wi-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--g);display:block;margin-bottom:10px;}
+.wi-h{font-size:clamp(28px,3.5vw,40px);font-weight:900;color:var(--ink);letter-spacing:-1.5px;line-height:1;margin-bottom:10px;}
+.wi-h span{font-weight:300;}
+.wi-sub{font-size:14px;color:var(--mid);line-height:1.6;margin-bottom:28px;}
+.wi-steps{display:flex;flex-direction:column;gap:14px;margin-bottom:28px;}
+.wi-step{display:flex;align-items:flex-start;gap:12px;}
+.ws-num{width:28px;height:28px;border-radius:8px;background:var(--ink);color:var(--w);font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.ws-t{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px;}
+.ws-s{font-size:12px;color:var(--mid);line-height:1.4;}
+.wi-wa-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;background:var(--wa-green);color:var(--w);border:none;border-radius:50px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .3s var(--ease);}
+.wi-wa-btn:hover{background:#1DA851;transform:translateY(-2px);box-shadow:0 10px 30px rgba(37,211,102,.35);}
+.wi-note{margin-top:12px;font-size:11px;color:var(--lite);text-align:center;line-height:1.5;}
+
+/* TELÉFONO */
+.phone-frame{background:#1a1a2e;border-radius:40px;padding:12px;box-shadow:0 32px 80px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.05);max-width:360px;margin:0 auto;}
+.phone-notch{width:90px;height:6px;background:rgba(255,255,255,.15);border-radius:10px;margin:0 auto 10px;}
+.phone-screen{background:var(--wa-bg);border-radius:30px;overflow:hidden;height:660px;display:flex;flex-direction:column;}
+
+/* WA HEADER */
+.wa-header{background:var(--wa-dark);padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.wa-back{color:rgba(255,255,255,.7);font-size:18px;cursor:none;}
+.wa-avatar{width:36px;height:36px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.wa-contact{flex:1;}
+.wa-cname{font-size:14px;font-weight:700;color:var(--w);}
+.wa-status{font-size:11px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:4px;}
+.wa-sdot{width:6px;height:6px;border-radius:50%;background:var(--wa-green);}
+
+/* WA BODY */
+.wa-body{flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:6px;scroll-behavior:smooth;}
+.wa-body::-webkit-scrollbar{display:none;}
+
+/* Mensajes */
+.msg{max-width:78%;display:flex;flex-direction:column;}
+.msg.out{align-self:flex-end;align-items:flex-end;}
+.msg.in{align-self:flex-start;align-items:flex-start;}
+.msg-bubble{padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.5;position:relative;}
+.msg.out .msg-bubble{background:var(--wa-light);color:#1a1a1a;border-bottom-right-radius:3px;}
+.msg.in .msg-bubble{background:var(--w);color:#1a1a1a;border-bottom-left-radius:3px;}
+.msg-time{font-size:10px;color:var(--lite);margin-top:2px;display:flex;align-items:center;gap:3px;}
+.msg.out .msg-time{justify-content:flex-end;}
+.tick{color:#53bdeb;}
+
+/* Bubble especiales */
+.msg-card{background:var(--w);border-radius:12px;overflow:hidden;max-width:220px;border:1px solid rgba(0,0,0,.08);}
+.mc-img{height:80px;background:linear-gradient(135deg,#E8FBF0,#A8E6C3);display:flex;align-items:center;justify-content:center;font-size:36px;}
+.mc-body{padding:10px 12px;}
+.mc-t{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.mc-s{font-size:11px;color:var(--mid);}
+.mc-link{font-size:11px;color:var(--wa-dark);font-weight:700;margin-top:5px;display:block;}
+
+/* Informe resultado burbuja */
+.msg-result{background:var(--w);border-radius:14px;padding:12px;max-width:240px;border-left:3px solid var(--g);}
+.mr-head{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.mr-sem{width:10px;height:10px;border-radius:50%;}
+.mr-titulo{font-size:12px;font-weight:800;color:var(--ink);}
+.mr-rows{display:flex;flex-direction:column;gap:5px;margin-bottom:8px;}
+.mr-row{font-size:11px;color:var(--mid);display:flex;align-items:flex-start;gap:5px;}
+.mr-ck{color:var(--g2);font-weight:700;flex-shrink:0;}
+.mr-link{display:block;text-align:center;padding:7px;background:var(--g);color:var(--w);border-radius:8px;font-size:11px;font-weight:800;text-decoration:none;margin-top:4px;}
+
+/* Opciones rápidas */
+.quick-opts{display:flex;flex-direction:column;gap:5px;margin-top:4px;}
+.qopt{background:var(--w);border:1px solid rgba(37,211,102,.4);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;color:var(--wa-dark);cursor:none;text-align:center;transition:all .2s;width:100%;font-family:'Nunito',sans-serif;}
+.qopt:hover{background:var(--g3);border-color:var(--g);}
+
+/* Typing indicator */
+.typing{display:none;align-self:flex-start;}
+.typing.show{display:flex;}
+.typing-bubble{background:var(--w);border-radius:12px;border-bottom-left-radius:3px;padding:10px 14px;display:flex;gap:4px;align-items:center;}
+.td{width:7px;height:7px;border-radius:50%;background:var(--lite);animation:typeDot 1.2s infinite;}
+.td:nth-child(2){animation-delay:.2s;}
+.td:nth-child(3){animation-delay:.4s;}
+@keyframes typeDot{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-6px);}}
+
+/* Fecha separador */
+.date-sep{text-align:center;font-size:11px;color:var(--lite);background:rgba(0,0,0,.06);border-radius:50px;padding:3px 12px;align-self:center;margin:4px 0;}
+
+/* WA INPUT */
+.wa-input-row{background:var(--cream);padding:8px 10px;display:flex;align-items:center;gap:8px;}
+.wa-input{flex:1;background:var(--w);border:none;border-radius:22px;padding:9px 14px;font-size:13px;font-family:'Nunito',sans-serif;color:var(--ink);outline:none;cursor:none;}
+.wa-send{width:40px;height:40px;border-radius:50%;background:var(--wa-dark);border:none;display:flex;align-items:center;justify-content:center;cursor:none;transition:all .2s;flex-shrink:0;}
+.wa-send:hover{background:var(--wa-green);}
+.wa-send svg{flex-shrink:0;}
+.wa-emoji{font-size:20px;cursor:none;}
+
+/* Escenarios tabs */
+.scenario-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.sc-tab{padding:9px 18px;border-radius:50px;border:1.5px solid var(--bd);font-size:13px;font-weight:700;color:var(--mid);background:var(--w);cursor:none;transition:all .2s;font-family:'Nunito',sans-serif;}
+.sc-tab:hover{border-color:var(--g4);}
+.sc-tab.act{border-color:var(--g);background:var(--g3);color:var(--g2);}
+
+/* SEGUIMIENTO badge */
+.followup-badge{background:var(--g3);border:1.5px solid var(--g4);border-radius:16px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.fb-ico{font-size:22px;}
+.fb-t{font-size:13px;font-weight:700;color:var(--ink);}
+.fb-s{font-size:12px;color:var(--mid);margin-top:2px;}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur2"></div>
+
+<nav>
+  <a href="index.html" class="n-logo">
+    <div class="n-icon">🐾</div>
+    <span class="n-name">PetCare</span>
+  </a>
+  <div style="display:flex;gap:2px;margin:0 16px;"><a href="consulta.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">Consultar</a><a href="pagos.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">Planes</a></div>
+  <a href="dashboard.html" style="display:flex;align-items:center;gap:7px;padding:8px 14px 8px 8px;background:var(--w);border:1.5px solid var(--bd);border-radius:50px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;cursor:none;transition:all .2s;margin-right:8px;" onmouseenter="this.style.borderColor='var(--ink)'" onmouseleave="this.style.borderColor='var(--bd)'"><div style="width:22px;height:22px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--g2);">M</div>Mi cuenta</a>
+  <a href="index.html" class="n-back">← Inicio</a>
+</nav>
+
+<div class="page">
+<div class="wa-wrap">
+
+  <!-- PANEL IZQUIERDO -->
+  <div class="wa-info">
+    <span class="wi-tag">Canal WhatsApp · Perú</span>
+    <h1 class="wi-h">Consulta desde<br><span>tu WhatsApp.</span></h1>
+    <p class="wi-sub">El dueño escribe directo al número de PetCare y recibe el informe completo en menos de 30 segundos — sin descargar nada.</p>
+
+    <div class="wi-steps">
+      <div class="wi-step">
+        <div class="ws-num">1</div>
+        <div><div class="ws-t">Escribe al número PetCare</div><div class="ws-s">+51 900 PET CARE — disponible 24/7</div></div>
+      </div>
+      <div class="wi-step">
+        <div class="ws-num">2</div>
+        <div><div class="ws-t">El bot hace las preguntas</div><div class="ws-s">Nombre, síntomas, urgencia — conversacional y natural</div></div>
+      </div>
+      <div class="wi-step">
+        <div class="ws-num">3</div>
+        <div><div class="ws-t">Recibe el informe en 30s</div><div class="ws-s">Resumen + link al informe completo con score y calendario</div></div>
+      </div>
+      <div class="wi-step">
+        <div class="ws-num">4</div>
+        <div><div class="ws-t">Seguimiento automático 24h</div><div class="ws-s">El bot pregunta cómo evoluciona sin que el dueño haga nada</div></div>
+      </div>
+    </div>
+
+    <div class="scenario-tabs">
+      <button class="sc-tab act" onclick="loadScenario('consulta',this)">Consulta nueva</button>
+      <button class="sc-tab" onclick="loadScenario('foto',this)">Con foto</button>
+      <button class="sc-tab" onclick="loadScenario('seguimiento',this)">Seguimiento 24h</button>
+      <button class="sc-tab" onclick="loadScenario('pago',this)">Sin plan</button>
+    </div>
+
+    <div class="followup-badge" id="fu-badge" style="display:none">
+      <div class="fb-ico">⏰</div>
+      <div><div class="fb-t">Seguimiento automático 24h</div><div class="fb-s">El sistema envía este mensaje sin intervención humana.</div></div>
+    </div>
+
+    <button class="wi-wa-btn" onclick="startChat()">
+      <svg viewBox="0 0 24 24" fill="white" width="20" height="20"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Abrir en WhatsApp
+    </button>
+    <div class="wi-note">Número de demostración · En producción se conecta<br>a la API oficial de WhatsApp Business (Meta)</div>
+  </div>
+
+  <!-- TELÉFONO -->
+  <div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+
+        <!-- Header WhatsApp -->
+        <div class="wa-header">
+          <span class="wa-back">‹</span>
+          <div class="wa-avatar">🐾</div>
+          <div class="wa-contact">
+            <div class="wa-cname">PetCare IA</div>
+            <div class="wa-status"><div class="wa-sdot"></div>En línea · 24/7</div>
+          </div>
+          <svg viewBox="0 0 24 24" fill="rgba(255,255,255,.6)" width="20" height="20"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+        </div>
+
+        <!-- Mensajes -->
+        <div class="wa-body" id="wa-body">
+          <div class="date-sep">Hoy</div>
+        </div>
+
+        <!-- Typing -->
+        <div class="typing" id="typing">
+          <div class="typing-bubble"><div class="td"></div><div class="td"></div><div class="td"></div></div>
+        </div>
+
+        <!-- Input -->
+        <div class="wa-input-row">
+          <span class="wa-emoji">😊</span>
+          <input class="wa-input" id="wa-input" placeholder="Escribe un mensaje..." onkeypress="if(event.key==='Enter')sendUserMsg()">
+          <button class="wa-send" onclick="sendUserMsg()">
+            <svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+/* CURSOR */
+const dot=document.getElementById('cur'),ring=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;dot.style.left=mx+'px';dot.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,input,.qopt,.sc-tab').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));});
+
+const body=document.getElementById('wa-body');
+const typing=document.getElementById('typing');
+let step=0;
+let scenario='consulta';
+let flowSteps=[];
+let isTyping=false;
+let userName='';
+let petName='';
+
+/* ESCENARIOS */
+const scenarios={
+  consulta:[
+    {from:'bot',delay:600,text:'¡Hola! 🐾 Soy PetCare IA.\n\nEstoy aquí para orientarte sobre la salud de tu mascota. ¿Cuál es tu nombre?'},
+    {from:'user',delay:0,text:'Hola, soy María'},
+    {from:'bot',delay:1200,text:'Hola María 😊 ¿Cómo se llama tu mascota y qué tipo de animal es?'},
+    {from:'user',delay:0,text:'Se llama Toby, es un perro'},
+    {from:'bot',delay:1400,text:'¡Qué lindo nombre! 🐕 ¿Cuántos años tiene Toby y de qué raza es?'},
+    {from:'user',delay:0,text:'3 años, Golden Retriever'},
+    {from:'bot',delay:1000,text:'Entendido. ¿Qué síntomas está presentando Toby hoy?\n\nElige uno o escribe con tus palabras:',opts:['🍽️ No quiere comer','🔴 Se rasca mucho','😴 Está muy cansado','💧 Vómitos o diarrea','✍️ Otro síntoma']},
+    {from:'user',delay:0,text:'🔴 Se rasca mucho'},
+    {from:'bot',delay:1200,text:'¿Cuánto tiempo lleva Toby con ese rascado?',opts:['⚡ Menos de 24h','📅 1 a 3 días','📆 Más de 3 días']},
+    {from:'user',delay:0,text:'📅 1 a 3 días'},
+    {from:'bot',delay:1000,text:'¿Ha comido con normalidad hoy?',opts:['✅ Sí, normal','🟡 Poco, menos que siempre','❌ No ha comido']},
+    {from:'user',delay:0,text:'✅ Sí, normal'},
+    {from:'bot',delay:1800,text:'Un momento, analizando los síntomas de Toby... ⏳'},
+    {from:'bot',delay:3200,type:'result',urgencia:'amarillo',petName:'Toby'},
+    {from:'bot',delay:600,text:'¿Tienes alguna foto del área donde se rasca? Puedes enviarla y la analizo también 📸\n\nSi no, no hay problema — el informe ya está listo.'},
+  ],
+  foto:[
+    {from:'bot',delay:500,text:'¡Hola! 🐾 Soy PetCare IA. ¿Cuál es el nombre de tu mascota?'},
+    {from:'user',delay:0,text:'Luna, mi gata'},
+    {from:'bot',delay:1000,text:'Hola 😊 ¿Qué está pasando con Luna hoy?'},
+    {from:'user',delay:0,text:'Tiene una mancha rara en el cuello'},
+    {from:'bot',delay:1200,text:'Entendido. ¿Puedes enviarme una foto del área? Eso me ayuda a analizar mejor.'},
+    {from:'user',delay:0,type:'photo'},
+    {from:'bot',delay:2000,text:'Analizando la imagen de Luna con IA visual... 🔍'},
+    {from:'bot',delay:3000,text:'📸 *Análisis visual completado:*\n\nDetecté un área con enrojecimiento leve en la zona del cuello, posiblemente irritación por collar o dermatitis de contacto. Sin señales de herida abierta.'},
+    {from:'bot',delay:800,type:'result',urgencia:'verde',petName:'Luna'},
+  ],
+  seguimiento:[
+    {from:'bot',delay:500,type:'followup24',petName:'Toby'},
+    {from:'user',delay:0,text:'Está mejor, gracias!'},
+    {from:'bot',delay:1200,text:'¡Qué alivio, María! 🎉 Me alegra que Toby esté mejorando.\n\nSeguiré monitoreando. Te mando recordatorio del seguimiento de 48h mañana.'},
+    {from:'bot',delay:800,text:'*Próximos cuidados para Toby:*\n\n✅ Continúa con el shampoo antipulgas\n✅ Revisión en 15 días\n✅ Vacuna de refuerzo — próximo mes\n\n¿Necesitas algo más? 🐕'},
+    {from:'user',delay:0,text:'Sí, qué vacunas le tocan el próximo mes?'},
+    {from:'bot',delay:1500,text:'📅 *Calendario de vacunas de Toby:*\n\n🟢 Vacuna polivalente (refuerzo anual)\n🟡 Antirrábica — si tiene más de 3 meses desde la última\n🟡 Desparasitación trimestral\n\nTe recomiendo agendarla con anticipación. ¿Quieres que te recuerde 3 días antes?',opts:['✅ Sí, recuérdame','❌ No, gracias']},
+    {from:'user',delay:0,text:'✅ Sí, recuérdame'},
+    {from:'bot',delay:1000,text:'Listo ✅ Te avisaré 3 días antes de la vacuna de Toby. ¡Cuídenlo mucho! 🐾'},
+  ],
+  pago:[
+    {from:'bot',delay:500,text:'¡Hola! 🐾 Soy PetCare IA. ¿Cuál es el nombre de tu mascota?'},
+    {from:'user',delay:0,text:'Max'},
+    {from:'bot',delay:900,text:'Hola 😊 ¿Qué síntomas tiene Max?'},
+    {from:'user',delay:0,text:'Vómitos desde esta mañana'},
+    {from:'bot',delay:1200,text:'Entendido. ¿Cuántas veces ha vomitado aproximadamente?'},
+    {from:'user',delay:0,text:'Unas 3 veces'},
+    {from:'bot',delay:1800,text:'Analizando... ⏳'},
+    {from:'bot',delay:2800,type:'bloqueado',petName:'Max'},
+  ]
+};
+
+function loadScenario(name,btn){
+  scenario=name;
+  document.querySelectorAll('.sc-tab').forEach(t=>t.classList.remove('act'));
+  btn.classList.add('act');
+  body.innerHTML='<div class="date-sep">Hoy</div>';
+  step=0;
+  flowSteps=scenarios[name];
+  document.getElementById('fu-badge').style.display=name==='seguimiento'?'flex':'none';
+  clearTimeout(window._waTimer);
+  startFlow();
+}
+
+function startFlow(){
+  if(step>=flowSteps.length)return;
+  const s=flowSteps[step];
+  if(s.from==='bot'){
+    const d=step===0?s.delay:s.delay;
+    showTyping();
+    window._waTimer=setTimeout(()=>{
+      hideTyping();
+      addBotMsg(s);
+      step++;
+      if(step<flowSteps.length&&flowSteps[step].from==='bot'){
+        window._waTimer2=setTimeout(startFlow,400);
+      }
+    },d||1200);
+  } else {
+    // mensaje de usuario — se añade automáticamente en demo
+    setTimeout(()=>{
+      addUserMsg(s);
+      step++;
+      startFlow();
+    },300);
+  }
+}
+
+function addBotMsg(s){
+  const el=document.createElement('div');
+  el.className='msg in';
+
+  if(s.type==='result'){
+    const col=s.urgencia==='verde'?'#2ECC71':s.urgencia==='amarillo'?'#F5A623':'#FF6B6B';
+    const title=s.urgencia==='verde'?'Puede esperar':s.urgencia==='amarillo'?'Atención pronto':'Urgente';
+    const cuidados=['Mantén a '+s.petName+' en zona tranquila','Ofrece agua fresca constantemente','Usa shampoo medicado antipulgas','Revisa el área afectada diariamente'];
+    el.innerHTML=`
+      <div class="msg-result">
+        <div class="mr-head"><div class="mr-sem" style="background:${col}"></div><div class="mr-titulo">Informe — ${s.petName}</div></div>
+        <div style="font-size:11px;font-weight:700;color:${col};margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">${title}</div>
+        <div class="mr-rows">
+          ${cuidados.map(c=>`<div class="mr-row"><span class="mr-ck">✓</span>${c}</div>`).join('')}
+        </div>
+        <div style="font-size:11px;color:#999;margin-bottom:6px;">Score de salud: ${s.urgencia==='verde'?'76':s.urgencia==='amarillo'?'54':'28'}/100</div>
+        <a class="mr-link" href="consulta.html">Ver informe completo →</a>
+      </div>
+      <div class="msg-time">PetCare IA <span class="tick">✓✓</span></div>`;
+  } else if(s.type==='followup24'){
+    el.innerHTML=`
+      <div class="msg-bubble">
+        ⏰ *Seguimiento 24h — PetCare*\n\nHola María, ¿cómo está Toby hoy?\n\nAyer te dimos orientación por el rascado.
+      </div>
+      <div class="quick-opts">
+        <button class="qopt">😊 Está mejor</button>
+        <button class="qopt">😐 Igual que ayer</button>
+        <button class="qopt">😟 Ha empeorado</button>
+      </div>
+      <div class="msg-time">PetCare IA <span class="tick">✓✓</span></div>`;
+  } else if(s.type==='bloqueado'){
+    el.innerHTML=`
+      <div class="msg-result" style="border-left-color:#F5A623">
+        <div class="mr-head"><div class="mr-sem" style="background:#F5A623"></div><div class="mr-titulo">Informe — ${s.petName}</div></div>
+        <div style="font-size:11px;color:#999;margin-bottom:8px;">🔒 Informe listo — necesitas un plan para verlo</div>
+        <div style="font-size:11px;color:#555;margin-bottom:8px;line-height:1.4;">Tu primera consulta es gratis. Activa tu plan para ver el resultado completo.</div>
+        <a class="mr-link" href="pagos.html" style="background:#F5A623">Ver planes desde S/ 5.90 →</a>
+      </div>
+      <div class="msg-time">PetCare IA <span class="tick">✓✓</span></div>`;
+  } else {
+    const text=(s.text||'').replace(/\n/g,'<br>').replace(/\*(.*?)\*/g,'<strong>$1</strong>');
+    let html=`<div class="msg-bubble">${text}</div>`;
+    if(s.opts){
+      html+=`<div class="quick-opts">${s.opts.map(o=>`<button class="qopt" onclick="selectOpt('${o}')">${o}</button>`).join('')}</div>`;
+    }
+    html+=`<div class="msg-time">PetCare IA <span class="tick">✓✓</span></div>`;
+    el.innerHTML=html;
+  }
+  body.appendChild(el);
+  scrollBot();
+}
+
+function addUserMsg(s){
+  const el=document.createElement('div');
+  el.className='msg out';
+  if(s.type==='photo'){
+    el.innerHTML=`
+      <div class="msg-card">
+        <div class="mc-img">📸</div>
+        <div class="mc-body"><div class="mc-t">foto_luna_cuello.jpg</div><div class="mc-s">Imagen · 2.4 MB</div></div>
+      </div>
+      <div class="msg-time">10:47 <span class="tick">✓✓</span></div>`;
+  } else {
+    el.innerHTML=`<div class="msg-bubble">${s.text}</div><div class="msg-time">10:47 <span class="tick">✓✓</span></div>`;
+  }
+  body.appendChild(el);
+  scrollBot();
+}
+
+function selectOpt(opt){
+  const el=document.createElement('div');
+  el.className='msg out';
+  el.innerHTML=`<div class="msg-bubble">${opt}</div><div class="msg-time">Ahora <span class="tick">✓✓</span></div>`;
+  body.appendChild(el);
+  scrollBot();
+  // Continuar flujo si hay más pasos bot
+  if(step<flowSteps.length&&flowSteps[step].from==='bot'){
+    showTyping();
+    setTimeout(()=>{hideTyping();addBotMsg(flowSteps[step]);step++;},1400);
+  }
+}
+
+function sendUserMsg(){
+  const input=document.getElementById('wa-input');
+  const txt=input.value.trim();
+  if(!txt)return;
+  const el=document.createElement('div');
+  el.className='msg out';
+  el.innerHTML=`<div class="msg-bubble">${txt}</div><div class="msg-time">Ahora <span class="tick">✓✓</span></div>`;
+  body.appendChild(el);
+  input.value='';
+  scrollBot();
+  // Respuesta automática
+  showTyping();
+  setTimeout(()=>{
+    hideTyping();
+    const el2=document.createElement('div');
+    el2.className='msg in';
+    el2.innerHTML=`<div class="msg-bubble">Entendido 😊 ¿Hay algo más en lo que pueda ayudarte con tu mascota?</div><div class="msg-time">PetCare IA <span class="tick">✓✓</span></div>`;
+    body.appendChild(el2);
+    scrollBot();
+  },1400);
+}
+
+function showTyping(){typing.classList.add('show');body.appendChild(typing);scrollBot();}
+function hideTyping(){typing.classList.remove('show');}
+function scrollBot(){setTimeout(()=>{body.scrollTop=body.scrollHeight;},50);}
+function startChat(){alert('En producción este botón abre WhatsApp con el número de PetCare. 🐾');}
+
+// Iniciar escenario por defecto
+loadScenario('consulta',document.querySelector('.sc-tab'));
+</script>
+</body>
+</html>

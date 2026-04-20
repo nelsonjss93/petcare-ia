@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PetCare — Perfil de Mascota</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#2ECC71;--g2:#27AE60;--g3:#E8FBF0;--g4:#A8E6C3;--coral:#FF6B6B;--peach:#FFB347;--sky:#74C0FC;--lav:#C084FC;--cream:#FAFAF8;--ink:#111;--mid:#555;--lite:#999;--w:#fff;--bd:#E8E8E8;--ease:cubic-bezier(.16,1,.3,1);--ease2:cubic-bezier(.34,1.56,.64,1);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased;min-height:100vh;padding-bottom:80px;}
+#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;will-change:transform;}
+#cur{width:10px;height:10px;background:var(--g);top:0;left:0;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;}
+#cur2{width:34px;height:34px;border:1.5px solid rgba(46,204,113,.4);top:0;left:0;transform:translate(-50%,-50%);transition:width .4s var(--ease),height .4s var(--ease);}
+body.hov #cur{width:18px;height:18px;background:var(--g2);}
+body.hov #cur2{width:56px;height:56px;border-color:rgba(46,204,113,.7);}
+@media(max-width:900px){#cur,#cur2{display:none;}body{cursor:auto;}}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;padding:0 48px;height:68px;background:rgba(250,250,248,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.n-icon{width:34px;height:34px;background:var(--g);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.n-name{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-.5px;}
+.n-links{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.n-a{padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;transition:all .2s;cursor:none;}
+.n-a:hover{color:var(--ink);background:rgba(46,204,113,.1);}
+.n-back{font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;padding:8px 16px;border-radius:50px;border:1.5px solid var(--bd);transition:all .2s;cursor:none;}
+.n-back:hover{color:var(--ink);border-color:var(--ink);}
+@media(max-width:900px){nav{padding:0 16px;}.n-links{gap:4px;}}
+.wrap{max-width:980px;margin:0 auto;padding:88px 24px 40px;}
+
+/* HERO MASCOTA */
+.pet-hero{background:var(--ink);border-radius:28px;padding:32px;margin-bottom:24px;position:relative;overflow:hidden;display:flex;align-items:center;gap:28px;}
+.ph-glow{position:absolute;top:-30px;right:-30px;width:200px;height:200px;border-radius:50%;background:rgba(46,204,113,.08);pointer-events:none;}
+.ph-ava{width:88px;height:88px;border-radius:24px;background:var(--g3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ph-info{flex:1;}
+.ph-name{font-size:32px;font-weight:900;color:var(--w);letter-spacing:-1.5px;line-height:1;margin-bottom:6px;}
+.ph-meta{font-size:14px;color:rgba(255,255,255,.4);margin-bottom:14px;}
+.ph-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.ph-tag{padding:5px 14px;border-radius:50px;font-size:12px;font-weight:700;}
+.pt-g{background:rgba(46,204,113,.12);color:var(--g);}
+.pt-b{background:rgba(116,192,252,.12);color:var(--sky);}
+.pt-p{background:rgba(192,132,252,.12);color:var(--lav);}
+.ph-score{text-align:center;flex-shrink:0;}
+.ph-score-ring{position:relative;width:90px;height:90px;}
+.ph-score-ring svg{transform:rotate(-90deg);}
+.ph-score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.psn-n{font-size:22px;font-weight:900;color:var(--w);letter-spacing:-1px;line-height:1;}
+.psn-l{font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.ph-edit{position:absolute;top:20px;right:20px;padding:8px 16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:50px;font-size:12px;font-weight:700;color:rgba(255,255,255,.6);cursor:none;font-family:'Nunito',sans-serif;transition:all .2s;}
+.ph-edit:hover{background:rgba(255,255,255,.14);color:var(--w);}
+@media(max-width:640px){.pet-hero{flex-direction:column;text-align:center;}.ph-tags{justify-content:center;}}
+
+/* STATS RÁPIDOS */
+.quick-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.qs{background:var(--w);border:1.5px solid var(--bd);border-radius:18px;padding:16px;text-align:center;transition:transform .2s;}
+.qs:hover{transform:translateY(-2px);}
+.qs-n{font-size:26px;font-weight:900;color:var(--ink);letter-spacing:-1px;line-height:1;}
+.qs-l{font-size:11px;color:var(--lite);margin-top:4px;font-weight:600;}
+.qs-bar{height:3px;border-radius:2px;margin-top:8px;overflow:hidden;background:var(--bd);}
+.qb-fill{height:100%;border-radius:2px;}
+@media(max-width:640px){.quick-stats{grid-template-columns:repeat(2,1fr);}}
+
+/* GRID MAIN */
+.main-grid{display:grid;grid-template-columns:1fr 340px;gap:20px;}
+@media(max-width:900px){.main-grid{grid-template-columns:1fr;}}
+.left-col{display:flex;flex-direction:column;gap:16px;}
+.right-col{display:flex;flex-direction:column;gap:16px;}
+
+/* CARDS GENÉRICAS */
+.card{background:var(--w);border:1.5px solid var(--bd);border-radius:22px;padding:22px;}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.ch-title{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-.3px;}
+.ch-link{font-size:12px;font-weight:700;color:var(--g2);background:none;border:none;cursor:none;font-family:'Nunito',sans-serif;}
+
+/* SCORE EVOLUCIÓN */
+.score-chart{display:flex;align-items:flex-end;gap:6px;height:80px;padding-top:8px;}
+.sc-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.sc-bar{width:100%;border-radius:6px 6px 0 0;transition:height .8s var(--ease);cursor:none;position:relative;}
+.sc-bar:hover::after{content:attr(data-val);position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--ink);white-space:nowrap;}
+.sc-month{font-size:10px;color:var(--lite);font-weight:600;}
+
+/* HISTORIAL */
+.hist-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd);}
+.hist-item:last-child{border-bottom:none;padding-bottom:0;}
+.hi-sem{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.hi-g{background:var(--g);}
+.hi-y{background:#F5A623;}
+.hi-r{background:var(--coral);}
+.hi-inf{flex:1;}
+.hi-t{font-size:13px;font-weight:700;color:var(--ink);}
+.hi-d{font-size:11px;color:var(--lite);margin-top:2px;}
+.hi-score-badge{font-size:11px;font-weight:800;padding:2px 8px;border-radius:50px;white-space:nowrap;}
+.hsb-g{background:var(--g3);color:var(--g2);}
+.hsb-y{background:#FFF8E6;color:#C49000;}
+.hsb-r{background:#FFF0EF;color:#D94040;}
+.hi-arrow{color:var(--lite);font-size:14px;margin-left:4px;}
+
+/* VACUNAS */
+.vac-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd);}
+.vac-item:last-child{border-bottom:none;padding-bottom:0;}
+.vac-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.vac-inf{flex:1;}
+.vac-n{font-size:13px;font-weight:700;color:var(--ink);}
+.vac-d{font-size:11px;color:var(--lite);margin-top:2px;}
+.vac-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:50px;white-space:nowrap;}
+.vb-ok{background:var(--g3);color:var(--g2);}
+.vb-prox{background:#FFF8E6;color:#C49000;}
+.vb-vence{background:#FFF0EF;color:#D94040;}
+
+/* FOTOS */
+.fotos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.foto-item{aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--cream);border:1px solid var(--bd);position:relative;cursor:none;}
+.foto-item img{width:100%;height:100%;object-fit:cover;}
+.foto-add{display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--lite);border:2px dashed var(--bd);cursor:none;transition:all .2s;}
+.foto-add:hover{border-color:var(--g);background:var(--g3);}
+.foto-date{position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,.5);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:50px;}
+
+/* NOTAS */
+.nota-item{padding:12px 14px;background:var(--cream);border-radius:13px;margin-bottom:8px;border-left:3px solid var(--g4);}
+.nota-item:last-child{margin-bottom:0;}
+.nota-txt{font-size:13px;color:var(--ink);line-height:1.5;}
+.nota-d{font-size:11px;color:var(--lite);margin-top:4px;}
+
+/* DATOS BASICOS */
+.datos-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.dato{padding:12px 14px;background:var(--cream);border-radius:12px;}
+.dato-lbl{font-size:10px;font-weight:700;color:var(--lite);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.dato-val{font-size:14px;font-weight:700;color:var(--ink);}
+
+/* PRÓXIMAS */
+.prox-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);}
+.prox-item:last-child{border-bottom:none;}
+.prox-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.prox-t{font-size:13px;font-weight:600;color:var(--ink);flex:1;}
+.prox-d{font-size:11px;color:var(--lite);white-space:nowrap;}
+
+/* EDITAR MODAL */
+.edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:none;align-items:center;justify-content:center;padding:24px;}
+.edit-overlay.open{display:flex;}
+.edit-modal{background:var(--w);border-radius:24px;padding:28px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+.em-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.em-t{font-size:20px;font-weight:900;color:var(--ink);letter-spacing:-.5px;}
+.em-x{background:none;border:none;font-size:22px;color:var(--lite);cursor:none;font-family:'Nunito',sans-serif;}
+.em-field{margin-bottom:14px;}
+.em-lbl{font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px;display:block;}
+.em-input{width:100%;padding:12px 14px;border:1.5px solid var(--bd);border-radius:12px;font-size:14px;font-family:'Nunito',sans-serif;font-weight:600;color:var(--ink);outline:none;cursor:none;transition:border-color .2s;}
+.em-input:focus{border-color:var(--g);}
+.em-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.em-save{width:100%;padding:14px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:15px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;margin-top:6px;}
+.em-save:hover{background:var(--g);}
+
+/* BTN CONSULTAR FLOTANTE */
+.fab{position:fixed;bottom:28px;right:28px;padding:14px 24px;background:var(--g);color:var(--w);border:none;border-radius:50px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .3s var(--ease);display:flex;align-items:center;gap:8px;box-shadow:0 8px 28px rgba(46,204,113,.4);z-index:100;}
+.fab:hover{background:var(--g2);transform:translateY(-3px);}
+@media(max-width:640px){.fab{bottom:20px;right:20px;}}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur2"></div>
+
+<nav>
+  <a href="index.html" class="n-logo">
+    <div class="n-icon">🐾</div>
+    <span class="n-name">PetCare</span>
+  </a>
+  <div style="display:flex;gap:2px;margin:0 16px;"><a href="consulta.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">Consultar</a><a href="pagos.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">Planes</a><a href="whatsapp.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">WhatsApp</a></div>
+  <a href="dashboard.html" style="display:flex;align-items:center;gap:7px;padding:8px 14px 8px 8px;background:var(--w);border:1.5px solid var(--bd);border-radius:50px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;cursor:none;transition:all .2s;margin-right:8px;" onmouseenter="this.style.borderColor='var(--ink)'" onmouseleave="this.style.borderColor='var(--bd)'"><div style="width:22px;height:22px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--g2);">M</div>Mi cuenta</a>
+  <a href="dashboard.html" class="n-back">← Mi cuenta</a>
+</nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="pet-hero">
+    <div class="ph-glow"></div>
+    <div class="ph-ava">
+      <svg viewBox="0 0 64 64" fill="none" width="56" height="56"><ellipse cx="32" cy="38" rx="18" ry="14" fill="#F5CBA7"/><circle cx="32" cy="22" r="13" fill="#F5CBA7"/><ellipse cx="19" cy="20" rx="6" ry="9" fill="#E59866" transform="rotate(-15 19 20)"/><ellipse cx="45" cy="20" rx="6" ry="9" fill="#E59866" transform="rotate(15 45 20)"/><circle cx="27" cy="21" r="3" fill="#2C2C2C"/><circle cx="28" cy="20" r="1" fill="white"/><circle cx="37" cy="21" r="3" fill="#2C2C2C"/><circle cx="38" cy="20" r="1" fill="white"/><ellipse cx="32" cy="27" rx="5" ry="3.5" fill="#E59866"/><circle cx="32" cy="26" r="2" fill="#C0392B"/></svg>
+    </div>
+    <div class="ph-info">
+      <div class="ph-name">Toby</div>
+      <div class="ph-meta">Golden Retriever · 3 años · Macho · 28 kg</div>
+      <div class="ph-tags">
+        <span class="ph-tag pt-g">Vacunas al día</span>
+        <span class="ph-tag pt-b">Seguimiento activo</span>
+        <span class="ph-tag pt-p">Plan Básico</span>
+      </div>
+    </div>
+    <div class="ph-score">
+      <div class="ph-score-ring">
+        <svg width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r="36" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="6"/><circle cx="45" cy="45" r="36" fill="none" stroke="#2ECC71" stroke-width="6" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="54" id="score-arc"/></svg>
+        <div class="ph-score-num"><div class="psn-n">76</div><div class="psn-l">Score</div></div>
+      </div>
+    </div>
+    <button class="ph-edit" onclick="openEdit()">✏️ Editar</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="quick-stats">
+    <div class="qs"><div class="qs-n" style="color:var(--g)">12</div><div class="qs-l">Consultas totales</div><div class="qs-bar"><div class="qb-fill" style="width:60%;background:var(--g)"></div></div></div>
+    <div class="qs"><div class="qs-n" style="color:var(--sky)">5</div><div class="qs-l">Vacunas registradas</div><div class="qs-bar"><div class="qb-fill" style="width:83%;background:var(--sky)"></div></div></div>
+    <div class="qs"><div class="qs-n" style="color:#F5A623">48h</div><div class="qs-l">Último seguimiento</div><div class="qs-bar"><div class="qb-fill" style="width:50%;background:#F5A623"></div></div></div>
+    <div class="qs"><div class="qs-n" style="color:var(--lav)">3</div><div class="qs-l">Días para vacuna</div><div class="qs-bar"><div class="qb-fill" style="width:90%;background:var(--lav)"></div></div></div>
+  </div>
+
+  <div class="main-grid">
+    <div class="left-col">
+
+      <!-- EVOLUCIÓN SCORE -->
+      <div class="card">
+        <div class="card-head"><div class="ch-title">Evolución del score de salud</div><span style="font-size:11px;color:var(--lite);">Últimos 6 meses</span></div>
+        <div class="score-chart" id="score-chart"></div>
+        <div style="margin-top:12px;font-size:12px;color:var(--mid);line-height:1.5;">El score sube cuando las vacunas están al día y los síntomas mejoran. Bajó en abril por el episodio de picazón — ya está en recuperación.</div>
+      </div>
+
+      <!-- HISTORIAL COMPLETO -->
+      <div class="card">
+        <div class="card-head"><div class="ch-title">Historial de consultas</div><button class="ch-link">Ver todas</button></div>
+        <div class="hist-item"><div class="hi-sem hi-y"></div><div class="hi-inf"><div class="hi-t">Picazón en el cuello + falta de apetito</div><div class="hi-d">Hace 2 días · 10:42 am</div></div><span class="hi-score-badge hsb-y">54 · Amarillo</span><span class="hi-arrow">›</span></div>
+        <div class="hist-item"><div class="hi-sem hi-g"></div><div class="hi-inf"><div class="hi-t">Control preventivo mensual</div><div class="hi-d">Hace 3 semanas</div></div><span class="hi-score-badge hsb-g">81 · Verde</span><span class="hi-arrow">›</span></div>
+        <div class="hist-item"><div class="hi-sem hi-g"></div><div class="hi-inf"><div class="hi-t">Revisión post-vacuna polivalente</div><div class="hi-d">Hace 1 mes</div></div><span class="hi-score-badge hsb-g">88 · Verde</span><span class="hi-arrow">›</span></div>
+        <div class="hist-item"><div class="hi-sem hi-r"></div><div class="hi-inf"><div class="hi-t">Vómitos repetidos — 4 episodios</div><div class="hi-d">Hace 2 meses</div></div><span class="hi-score-badge hsb-r">38 · Rojo</span><span class="hi-arrow">›</span></div>
+        <div class="hist-item"><div class="hi-sem hi-g"></div><div class="hi-inf"><div class="hi-t">Consulta preventiva</div><div class="hi-d">Hace 3 meses</div></div><span class="hi-score-badge hsb-g">90 · Verde</span><span class="hi-arrow">›</span></div>
+      </div>
+
+      <!-- FOTOS -->
+      <div class="card">
+        <div class="card-head"><div class="ch-title">Galería de Toby</div><button class="ch-link">+ Agregar foto</button></div>
+        <div class="fotos-grid">
+          <div class="foto-item"><img src="https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop" alt="Toby"><div class="foto-date">Hace 2 días</div></div>
+          <div class="foto-item"><img src="https://images.pexels.com/photos/2253275/pexels-photo-2253275.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop" alt="Toby"><div class="foto-date">Hace 1 mes</div></div>
+          <div class="foto-item"><img src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop" alt="Toby"><div class="foto-date">Hace 3 meses</div></div>
+          <div class="foto-item foto-add" onclick="alert('Agregar foto — disponible en app')">+</div>
+        </div>
+      </div>
+
+      <!-- NOTAS -->
+      <div class="card">
+        <div class="card-head"><div class="ch-title">Notas personales</div><button class="ch-link">+ Nota</button></div>
+        <div class="nota-item"><div class="nota-txt">Toby tiende a tener problemas digestivos cuando come comida de mesa. Evitar darle restos.</div><div class="nota-d">Nota agregada hace 2 meses</div></div>
+        <div class="nota-item"><div class="nota-txt">Le gusta el shampoo de avena — no reacciona mal. El de coco le irritó la piel.</div><div class="nota-d">Nota agregada hace 3 meses</div></div>
+      </div>
+
+    </div>
+
+    <div class="right-col">
+
+      <!-- DATOS BÁSICOS -->
+      <div class="card">
+        <div class="card-head"><div class="ch-title">Datos básicos</div><button class="ch-link" onclick="openEdit()">Editar</button></div>
+        <div class="datos-grid">
+          <div class="dato"><div class="dato-lbl">Especie</div><div class="dato-val">Perro</div></div>
+          <div class="dato"><div class="dato-lbl">Raza</div><div class="dato-val">Golden Retriever</div></div>
+          <div class="dato"><div class="dato-lbl">Edad</div><div class="dato-val">3 años</div></div>
+          <div class="dato"><div class="dato-lbl">Sexo</div><div class="dato-val">Macho</div></div>
+          <div class="dato"><div class="dato-lbl">Peso</div><div class="dato-val">28 kg</div></div>
+          <div class="dato"><div class="dato-lbl">Microchip</div><div class="dato-val">985112345</div></div>
+          <div class="dato"><div class="dato-lbl">Color</div><div class="dato-val">Dorado</div></div>
+          <div class="dato"><div class="dato-lbl">Esterilizado</div><div class="dato-val">No</div></div>
+        </div>
+      </div>
+
+      <!-- VACUNAS -->
+      <div class="card">
+        <div class="card-head"><div class="ch-title">Vacunas y tratamientos</div><button class="ch-link">+ Agregar</button></div>
+        <div class="vac-item"><div class="vac-ico" style="background:var(--g3)">💉</div><div class="vac-inf"><div class="vac-n">Polivalente (refuerzo anual)</div><div class="vac-d">Próxima: en 3 días — 17 abril</div></div><span class="vac-badge vb-vence">Vence pronto</span></div>
+        <div class="vac-item"><div class="vac-ico" style="background:#EBF4FF">🦠</div><div class="vac-inf"><div class="vac-n">Antirrábica</div><div class="vac-d">Aplicada: 15 enero 2026</div></div><span class="vac-badge vb-ok">Al día</span></div>
+        <div class="vac-item"><div class="vac-ico" style="background:#FFF0E6">🪱</div><div class="vac-inf"><div class="vac-n">Desparasitación interna</div><div class="vac-d">Próxima: en 22 días</div></div><span class="vac-badge vb-prox">Próxima</span></div>
+        <div class="vac-item"><div class="vac-ico" style="background:#F5E6FF">🐜</div><div class="vac-inf"><div class="vac-n">Antipulgas (Frontline)</div><div class="vac-d">Aplicada: 28 marzo 2026</div></div><span class="vac-badge vb-ok">Al día</span></div>
+        <div class="vac-item"><div class="vac-ico" style="background:var(--g3)">🦴</div><div class="vac-inf"><div class="vac-n">Bordetella</div><div class="vac-d">Aplicada: 10 dic 2025</div></div><span class="vac-badge vb-ok">Al día</span></div>
+      </div>
+
+      <!-- PRÓXIMAS ACCIONES -->
+      <div class="card">
+        <div class="card-head"><div class="ch-title">Próximas acciones</div></div>
+        <div class="prox-item"><div class="prox-dot" style="background:#F5A623"></div><div class="prox-t">Vacuna polivalente</div><div class="prox-d">En 3 días</div></div>
+        <div class="prox-item"><div class="prox-dot" style="background:var(--g)"></div><div class="prox-t">Seguimiento 48h activo</div><div class="prox-d">Hoy</div></div>
+        <div class="prox-item"><div class="prox-dot" style="background:var(--lav)"></div><div class="prox-t">Desparasitación</div><div class="prox-d">En 22 días</div></div>
+        <div class="prox-item"><div class="prox-dot" style="background:var(--sky)"></div><div class="prox-t">Revisión anual</div><div class="prox-d">En 45 días</div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="edit-overlay" id="edit-overlay">
+  <div class="edit-modal">
+    <div class="em-head"><div class="em-t">Editar perfil de Toby</div><button class="em-x" onclick="closeEdit()">×</button></div>
+    <div class="em-row">
+      <div class="em-field"><label class="em-lbl">Nombre</label><input class="em-input" type="text" value="Toby"></div>
+      <div class="em-field"><label class="em-lbl">Raza</label><input class="em-input" type="text" value="Golden Retriever"></div>
+    </div>
+    <div class="em-row">
+      <div class="em-field"><label class="em-lbl">Edad (años)</label><input class="em-input" type="number" value="3"></div>
+      <div class="em-field"><label class="em-lbl">Peso (kg)</label><input class="em-input" type="number" value="28"></div>
+    </div>
+    <div class="em-row">
+      <div class="em-field"><label class="em-lbl">Sexo</label><input class="em-input" type="text" value="Macho"></div>
+      <div class="em-field"><label class="em-lbl">Microchip</label><input class="em-input" type="text" value="985112345"></div>
+    </div>
+    <div class="em-field"><label class="em-lbl">Notas adicionales</label><input class="em-input" type="text" placeholder="Alergias, condiciones especiales..."></div>
+    <button class="em-save" onclick="closeEdit()">Guardar cambios</button>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" onclick="window.location.href='consulta.html'">
+  <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M10 4v12M4 10h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+  Nueva consulta para Toby
+</button>
+
+<script>
+const dot=document.getElementById('cur'),ring=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;dot.style.left=mx+'px';dot.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,input').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));});
+
+// Score chart
+const months=['Nov','Dic','Ene','Feb','Mar','Abr'];
+const scores=[85,90,88,82,78,76];
+const colors=['#2ECC71','#2ECC71','#2ECC71','#2ECC71','#F5A623','#F5A623'];
+const chart=document.getElementById('score-chart');
+months.forEach((m,i)=>{
+  const wrap=document.createElement('div');
+  wrap.className='sc-bar-wrap';
+  const pct=scores[i];
+  const bar=document.createElement('div');
+  bar.className='sc-bar';
+  bar.style.cssText=`background:${colors[i]};height:0;`;
+  bar.setAttribute('data-val',pct);
+  const label=document.createElement('div');
+  label.className='sc-month';
+  label.textContent=m;
+  wrap.appendChild(bar);wrap.appendChild(label);
+  chart.appendChild(wrap);
+  setTimeout(()=>{bar.style.height=(pct/100*72)+'px';bar.style.transition='height .8s cubic-bezier(.16,1,.3,1)';},100+i*80);
+});
+
+function openEdit(){document.getElementById('edit-overlay').classList.add('open');}
+function closeEdit(){document.getElementById('edit-overlay').classList.remove('open');}
+document.getElementById('edit-overlay').addEventListener('click',function(e){if(e.target===this)closeEdit();});
+</script>
+</body>
+</html>

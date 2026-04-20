@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PetCare — Preguntas frecuentes</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#2ECC71;--g2:#27AE60;--g3:#E8FBF0;--g4:#A8E6C3;--cream:#FAFAF8;--ink:#111;--mid:#555;--lite:#999;--w:#fff;--bd:#E8E8E8;--ease:cubic-bezier(.16,1,.3,1);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased;min-height:100vh;padding-bottom:80px;}
+#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;}
+#cur{width:10px;height:10px;background:var(--g);top:0;left:0;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+#cur2{width:34px;height:34px;border:1.5px solid rgba(46,204,113,.4);top:0;left:0;transform:translate(-50%,-50%);transition:width .4s;}
+body.hov #cur{width:18px;height:18px;background:var(--g2);}
+body.hov #cur2{width:56px;height:56px;border-color:rgba(46,204,113,.7);}
+@media(max-width:900px){#cur,#cur2{display:none;}body{cursor:auto;}}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;padding:0 48px;height:68px;background:rgba(250,250,248,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.n-icon{width:34px;height:34px;background:var(--g);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.n-name{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-.5px;}
+.n-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.n-back{font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;padding:8px 16px;border-radius:50px;border:1.5px solid var(--bd);transition:all .2s;cursor:none;}
+.n-back:hover{color:var(--ink);border-color:var(--ink);}
+@media(max-width:900px){nav{padding:0 16px;}}
+
+.wrap{max-width:720px;margin:0 auto;padding:100px 24px 60px;}
+.page-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--g);display:block;margin-bottom:12px;}
+.page-h{font-size:clamp(36px,5vw,60px);font-weight:900;color:var(--ink);letter-spacing:-2px;line-height:1;margin-bottom:8px;}
+.page-h span{font-weight:300;}
+.page-sub{font-size:15px;color:var(--mid);line-height:1.7;margin-bottom:48px;max-width:480px;}
+
+/* Categorías */
+.faq-cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:36px;}
+.faq-cat{padding:8px 18px;border-radius:50px;border:1.5px solid var(--bd);font-size:13px;font-weight:700;color:var(--mid);background:var(--w);cursor:none;transition:all .2s;font-family:'Nunito',sans-serif;}
+.faq-cat:hover{border-color:var(--g4);}
+.faq-cat.act{border-color:var(--g);background:var(--g3);color:var(--g2);}
+
+/* FAQ acordeón */
+.faq-group{margin-bottom:32px;}
+.fg-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--lite);margin-bottom:12px;}
+.faq-item{border-bottom:1px solid var(--bd);}
+.faq-q{width:100%;padding:18px 0;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:800;color:var(--ink);background:none;border:none;cursor:none;text-align:left;font-family:'Nunito',sans-serif;gap:16px;transition:color .2s;}
+.faq-q:hover{color:var(--g2);}
+.faq-arrow{width:24px;height:24px;border-radius:7px;background:var(--cream);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:all .3s;}
+.faq-item.open .faq-arrow{background:var(--g);border-color:var(--g);color:var(--w);transform:rotate(45deg);}
+.faq-a{font-size:14px;color:var(--mid);line-height:1.75;max-height:0;overflow:hidden;transition:max-height .4s var(--ease),padding .3s;}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:18px;}
+.faq-a a{color:var(--g2);font-weight:700;text-decoration:none;}
+.faq-a strong{color:var(--ink);}
+
+/* CTA inferior */
+.faq-cta{margin-top:48px;background:var(--ink);border-radius:24px;padding:32px;text-align:center;}
+.fc-h{font-size:22px;font-weight:900;color:var(--w);letter-spacing:-.5px;margin-bottom:8px;}
+.fc-s{font-size:14px;color:rgba(255,255,255,.4);margin-bottom:20px;}
+.fc-btn{padding:14px 32px;background:var(--g);color:var(--w);border:none;border-radius:50px;font-size:15px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;}
+.fc-btn:hover{background:var(--g2);}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur2"></div>
+<nav>
+  <a href="index.html" class="n-logo"><div class="n-icon">🐾</div><span class="n-name">PetCare</span></a>
+  <div class="n-right">
+    <a href="consulta.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;">Consultar</a>
+    <a href="pagos.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;">Planes</a>
+    <a href="dashboard.html" style="display:flex;align-items:center;gap:6px;padding:7px 14px 7px 8px;background:var(--w);border:1.5px solid var(--bd);border-radius:50px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;cursor:none;"><div style="width:20px;height:20px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--g2);">M</div>Mi cuenta</a>
+    <a href="index.html" class="n-back">← Inicio</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <span class="page-tag">Centro de ayuda</span>
+  <h1 class="page-h">Preguntas <span>frecuentes.</span></h1>
+  <p class="page-sub">Todo lo que necesitas saber antes de tu primera consulta. Si no encuentras tu respuesta, escríbenos.</p>
+
+  <div class="faq-cats">
+    <button class="faq-cat act" onclick="filterCat(this,'todo')">Todo</button>
+    <button class="faq-cat" onclick="filterCat(this,'producto')">El sistema</button>
+    <button class="faq-cat" onclick="filterCat(this,'pagos')">Pagos</button>
+    <button class="faq-cat" onclick="filterCat(this,'mascotas')">Mascotas</button>
+    <button class="faq-cat" onclick="filterCat(this,'privacidad')">Privacidad</button>
+  </div>
+
+  <!-- PRODUCTO -->
+  <div class="faq-group" data-cat="producto">
+    <div class="fg-title">El sistema</div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿PetCare reemplaza al veterinario?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">No — y eso es importante entenderlo. PetCare te <strong>orienta</strong>: te dice si el síntoma es leve (puede esperar y cómo cuidarlo en casa), moderado (monitorea de cerca) o urgente (ve al vet ahora). El 89% de las consultas resultan en nivel verde — situaciones que puedes manejar en casa con los cuidados correctos. Para emergencias reales, siempre recomendamos ir al veterinario.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿Qué tan confiable es el análisis?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">Nuestro motor de análisis clínico está entrenado con miles de casos de síntomas en perros y gatos, revisados y validados. No es un chatbot genérico — es un sistema construido específicamente para salud animal en Latam. Siempre incluimos el nivel de urgencia para que tú tomes la decisión final con información clara.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿Funciona para cualquier mascota?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">Actualmente PetCare está optimizado para <strong>perros y gatos</strong> — que representan el 94% de las mascotas en Perú. Para otras especies (aves, reptiles, roedores) tenemos la opción "Otro" que da orientación general, pero los resultados son más precisos para perros y gatos.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿Qué incluye el informe?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">Cada informe incluye: semáforo de urgencia (verde/amarillo/rojo), score de salud de 0 a 100, cuidados específicos para los síntomas descritos, productos recomendados, datos de casos similares en la comunidad, calendario de próximas vacunas y seguimiento automático a las 24h y 48h por WhatsApp.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿Cómo funciona el seguimiento 24h?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">Después de tu consulta, el sistema te envía un mensaje por WhatsApp al día siguiente preguntando cómo evolucionó tu mascota. No tienes que hacer nada — es automático. Si detecta que empeoró, te indica los próximos pasos.</div>
+    </div>
+  </div>
+
+  <!-- PAGOS -->
+  <div class="faq-group" data-cat="pagos">
+    <div class="fg-title">Pagos y planes</div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿Cómo funciona el pago? ¿Es seguro?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">Los pagos se procesan con <strong>Culqi</strong> — la pasarela peruana del Grupo Credicorp, certificada PCI DSS Nivel 1. Aceptamos Visa, Mastercard, Yape, Plin y PagoEfectivo. PetCare nunca almacena datos de tu tarjeta. Cada transacción está protegida con cifrado SSL 256-bit.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿Puedo cancelar mi suscripción?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">Sí, cuando quieras y sin penalidad. Cancelas desde tu panel de usuario en menos de 30 segundos. El acceso continúa hasta el fin del período ya pagado — no te cobramos el siguiente mes.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿La primera consulta es realmente gratis?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">Sí, completamente. Sin tarjeta, sin registro complicado. Solo tu nombre y el de tu mascota. El semáforo y el score de salud son gratis siempre. Para ver los cuidados específicos, productos y seguimiento necesitas activar un plan desde S/5.90.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿Qué diferencia hay entre los planes?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a"><strong>Por consulta (S/5.90):</strong> un informe completo, sin compromiso. <strong>Plan Básico (S/29.90/mes):</strong> consultas ilimitadas para 1 mascota, historial completo, recordatorios de vacunas y seguimiento automático. <strong>Plan Familiar (S/49.90/mes):</strong> todo lo del básico para hasta 3 mascotas con historial individual por cada una.</div>
+    </div>
+  </div>
+
+  <!-- MASCOTAS -->
+  <div class="faq-group" data-cat="mascotas">
+    <div class="fg-title">Mascotas y salud</div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿Qué hago si el nivel es rojo?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">Nivel rojo significa que los síntomas requieren atención veterinaria pronto. PetCare siempre muestra este aviso de forma gratuita — nunca lo bloqueamos. El informe te indica exactamente qué hacer mientras te diriges al veterinario más cercano.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿Puedo subir fotos del síntoma?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">Sí. En el paso 3 de la consulta puedes subir una foto del área afectada. El sistema analiza la imagen y la incorpora al informe para dar un resultado más preciso. Funciona mejor para síntomas visibles como heridas, inflamaciones o manchas en la piel.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿Puedo consultar en cualquier momento?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">Sí, PetCare está disponible 24/7 — incluyendo fines de semana y feriados. No necesitas cita previa. El resultado llega en menos de 30 segundos desde que envías el formulario.</div>
+    </div>
+  </div>
+
+  <!-- PRIVACIDAD -->
+  <div class="faq-group" data-cat="privacidad">
+    <div class="fg-title">Privacidad y datos</div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿Qué hacen con los datos de mi mascota?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">Los datos de tu mascota se usan únicamente para generar el informe que solicitas y mejorar la precisión del sistema con datos anonimizados. <strong>Nunca vendemos tus datos</strong>. Cumplimos con la Ley N° 29733 de Protección de Datos Personales de Perú.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)"><span>¿Cómo elimino mi cuenta?</span><div class="faq-arrow">+</div></button>
+      <div class="faq-a">Desde Configuración → Seguridad → Eliminar cuenta. Todos tus datos se borran en un máximo de 30 días. También puedes solicitarlo escribiendo a <a href="mailto:privacidad@petcare.pe">privacidad@petcare.pe</a> con asunto "Eliminar cuenta".</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="faq-cta">
+    <div class="fc-h">¿No encontraste tu respuesta?</div>
+    <div class="fc-s">Escríbenos por WhatsApp — respondemos en minutos.</div>
+    <button class="fc-btn" onclick="window.location.href='whatsapp.html'">Chatear con soporte →</button>
+  </div>
+</div>
+
+<script>
+const dot=document.getElementById('cur'),ring=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;dot.style.left=mx+'px';dot.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));});
+
+function toggleFaq(btn){
+  const item=btn.parentElement;
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!isOpen)item.classList.add('open');
+}
+
+function filterCat(btn, cat){
+  document.querySelectorAll('.faq-cat').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  document.querySelectorAll('.faq-group').forEach(g=>{
+    g.style.display = (cat==='todo' || g.dataset.cat===cat) ? 'block' : 'none';
+  });
+}
+</script>
+</body>
+</html>

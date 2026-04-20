@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PetCare — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{--g:#2ECC71;--g2:#27AE60;--g3:#E8FBF0;--coral:#FF6B6B;--sky:#74C0FC;--lav:#C084FC;--peach:#FFB347;--cream:#FAFAF8;--ink:#111;--mid:#555;--lite:#999;--w:#fff;--bd:#E8E8E8;--ease:cubic-bezier(.16,1,.3,1);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:#0f0f0f;color:#fff;overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;}
+#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;}
+#cur{width:10px;height:10px;background:var(--g);top:0;left:0;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+#cur2{width:34px;height:34px;border:1.5px solid rgba(46,204,113,.4);top:0;left:0;transform:translate(-50%,-50%);transition:width .4s;}
+body.hov #cur{width:18px;height:18px;background:var(--g2);}
+body.hov #cur2{width:56px;height:56px;border-color:rgba(46,204,113,.7);}
+@media(max-width:900px){#cur,#cur2{display:none;}body{cursor:auto;}}
+
+/* LAYOUT */
+.sidebar{width:220px;min-height:100vh;background:#151515;border-right:1px solid #222;display:flex;flex-direction:column;padding:20px 0;position:fixed;top:0;left:0;bottom:0;}
+.main{margin-left:220px;flex:1;min-height:100vh;padding:28px;}
+@media(max-width:900px){.sidebar{display:none;}.main{margin-left:0;}}
+
+/* SIDEBAR */
+.sb-logo{display:flex;align-items:center;gap:9px;padding:0 20px 20px;border-bottom:1px solid #222;margin-bottom:12px;text-decoration:none;}
+.sb-ico{width:32px;height:32px;background:var(--g);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.sb-name{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px;}
+.sb-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:50px;background:rgba(46,204,113,.15);color:var(--g);margin-left:4px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;font-weight:700;color:#666;cursor:none;transition:all .2s;background:none;border:none;width:100%;text-align:left;font-family:'Nunito',sans-serif;border-left:3px solid transparent;}
+.sb-item:hover{color:#fff;background:rgba(255,255,255,.04);}
+.sb-item.act{color:#fff;background:rgba(255,255,255,.06);border-left-color:var(--g);}
+.sb-ico-s{width:18px;height:18px;flex-shrink:0;opacity:.6;}
+.sb-item.act .sb-ico-s{opacity:1;}
+.sb-section{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#333;padding:12px 20px 4px;}
+.sb-bottom{margin-top:auto;padding:16px 20px;border-top:1px solid #222;}
+.sb-user{display:flex;align-items:center;gap:10px;}
+.sb-ava{width:32px;height:32px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;flex-shrink:0;}
+.sb-uname{font-size:12px;font-weight:700;color:#fff;}
+.sb-urole{font-size:10px;color:#444;margin-top:1px;}
+
+/* MAIN HEADER */
+.main-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.mh-title{font-size:24px;font-weight:900;color:#fff;letter-spacing:-1px;}
+.mh-sub{font-size:13px;color:#555;margin-top:2px;}
+.mh-right{display:flex;align-items:center;gap:10px;}
+.mh-date{font-size:12px;color:#444;padding:7px 14px;background:#1a1a1a;border-radius:50px;border:1px solid #222;}
+.mh-btn{padding:9px 18px;background:var(--g);color:#fff;border:none;border-radius:50px;font-size:12px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;}
+.mh-btn:hover{background:var(--g2);}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.kpi{background:#151515;border:1px solid #222;border-radius:18px;padding:18px 20px;transition:border-color .2s;}
+.kpi:hover{border-color:#333;}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.kpi-lbl{font-size:11px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:.5px;}
+.kpi-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.kpi-num{font-size:28px;font-weight:900;color:#fff;letter-spacing:-1.5px;line-height:1;margin-bottom:6px;}
+.kpi-change{font-size:12px;font-weight:700;display:flex;align-items:center;gap:4px;}
+.kc-up{color:var(--g);}
+.kc-down{color:var(--coral);}
+.kpi-bar{height:3px;background:#222;border-radius:2px;overflow:hidden;margin-top:10px;}
+.kb-fill{height:100%;border-radius:2px;transition:width 1s var(--ease);}
+@media(max-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* CHARTS */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:24px;}
+@media(max-width:768px){.charts-row{grid-template-columns:1fr;}}
+.chart-card{background:#151515;border:1px solid #222;border-radius:18px;padding:20px;}
+.cc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.cc-t{font-size:14px;font-weight:800;color:#fff;}
+.cc-s{font-size:11px;color:#444;}
+.chart-wrap{position:relative;height:180px;}
+
+/* TABLAS */
+.table-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+@media(max-width:768px){.table-row{grid-template-columns:1fr;}}
+.table-card{background:#151515;border:1px solid #222;border-radius:18px;overflow:hidden;}
+.tc-head{padding:16px 20px;border-bottom:1px solid #222;display:flex;align-items:center;justify-content:space-between;}
+.tc-t{font-size:14px;font-weight:800;color:#fff;}
+.tc-link{font-size:11px;font-weight:700;color:var(--g);background:none;border:none;cursor:none;font-family:'Nunito',sans-serif;}
+.t-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid #1a1a1a;transition:background .15s;}
+.t-item:last-child{border-bottom:none;}
+.t-item:hover{background:#1a1a1a;}
+.ti-ava{width:34px;height:34px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+.ti-inf{flex:1;}
+.ti-n{font-size:12px;font-weight:700;color:#fff;}
+.ti-d{font-size:10px;color:#444;margin-top:2px;}
+.ti-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:50px;}
+.tb-g{background:rgba(46,204,113,.12);color:var(--g);}
+.tb-y{background:rgba(245,166,35,.12);color:#F5A623;}
+.tb-r{background:rgba(255,107,107,.12);color:var(--coral);}
+.tb-b{background:rgba(116,192,252,.12);color:var(--sky);}
+.ti-val{font-size:12px;font-weight:800;color:#fff;white-space:nowrap;}
+
+/* ALERTAS */
+.alerts-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+.alert-item{background:#151515;border:1px solid #222;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;transition:border-color .2s;}
+.alert-item:hover{border-color:#333;}
+.ai-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ai-t{font-size:13px;font-weight:700;color:#fff;flex:1;}
+.ai-d{font-size:11px;color:#444;}
+.ai-time{font-size:11px;color:#333;white-space:nowrap;}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur2"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <a href="index.html" class="sb-logo"><div class="sb-ico">🐾</div><span class="sb-name">PetCare</span><span class="sb-badge">Admin</span></a>
+  <div class="sb-section">Principal</div>
+  <button class="sb-item act"><svg class="sb-ico-s" viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/></svg>Dashboard</button>
+  <button class="sb-item" onclick="alert('Sección en desarrollo')"><svg class="sb-ico-s" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>Usuarios</button>
+  <button class="sb-item" onclick="alert('Sección en desarrollo')"><svg class="sb-ico-s" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>Consultas</button>
+  <div class="sb-section">Negocio</div>
+  <button class="sb-item" onclick="alert('Sección en desarrollo')"><svg class="sb-ico-s" viewBox="0 0 20 20" fill="currentColor"><path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"/></svg>Ingresos</button>
+  <button class="sb-item" onclick="alert('Sección en desarrollo')"><svg class="sb-ico-s" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>Analytics</button>
+  <button class="sb-item" onclick="alert('Sección en desarrollo')"><svg class="sb-ico-s" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z" clip-rule="evenodd"/><path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"/></svg>Referidos</button>
+  <div class="sb-bottom">
+    <div class="sb-user">
+      <div class="sb-ava">N</div>
+      <div><div class="sb-uname">Nelson JS</div><div class="sb-urole">Administrador</div></div><div style="margin-top:8px;"><a href="index.html" style="font-size:11px;color:#444;text-decoration:none;">← Ver landing</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="main-header">
+    <div><div class="mh-title">Dashboard</div><div class="mh-sub">PetCare Perú · Abril 2026</div></div>
+    <div class="mh-right">
+      <div class="mh-date">14 Abril 2026</div>
+      <button class="mh-btn" onclick="window.location.href='index.html'">← Ver landing</button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-top"><div class="kpi-lbl">Usuarios activos</div><div class="kpi-ico" style="background:rgba(46,204,113,.1)">👥</div></div>
+      <div class="kpi-num">1,284</div>
+      <div class="kpi-change kc-up">↑ 18% vs mes anterior</div>
+      <div class="kpi-bar"><div class="kb-fill" style="width:72%;background:var(--g)"></div></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><div class="kpi-lbl">Ingresos del mes</div><div class="kpi-ico" style="background:rgba(116,192,252,.1)">💰</div></div>
+      <div class="kpi-num" style="color:var(--sky)">S/ 8,420</div>
+      <div class="kpi-change kc-up">↑ 24% vs mes anterior</div>
+      <div class="kpi-bar"><div class="kb-fill" style="width:58%;background:var(--sky)"></div></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><div class="kpi-lbl">Consultas hoy</div><div class="kpi-ico" style="background:rgba(192,132,252,.1)">📋</div></div>
+      <div class="kpi-num" style="color:var(--lav)">347</div>
+      <div class="kpi-change kc-up">↑ 12% vs ayer</div>
+      <div class="kpi-bar"><div class="kb-fill" style="width:65%;background:var(--lav)"></div></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-top"><div class="kpi-lbl">Tasa conversión</div><div class="kpi-ico" style="background:rgba(255,179,71,.1)">📈</div></div>
+      <div class="kpi-num" style="color:var(--peach)">8.4%</div>
+      <div class="kpi-change kc-up">↑ 2.1% vs mes anterior</div>
+      <div class="kpi-bar"><div class="kb-fill" style="width:84%;background:var(--peach)"></div></div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="cc-head"><div class="cc-t">Consultas por día — Abril 2026</div><div class="cc-s">Últimos 14 días</div></div>
+      <div class="chart-wrap"><canvas id="chart-consultas"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="cc-head"><div class="cc-t">Distribución de planes</div><div class="cc-s">Usuarios activos</div></div>
+      <div class="chart-wrap"><canvas id="chart-planes"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TABLAS -->
+  <div class="table-row">
+    <div class="table-card">
+      <div class="tc-head"><div class="tc-t">Últimos registros</div><button class="tc-link">Ver todos</button></div>
+      <div class="t-item"><div class="ti-ava">C</div><div class="ti-inf"><div class="ti-n">Carolina M.</div><div class="ti-d">Lima · hace 2h</div></div><span class="ti-badge tb-g">Básico</span><div class="ti-val">S/29.90</div></div>
+      <div class="t-item"><div class="ti-ava">R</div><div class="ti-inf"><div class="ti-n">Roberto A.</div><div class="ti-d">Lima · hace 4h</div></div><span class="ti-badge tb-b">Consulta</span><div class="ti-val">S/5.90</div></div>
+      <div class="t-item"><div class="ti-ava">V</div><div class="ti-inf"><div class="ti-n">Valeria S.</div><div class="ti-d">Miraflores · hace 6h</div></div><span class="ti-badge tb-g">Básico</span><div class="ti-val">S/29.90</div></div>
+      <div class="t-item"><div class="ti-ava">J</div><div class="ti-inf"><div class="ti-n">Juan P.</div><div class="ti-d">San Isidro · hace 8h</div></div><span class="ti-badge tb-r">Familiar</span><div class="ti-val">S/49.90</div></div>
+      <div class="t-item"><div class="ti-ava">M</div><div class="ti-inf"><div class="ti-n">María F.</div><div class="ti-d">Surco · hace 10h</div></div><span class="ti-badge tb-g">Básico</span><div class="ti-val">S/29.90</div></div>
+    </div>
+    <div class="table-card">
+      <div class="tc-head"><div class="tc-t">Consultas recientes</div><button class="tc-link">Ver todas</button></div>
+      <div class="t-item"><div class="ti-ava" style="background:#1a2a1a;">🐕</div><div class="ti-inf"><div class="ti-n">Toby · Picazón cuello</div><div class="ti-d">Carolina M. · hace 2h</div></div><span class="ti-badge tb-y">Amarillo</span><div class="ti-val">54pts</div></div>
+      <div class="t-item"><div class="ti-ava" style="background:#1a1a2a;">🐈</div><div class="ti-inf"><div class="ti-n">Luna · Sin apetito</div><div class="ti-d">Roberto A. · hace 3h</div></div><span class="ti-badge tb-g">Verde</span><div class="ti-val">78pts</div></div>
+      <div class="t-item"><div class="ti-ava" style="background:#2a1a1a;">🐕</div><div class="ti-inf"><div class="ti-n">Max · Vómitos</div><div class="ti-d">Valeria S. · hace 5h</div></div><span class="ti-badge tb-r">Rojo</span><div class="ti-val">31pts</div></div>
+      <div class="t-item"><div class="ti-ava" style="background:#1a2a1a;">🐈</div><div class="ti-inf"><div class="ti-n">Mochi · Control</div><div class="ti-d">Juan P. · hace 7h</div></div><span class="ti-badge tb-g">Verde</span><div class="ti-val">91pts</div></div>
+      <div class="t-item"><div class="ti-ava" style="background:#1a1a2a;">🐕</div><div class="ti-inf"><div class="ti-n">Rex · Cojera</div><div class="ti-d">María F. · hace 9h</div></div><span class="ti-badge tb-y">Amarillo</span><div class="ti-val">62pts</div></div>
+    </div>
+  </div>
+
+  <!-- ALERTAS DEL SISTEMA -->
+  <div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:10px;">Alertas del sistema</div>
+  <div class="alerts-list">
+    <div class="alert-item"><div class="ai-dot" style="background:var(--g)"></div><div class="ai-t">347 consultas procesadas hoy — sistema funcionando con normalidad</div><div class="ai-time">Hace 5 min</div></div>
+    <div class="alert-item"><div class="ai-dot" style="background:#F5A623"></div><div class="ai-t">12 usuarios con Plan Básico vencen esta semana — activar recordatorio</div><div class="ai-time">Hace 1h</div></div>
+    <div class="alert-item"><div class="ai-dot" style="background:var(--sky)"></div><div class="ai-t">Culqi procesó S/1,240 en pagos hoy — sin contracargos</div><div class="ai-time">Hace 2h</div></div>
+    <div class="alert-item"><div class="ai-dot" style="background:var(--lav)"></div><div class="ai-t">3 nuevos referidos activados hoy — código MARIA2026, CARLOS2026</div><div class="ai-time">Hace 3h</div></div>
+  </div>
+
+</div>
+
+<script>
+const dot=document.getElementById('cur'),ring=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;dot.style.left=mx+'px';dot.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));});
+
+// Chart consultas
+new Chart(document.getElementById('chart-consultas'),{type:'bar',data:{labels:['1','2','3','4','5','6','7','8','9','10','11','12','13','14'],datasets:[{data:[280,310,295,340,380,290,260,350,420,390,310,445,380,347],backgroundColor:ctx=>ctx.dataIndex===13?'#2ECC71':'rgba(46,204,113,.25)',borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a1a',titleColor:'#fff',bodyColor:'#aaa',borderColor:'#333',borderWidth:1}},scales:{x:{grid:{display:false},ticks:{color:'#333',font:{size:10}}},y:{grid:{color:'#1a1a1a'},ticks:{color:'#333',font:{size:10}}}}}});
+
+// Chart planes
+new Chart(document.getElementById('chart-planes'),{type:'doughnut',data:{labels:['Plan Básico','Plan Familiar','Por consulta'],datasets:[{data:[67,18,15],backgroundColor:['#2ECC71','#74C0FC','#C084FC'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#666',font:{size:11},padding:12}},tooltip:{backgroundColor:'#1a1a1a',titleColor:'#fff',bodyColor:'#aaa',borderColor:'#333',borderWidth:1}},cutout:'68%'}});
+</script>
+</body>
+</html>

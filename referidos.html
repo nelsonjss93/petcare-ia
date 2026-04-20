@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PetCare — Referidos</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#2ECC71;--g2:#27AE60;--g3:#E8FBF0;--g4:#A8E6C3;--coral:#FF6B6B;--peach:#FFB347;--sky:#74C0FC;--lav:#C084FC;--cream:#FAFAF8;--ink:#111;--mid:#555;--lite:#999;--w:#fff;--bd:#E8E8E8;--ease:cubic-bezier(.16,1,.3,1);--ease2:cubic-bezier(.34,1.56,.64,1);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased;min-height:100vh;padding-bottom:60px;}
+#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;}
+#cur{width:10px;height:10px;background:var(--g);top:0;left:0;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+#cur2{width:34px;height:34px;border:1.5px solid rgba(46,204,113,.4);top:0;left:0;transform:translate(-50%,-50%);transition:width .4s;}
+body.hov #cur{width:18px;height:18px;background:var(--g2);}
+body.hov #cur2{width:56px;height:56px;border-color:rgba(46,204,113,.7);}
+@media(max-width:900px){#cur,#cur2{display:none;}body{cursor:auto;}}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;padding:0 48px;height:68px;background:rgba(250,250,248,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.n-icon{width:34px;height:34px;background:var(--g);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.n-name{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-.5px;}
+.n-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.n-a{padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;transition:all .2s;cursor:none;}
+.n-a:hover{color:var(--ink);background:rgba(46,204,113,.1);}
+.n-back{font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;padding:8px 16px;border-radius:50px;border:1.5px solid var(--bd);transition:all .2s;cursor:none;}
+.n-back:hover{color:var(--ink);border-color:var(--ink);}
+@media(max-width:900px){nav{padding:0 16px;}}
+.wrap{max-width:820px;margin:0 auto;padding:88px 24px 40px;}
+
+/* HERO */
+.ref-hero{background:var(--ink);border-radius:28px;padding:36px;margin-bottom:24px;position:relative;overflow:hidden;text-align:center;}
+.rh-glow1{position:absolute;top:-40px;left:-40px;width:200px;height:200px;border-radius:50%;background:rgba(46,204,113,.07);pointer-events:none;}
+.rh-glow2{position:absolute;bottom:-30px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(116,192,252,.05);pointer-events:none;}
+.rh-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--g);margin-bottom:12px;display:block;}
+.rh-h{font-size:clamp(28px,4vw,44px);font-weight:900;color:var(--w);letter-spacing:-2px;line-height:1;margin-bottom:10px;}
+.rh-h span{color:var(--g);}
+.rh-s{font-size:15px;color:rgba(255,255,255,.5);line-height:1.6;max-width:480px;margin:0 auto 28px;}
+.rh-stats{display:flex;gap:0;justify-content:center;border:1px solid rgba(255,255,255,.08);border-radius:18px;overflow:hidden;width:fit-content;margin:0 auto;}
+.rhs{padding:14px 28px;border-right:1px solid rgba(255,255,255,.08);text-align:center;}
+.rhs:last-child{border-right:none;}
+.rhs-n{font-size:24px;font-weight:900;color:var(--w);letter-spacing:-1px;}
+.rhs-l{font-size:11px;color:rgba(255,255,255,.3);margin-top:2px;}
+
+/* CÓDIGO */
+.code-box{background:var(--w);border:1.5px solid var(--bd);border-radius:22px;padding:24px;margin-bottom:16px;}
+.cb-t{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+.cb-s{font-size:13px;color:var(--mid);margin-bottom:18px;line-height:1.5;}
+.code-display{display:flex;align-items:center;gap:10px;background:var(--cream);border:1.5px solid var(--bd);border-radius:14px;padding:14px 18px;margin-bottom:16px;}
+.code-txt{font-size:22px;font-weight:900;color:var(--ink);letter-spacing:3px;flex:1;font-family:monospace;}
+.code-copy{padding:9px 18px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:12px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;white-space:nowrap;}
+.code-copy:hover{background:var(--g);}
+.link-display{display:flex;align-items:center;gap:10px;background:var(--cream);border:1.5px solid var(--bd);border-radius:12px;padding:11px 14px;margin-bottom:16px;}
+.link-txt{font-size:13px;color:var(--mid);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.link-copy{padding:7px 14px;border:1.5px solid var(--bd);border-radius:50px;font-size:11px;font-weight:700;color:var(--mid);background:var(--w);cursor:none;font-family:'Nunito',sans-serif;transition:all .2s;white-space:nowrap;}
+.link-copy:hover{border-color:var(--g);color:var(--g2);}
+.share-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.sh-btn{padding:11px 8px;border-radius:13px;border:1.5px solid var(--bd);font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;background:var(--w);color:var(--mid);display:flex;flex-direction:column;align-items:center;gap:5px;}
+.sh-btn:hover{transform:translateY(-2px);border-color:var(--ink);color:var(--ink);}
+.sh-ico{font-size:18px;}
+.sh-wa{background:#25D366;color:#fff;border-color:#25D366;}
+.sh-wa:hover{background:#1DA851;border-color:#1DA851;color:#fff;}
+.copy-msg{background:var(--g3);border:1px solid var(--g4);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;color:var(--g2);text-align:center;display:none;margin-top:10px;}
+.copy-msg.show{display:block;}
+
+/* PROGRESO */
+.progress-card{background:var(--w);border:1.5px solid var(--bd);border-radius:22px;padding:24px;margin-bottom:16px;}
+.pc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.pc-t{font-size:14px;font-weight:800;color:var(--ink);}
+.prog-steps{display:flex;gap:0;position:relative;margin-bottom:24px;}
+.prog-steps::before{content:'';position:absolute;top:18px;left:0;right:0;height:2px;background:var(--bd);z-index:0;}
+.prog-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:1;}
+.ps-circle{width:36px;height:36px;border-radius:50%;border:2px solid var(--bd);background:var(--w);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--lite);transition:all .3s;}
+.ps-circle.done{background:var(--g);border-color:var(--g);color:var(--w);}
+.ps-circle.act{background:var(--ink);border-color:var(--ink);color:var(--w);}
+.ps-label{font-size:11px;font-weight:700;color:var(--lite);text-align:center;}
+.ps-label.done{color:var(--g2);}
+.ps-label.act{color:var(--ink);}
+.ps-reward{font-size:10px;font-weight:700;padding:2px 8px;border-radius:50px;margin-top:2px;}
+.pr-g{background:var(--g3);color:var(--g2);}
+.pr-b{background:#EBF4FF;color:#185FA5;}
+.pr-p{background:#F5E6FF;color:#6b3fa0;}
+.pr-gold{background:#FFF8E6;color:#C49000;}
+
+/* REFERIDOS LISTA */
+.refs-list{display:flex;flex-direction:column;gap:0;background:var(--w);border:1.5px solid var(--bd);border-radius:22px;overflow:hidden;margin-bottom:16px;}
+.ref-item{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--bd);transition:background .2s;}
+.ref-item:last-child{border-bottom:none;}
+.ref-item:hover{background:var(--cream);}
+.ri-ava{width:38px;height:38px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--g2);flex-shrink:0;}
+.ri-inf{flex:1;}
+.ri-n{font-size:13px;font-weight:700;color:var(--ink);}
+.ri-d{font-size:11px;color:var(--lite);margin-top:2px;}
+.ri-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:50px;}
+.rb-active{background:var(--g3);color:var(--g2);}
+.rb-pending{background:#FFF8E6;color:#C49000;}
+.ri-reward{font-size:12px;font-weight:800;color:var(--ink);white-space:nowrap;margin-left:8px;}
+
+/* RECOMPENSAS */
+.rewards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.reward-card{background:var(--w);border:1.5px solid var(--bd);border-radius:18px;padding:18px;text-align:center;transition:transform .2s;}
+.reward-card:hover{transform:translateY(-2px);}
+.reward-card.unlocked{border-color:var(--g);background:var(--g3);}
+.rc-ico{font-size:28px;margin-bottom:10px;}
+.rc-t{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:4px;}
+.rc-s{font-size:11px;color:var(--lite);line-height:1.4;}
+.rc-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:50px;margin-top:8px;display:inline-block;}
+.rbc-ok{background:var(--g3);color:var(--g2);}
+.rbc-lock{background:var(--cream);color:var(--lite);border:1px solid var(--bd);}
+
+/* CÓMO FUNCIONA */
+.como-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.como-item{text-align:center;padding:20px 14px;background:var(--w);border:1.5px solid var(--bd);border-radius:18px;}
+.ci-num{width:36px;height:36px;border-radius:10px;background:var(--ink);color:var(--w);font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+.ci-t{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:4px;}
+.ci-s{font-size:12px;color:var(--mid);line-height:1.5;}
+
+@media(max-width:640px){.share-btns{grid-template-columns:repeat(2,1fr);}.rewards-grid,.como-grid{grid-template-columns:1fr;}.rh-stats{flex-direction:column;width:100%;}}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur2"></div>
+<nav>
+  <a href="index.html" class="n-logo">
+    <div class="n-icon">🐾</div>
+    <span class="n-name">PetCare</span>
+  </a>
+  <div style="display:flex;gap:2px;margin:0 16px;"><a href="consulta.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">Consultar</a><a href="pagos.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">Planes</a><a href="whatsapp.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">WhatsApp</a></div>
+  <a href="dashboard.html" style="display:flex;align-items:center;gap:7px;padding:8px 14px 8px 8px;background:var(--w);border:1.5px solid var(--bd);border-radius:50px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;cursor:none;transition:all .2s;margin-right:8px;" onmouseenter="this.style.borderColor='var(--ink)'" onmouseleave="this.style.borderColor='var(--bd)'"><div style="width:22px;height:22px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--g2);">M</div>Mi cuenta</a>
+  <a href="dashboard.html" class="n-back">← Mi cuenta</a>
+</nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="ref-hero">
+    <div class="rh-glow1"></div><div class="rh-glow2"></div>
+    <span class="rh-tag">Programa de referidos</span>
+    <h1 class="rh-h">Comparte y gana<br><span>consultas gratis</span></h1>
+    <p class="rh-s">Por cada amigo que se registra con tu código, ambos ganan una consulta gratis. Sin límite de referidos.</p>
+    <div class="rh-stats">
+      <div class="rhs"><div class="rhs-n">3</div><div class="rhs-l">Amigos referidos</div></div>
+      <div class="rhs"><div class="rhs-n">3</div><div class="rhs-l">Consultas ganadas</div></div>
+      <div class="rhs"><div class="rhs-n">2</div><div class="rhs-l">Activos hoy</div></div>
+    </div>
+  </div>
+
+  <!-- CÓDIGO -->
+  <div class="code-box">
+    <div class="cb-t">Tu código único de referido</div>
+    <div class="cb-s">Comparte este código con tus amigos. Cuando se registren con él, ambos ganan una consulta gratis al instante.</div>
+    <div class="code-display">
+      <div class="code-txt" id="ref-code">MARIA2026</div>
+      <button class="code-copy" onclick="copyCode()">Copiar código</button>
+    </div>
+    <div class="link-display">
+      <div class="link-txt" id="ref-link">petcare.pe/r/MARIA2026</div>
+      <button class="link-copy" onclick="copyLink()">Copiar link</button>
+    </div>
+    <div class="share-btns">
+      <button class="sh-btn sh-wa" onclick="shareWA()"><div class="sh-ico"><svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>WhatsApp</button>
+      <button class="sh-btn" onclick="shareAction('Instagram')"><div class="sh-ico">📸</div>Instagram</button>
+      <button class="sh-btn" onclick="shareAction('Facebook')"><div class="sh-ico">👥</div>Facebook</button>
+      <button class="sh-btn" onclick="shareAction('SMS')"><div class="sh-ico">💬</div>SMS</button>
+    </div>
+    <div class="copy-msg" id="copy-msg"></div>
+  </div>
+
+  <!-- PROGRESO -->
+  <div class="progress-card">
+    <div class="pc-head"><div class="pc-t">Tu progreso de referidos</div><span style="font-size:12px;color:var(--g2);font-weight:700;">3 / 10 amigos</span></div>
+    <div class="prog-steps">
+      <div class="prog-step"><div class="ps-circle done">1</div><div class="ps-label done">1 amigo</div><span class="ps-reward pr-g">1 consulta</span></div>
+      <div class="prog-step"><div class="ps-circle done">3</div><div class="ps-label done act">3 amigos</div><span class="ps-reward pr-g">+2 consultas</span></div>
+      <div class="prog-step"><div class="ps-circle act">5</div><div class="ps-label act">5 amigos</div><span class="ps-reward pr-b">1 mes gratis</span></div>
+      <div class="prog-step"><div class="ps-circle">10</div><div class="ps-label">10 amigos</div><span class="ps-reward pr-gold">Plan Familiar</span></div>
+    </div>
+    <div style="background:var(--cream);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--mid);line-height:1.5;">
+      Llevas <strong style="color:var(--ink)">3 amigos referidos</strong>. Necesitas <strong style="color:var(--g2)">2 más</strong> para ganar <strong style="color:var(--sky)">1 mes gratis</strong> del Plan Básico.
+    </div>
+  </div>
+
+  <!-- LISTA DE REFERIDOS -->
+  <div style="margin-bottom:8px;font-size:14px;font-weight:800;color:var(--ink);">Amigos que usaron tu código</div>
+  <div class="refs-list">
+    <div class="ref-item"><div class="ri-ava">C</div><div class="ri-inf"><div class="ri-n">Carolina M.</div><div class="ri-d">Se registró hace 3 días · Lima</div></div><span class="ri-badge rb-active">Activo</span><span class="ri-reward">+1 consulta</span></div>
+    <div class="ref-item"><div class="ri-ava">R</div><div class="ri-inf"><div class="ri-n">Roberto A.</div><div class="ri-d">Se registró hace 1 semana · Lima</div></div><span class="ri-badge rb-active">Activo</span><span class="ri-reward">+1 consulta</span></div>
+    <div class="ref-item"><div class="ri-ava">V</div><div class="ri-inf"><div class="ri-n">Valeria S.</div><div class="ri-d">Se registró hace 2 semanas · Lima</div></div><span class="ri-badge rb-active">Activo</span><span class="ri-reward">+1 consulta</span></div>
+  </div>
+
+  <!-- RECOMPENSAS -->
+  <div style="margin-bottom:12px;font-size:14px;font-weight:800;color:var(--ink);">Recompensas disponibles</div>
+  <div class="rewards-grid">
+    <div class="reward-card unlocked"><div class="rc-ico">🎁</div><div class="rc-t">1 consulta gratis</div><div class="rc-s">Por cada amigo que se registra</div><span class="rc-badge rbc-ok">Desbloqueado</span></div>
+    <div class="reward-card unlocked"><div class="rc-ico">⚡</div><div class="rc-t">3 consultas gratis</div><div class="rc-s">Al referir 3 amigos (ya lo lograste)</div><span class="rc-badge rbc-ok">Desbloqueado</span></div>
+    <div class="reward-card"><div class="rc-ico">🌟</div><div class="rc-t">1 mes gratis</div><div class="rc-s">Al referir 5 amigos — te faltan 2</div><span class="rc-badge rbc-lock">2 amigos más</span></div>
+  </div>
+
+  <!-- CÓMO FUNCIONA -->
+  <div style="margin-bottom:12px;font-size:14px;font-weight:800;color:var(--ink);">Cómo funciona</div>
+  <div class="como-grid">
+    <div class="como-item"><div class="ci-num">1</div><div class="ci-t">Comparte tu código</div><div class="ci-s">Envíalo por WhatsApp, Instagram o donde prefieras</div></div>
+    <div class="como-item"><div class="ci-num">2</div><div class="ci-t">Tu amigo se registra</div><div class="ci-s">Ingresa tu código al crear su cuenta en PetCare</div></div>
+    <div class="como-item"><div class="ci-num">3</div><div class="ci-t">Ambos ganan</div><div class="ci-s">Tú y tu amigo reciben 1 consulta gratis al instante</div></div>
+  </div>
+
+</div>
+
+<script>
+const dot=document.getElementById('cur'),ring=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;dot.style.left=mx+'px';dot.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));});
+function showMsg(txt){const m=document.getElementById('copy-msg');m.textContent=txt;m.classList.add('show');setTimeout(()=>m.classList.remove('show'),2800);}
+function copyCode(){navigator.clipboard?.writeText('MARIA2026');showMsg('✅ Código copiado — ¡compártelo!');}
+function copyLink(){navigator.clipboard?.writeText('petcare.pe/r/MARIA2026');showMsg('✅ Link copiado — listo para compartir');}
+function shareWA(){const msg=encodeURIComponent('Usa mi código MARIA2026 en PetCare y los dos ganamos una consulta gratis para nuestras mascotas 🐾 → petcare.pe/r/MARIA2026');window.open('https://wa.me/?text='+msg,'_blank');showMsg('Abriendo WhatsApp...');}
+function shareAction(red){showMsg('✅ Compartiendo en '+red+'...');}
+</script>
+</body>
+</html>

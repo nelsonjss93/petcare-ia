@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PetCare — Mi Cuenta</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g:#2ECC71;--g2:#27AE60;--g3:#E8FBF0;--g4:#A8E6C3;
+  --coral:#FF6B6B;--peach:#FFB347;--sky:#74C0FC;--lav:#C084FC;
+  --cream:#FAFAF8;--ink:#111;--mid:#555;--lite:#999;--w:#fff;--bd:#E8E8E8;
+  --ease:cubic-bezier(.16,1,.3,1);--ease2:cubic-bezier(.34,1.56,.64,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased;min-height:100vh;}
+#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;will-change:transform;}
+#cur{width:10px;height:10px;background:var(--g);top:0;left:0;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;}
+#cur2{width:34px;height:34px;border:1.5px solid rgba(46,204,113,.4);top:0;left:0;transform:translate(-50%,-50%);transition:width .4s var(--ease),height .4s var(--ease);}
+body.hov #cur{width:18px;height:18px;background:var(--g2);}
+body.hov #cur2{width:56px;height:56px;border-color:rgba(46,204,113,.7);}
+@media(max-width:900px){#cur,#cur2{display:none;}body{cursor:auto;}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;padding:0 48px;height:68px;background:rgba(250,250,248,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.n-icon{width:34px;height:34px;background:var(--g);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;transition:transform .3s var(--ease2);}
+.n-logo:hover .n-icon{transform:rotate(-10deg) scale(1.1);}
+.n-name{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-.5px;}
+.n-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.n-user{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;background:var(--w);border:1.5px solid var(--bd);border-radius:50px;cursor:none;transition:all .2s;}
+.n-user:hover{border-color:var(--g4);}
+.n-avatar{width:28px;height:28px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--w);}
+.n-uname{font-size:13px;font-weight:700;color:var(--ink);}
+.n-plan-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:50px;background:var(--g3);color:var(--g2);}
+.n-btn{padding:9px 20px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;}
+.n-btn:hover{background:var(--g);}
+@media(max-width:900px){nav{padding:0 20px;}.n-uname{display:none;}}
+
+/* PÁGINAS */
+.page{padding-top:68px;}
+.screen{display:none;}
+.screen.on{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.fade-in{animation:fadeUp .4s var(--ease) both;}
+
+/* ═══════════════════════════════
+   DASHBOARD
+═══════════════════════════════ */
+.dash-wrap{max-width:1100px;margin:0 auto;padding:40px 24px 80px;display:grid;grid-template-columns:280px 1fr;gap:28px;align-items:start;}
+@media(max-width:900px){.dash-wrap{grid-template-columns:1fr;}}
+
+/* Sidebar */
+.dash-sidebar{display:flex;flex-direction:column;gap:16px;position:sticky;top:88px;}
+.user-card{background:var(--ink);border-radius:24px;padding:24px;text-align:center;position:relative;overflow:hidden;}
+.uc-glow{position:absolute;top:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(46,204,113,.1);pointer-events:none;}
+.uc-avatar{width:64px;height:64px;border-radius:50%;background:var(--g);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:var(--w);}
+.uc-name{font-size:17px;font-weight:900;color:var(--w);letter-spacing:-.5px;margin-bottom:3px;}
+.uc-email{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:14px;}
+.uc-plan{display:inline-flex;align-items:center;gap:6px;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.2);border-radius:50px;padding:5px 12px;font-size:11px;font-weight:700;color:var(--g);margin-bottom:14px;}
+.uc-plan-dot{width:6px;height:6px;border-radius:50%;background:var(--g);}
+.uc-renovacion{font-size:11px;color:rgba(255,255,255,.3);}
+.uc-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;}
+.uc-stat{background:rgba(255,255,255,.06);border-radius:12px;padding:10px 8px;text-align:center;}
+.uc-sn{font-size:20px;font-weight:900;color:var(--w);letter-spacing:-1px;}
+.uc-sl{font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;}
+
+.sidebar-nav{background:var(--w);border:1.5px solid var(--bd);border-radius:20px;overflow:hidden;}
+.snav-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--bd);cursor:none;transition:all .2s;font-size:13px;font-weight:700;color:var(--mid);background:none;border-left:none;border-right:none;border-top:none;width:100%;text-align:left;font-family:'Nunito',sans-serif;}
+.snav-item:last-child{border-bottom:none;}
+.snav-item:hover{background:var(--cream);color:var(--ink);}
+.snav-item.active{background:var(--g3);color:var(--g2);border-bottom-color:var(--g4);}
+.snav-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.si-g{background:var(--g3);}
+.si-b{background:#EBF4FF;}
+.si-p{background:#F5E6FF;}
+.si-o{background:#FFF0E6;}
+
+/* Main content */
+.dash-main{display:flex;flex-direction:column;gap:20px;}
+
+/* Bienvenida */
+.welcome-banner{background:var(--w);border:1.5px solid var(--bd);border-radius:22px;padding:22px 24px;display:flex;align-items:center;gap:16px;}
+.wb-ico{width:48px;height:48px;border-radius:14px;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.wb-t{font-size:17px;font-weight:900;color:var(--ink);letter-spacing:-.5px;margin-bottom:3px;}
+.wb-s{font-size:13px;color:var(--mid);}
+.wb-btn{margin-left:auto;padding:10px 22px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:13px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;white-space:nowrap;}
+.wb-btn:hover{background:var(--g);}
+
+/* Score general */
+.score-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.score-mini{background:var(--w);border:1.5px solid var(--bd);border-radius:18px;padding:16px;text-align:center;transition:transform .2s;}
+.score-mini:hover{transform:translateY(-2px);}
+.sm-num{font-size:28px;font-weight:900;color:var(--ink);letter-spacing:-1.5px;line-height:1;}
+.sm-num b{font-size:18px;}
+.sm-lbl{font-size:11px;color:var(--lite);margin-top:4px;font-weight:600;}
+.sm-bar{height:3px;border-radius:2px;margin-top:8px;}
+
+/* Mascotas */
+.sec-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.sec-h{font-size:16px;font-weight:900;color:var(--ink);letter-spacing:-.5px;}
+.sec-link{font-size:13px;font-weight:700;color:var(--g2);cursor:none;background:none;border:none;font-family:'Nunito',sans-serif;}
+.pets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
+.pet-card-d{background:var(--w);border:1.5px solid var(--bd);border-radius:20px;padding:18px 16px;text-align:center;cursor:none;transition:all .25s var(--ease2);position:relative;}
+.pet-card-d:hover{border-color:var(--g4);transform:translateY(-3px);}
+.pet-card-d.active-pet{border-color:var(--g);background:var(--g3);}
+.pet-ava{width:56px;height:56px;border-radius:16px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;}
+.pet-name-d{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:2px;}
+.pet-breed-d{font-size:11px;color:var(--lite);}
+.pet-score-d{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;padding:2px 10px;border-radius:50px;}
+.ps-green{background:var(--g3);color:var(--g2);}
+.ps-yellow{background:#FFF8E6;color:#C49000;}
+.pet-add{border:2px dashed var(--bd);background:transparent;}
+.pet-add:hover{border-color:var(--g);background:var(--g3);}
+.pet-add .pet-ava{background:var(--cream);}
+
+/* Historial */
+.hist-list{display:flex;flex-direction:column;gap:0;background:var(--w);border:1.5px solid var(--bd);border-radius:20px;overflow:hidden;}
+.hist-item{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--bd);cursor:none;transition:background .2s;}
+.hist-item:last-child{border-bottom:none;}
+.hist-item:hover{background:var(--cream);}
+.hi-sem{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.hi-g{background:var(--g);}
+.hi-y{background:#F5A623;}
+.hi-r{background:#FF6B6B;}
+.hi-info{flex:1;}
+.hi-t{font-size:13px;font-weight:700;color:var(--ink);}
+.hi-d{font-size:11px;color:var(--lite);margin-top:2px;}
+.hi-pet{font-size:11px;font-weight:700;color:var(--mid);padding:3px 10px;background:var(--cream);border-radius:50px;white-space:nowrap;}
+.hi-score{font-size:13px;font-weight:900;color:var(--ink);margin:0 8px;white-space:nowrap;}
+.hi-arrow{color:var(--lite);font-size:16px;}
+
+/* Próximas acciones */
+.prox-list{display:flex;flex-direction:column;gap:8px;}
+.prox-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--w);border:1.5px solid var(--bd);border-radius:14px;cursor:none;transition:all .2s;}
+.prox-item:hover{border-color:var(--g4);}
+.prox-item.urgent{border-color:#FF6B6B;background:#FFF0EF;}
+.pi-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.pi-t{font-size:13px;font-weight:700;color:var(--ink);flex:1;}
+.pi-w{font-size:11px;color:var(--lite);white-space:nowrap;}
+.pi-btn{padding:6px 14px;border-radius:50px;border:1.5px solid var(--bd);font-size:11px;font-weight:700;background:var(--w);color:var(--mid);cursor:none;font-family:'Nunito',sans-serif;transition:all .2s;white-space:nowrap;}
+.pi-btn:hover{border-color:var(--g);color:var(--g2);background:var(--g3);}
+
+/* Sección vacía mascota */
+.empty-section{background:var(--w);border:1.5px solid var(--bd);border-radius:20px;padding:40px;text-align:center;display:none;}
+.empty-section.show{display:block;}
+
+/* ═══════════════════════════════
+   LOGIN / REGISTRO
+═══════════════════════════════ */
+.auth-wrap{min-height:calc(100vh - 68px);display:flex;align-items:center;justify-content:center;padding:40px 24px;}
+.auth-box{width:100%;max-width:420px;}
+.auth-tabs{display:flex;background:var(--w);border:1.5px solid var(--bd);border-radius:16px;padding:4px;margin-bottom:28px;}
+.auth-tab{flex:1;padding:10px;border:none;border-radius:12px;font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;background:transparent;color:var(--mid);}
+.auth-tab.act{background:var(--ink);color:var(--w);}
+
+/* Progreso registro */
+.reg-progress{display:flex;gap:6px;margin-bottom:24px;}
+.rp-dot{flex:1;height:4px;border-radius:2px;background:var(--bd);transition:background .3s;}
+.rp-dot.done{background:var(--g);}
+.rp-dot.act{background:var(--ink);}
+
+/* Social login */
+.social-btn{width:100%;padding:13px;border:1.5px solid var(--bd);border-radius:14px;font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;cursor:none;background:var(--w);color:var(--ink);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;}
+.social-btn:hover{border-color:var(--ink);background:var(--cream);}
+.or-divider{display:flex;align-items:center;gap:12px;margin:16px 0;font-size:12px;color:var(--lite);font-weight:600;}
+.or-line{flex:1;height:1px;background:var(--bd);}
+
+/* Inputs auth */
+.auth-field{margin-bottom:14px;}
+.auth-label{font-size:11px;font-weight:700;color:var(--ink);letter-spacing:.3px;text-transform:uppercase;margin-bottom:5px;display:block;}
+.auth-input{width:100%;padding:14px 16px;border:1.5px solid var(--bd);border-radius:13px;font-size:15px;font-family:'Nunito',sans-serif;font-weight:500;color:var(--ink);background:var(--w);outline:none;cursor:none;transition:border-color .2s,box-shadow .2s;}
+.auth-input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(46,204,113,.1);}
+.auth-input.big{font-size:24px;font-weight:900;letter-spacing:8px;text-align:center;}
+
+/* Selector de especie — registro paso 2 */
+.species-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.sp-mini{border:2px solid var(--bd);border-radius:14px;padding:12px 8px;text-align:center;cursor:none;transition:all .2s;background:var(--w);}
+.sp-mini:hover{border-color:var(--g4);}
+.sp-mini.sel{border-color:var(--g);background:var(--g3);}
+.sp-mini-ico{font-size:26px;display:block;margin-bottom:4px;}
+.sp-mini-lbl{font-size:11px;font-weight:700;color:var(--ink);}
+
+/* Botón principal auth */
+.auth-btn{width:100%;padding:16px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:16px;font-weight:900;font-family:'Nunito',sans-serif;cursor:none;transition:all .3s var(--ease);margin-top:8px;}
+.auth-btn:hover{background:var(--g);transform:translateY(-2px);box-shadow:0 10px 30px rgba(46,204,113,.3);}
+.auth-btn:disabled{opacity:.4;pointer-events:none;}
+.auth-note{text-align:center;font-size:12px;color:var(--lite);margin-top:12px;line-height:1.6;}
+.auth-note a{color:var(--g2);font-weight:700;text-decoration:none;cursor:none;}
+.auth-title{font-size:26px;font-weight:900;color:var(--ink);letter-spacing:-1px;margin-bottom:4px;}
+.auth-sub{font-size:14px;color:var(--mid);margin-bottom:24px;line-height:1.5;}
+
+/* Verificación OTP */
+.otp-wrap{text-align:center;padding:8px 0;}
+.otp-ico{font-size:48px;margin-bottom:16px;}
+.otp-inputs{display:flex;gap:8px;justify-content:center;margin:20px 0;}
+.otp-inp{width:48px;height:56px;border:2px solid var(--bd);border-radius:14px;font-size:22px;font-weight:900;text-align:center;font-family:'Nunito',sans-serif;color:var(--ink);outline:none;cursor:none;transition:border-color .2s;}
+.otp-inp:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(46,204,113,.1);}
+.otp-resend{font-size:13px;color:var(--lite);cursor:none;background:none;border:none;font-family:'Nunito',sans-serif;}
+.otp-resend span{color:var(--g2);font-weight:700;}
+
+/* ═══════════════════════════════
+   TARJETA COMPARTIBLE
+═══════════════════════════════ */
+.share-wrap{max-width:680px;margin:0 auto;padding:48px 24px 80px;}
+.share-head{text-align:center;margin-bottom:32px;}
+.sh-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--g);display:block;margin-bottom:8px;}
+.sh-h{font-size:32px;font-weight:900;color:var(--ink);letter-spacing:-1.5px;margin-bottom:6px;}
+.sh-s{font-size:14px;color:var(--mid);}
+
+/* La tarjeta */
+.share-card{background:var(--ink);border-radius:28px;padding:28px;position:relative;overflow:hidden;margin-bottom:24px;}
+.sc-glow1{position:absolute;top:-40px;left:-40px;width:180px;height:180px;border-radius:50%;background:rgba(46,204,113,.08);pointer-events:none;}
+.sc-glow2{position:absolute;bottom:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:rgba(116,192,252,.06);pointer-events:none;}
+.sc-brand{display:flex;align-items:center;gap:8px;margin-bottom:20px;position:relative;z-index:1;}
+.sc-brand-ico{width:28px;height:28px;background:var(--g);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.sc-brand-name{font-size:14px;font-weight:800;color:var(--w);letter-spacing:-.3px;}
+.sc-brand-dot{margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--g);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.sc-pet-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;position:relative;z-index:1;}
+.sc-pet-ava{width:52px;height:52px;border-radius:14px;background:var(--g3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sc-pet-name{font-size:22px;font-weight:900;color:var(--w);letter-spacing:-1px;line-height:1;}
+.sc-pet-info{font-size:12px;color:rgba(255,255,255,.4);margin-top:3px;}
+.sc-sem-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;position:relative;z-index:1;}
+.sc-sem-dot{width:12px;height:12px;border-radius:50%;}
+.sc-sem-txt{font-size:24px;font-weight:900;letter-spacing:-1px;}
+.sc-sem-sub{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px;}
+.sc-score-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;position:relative;z-index:1;margin-bottom:18px;}
+.sc-score-item{background:rgba(255,255,255,.06);border-radius:14px;padding:12px;text-align:center;}
+.sc-score-n{font-size:22px;font-weight:900;color:var(--w);letter-spacing:-1px;line-height:1;}
+.sc-score-l{font-size:10px;color:rgba(255,255,255,.35);margin-top:3px;}
+.sc-cuidados{position:relative;z-index:1;margin-bottom:18px;}
+.sc-cui-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:8px;}
+.sc-cui-item{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.6);margin-bottom:5px;}
+.sc-cui-item:last-child{margin-bottom:0;}
+.sc-cui-ck{color:var(--g);font-weight:700;flex-shrink:0;}
+.sc-footer{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);}
+.sc-footer-txt{font-size:11px;color:rgba(255,255,255,.25);}
+.sc-footer-url{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);}
+.sc-qr{width:36px;height:36px;background:var(--w);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+
+/* Controles tarjeta */
+.share-controls{background:var(--w);border:1.5px solid var(--bd);border-radius:20px;padding:20px 22px;margin-bottom:20px;}
+.sc-ctrl-t{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:14px;}
+.urgencia-opts{display:flex;gap:8px;margin-bottom:14px;}
+.urg-opt-s{flex:1;padding:10px;border:2px solid var(--bd);border-radius:12px;font-size:12px;font-weight:700;cursor:none;transition:all .2s;font-family:'Nunito',sans-serif;background:var(--w);color:var(--mid);text-align:center;}
+.urg-opt-s.sel-g{border-color:var(--g);background:var(--g3);color:var(--g2);}
+.urg-opt-s.sel-y{border-color:#F5A623;background:#FFF8E6;color:#C49000;}
+.urg-opt-s.sel-r{border-color:#FF6B6B;background:#FFF0EF;color:#D94040;}
+.pet-input-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.pi-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--lite);margin-bottom:4px;display:block;}
+.pi-field input{width:100%;padding:10px 12px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Nunito',sans-serif;font-weight:600;color:var(--ink);outline:none;cursor:none;transition:border-color .2s;}
+.pi-field input:focus{border-color:var(--g);}
+
+/* Botones compartir */
+.share-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.sh-btn{padding:14px;border-radius:16px;border:1.5px solid var(--bd);font-size:13px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;background:var(--w);color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:5px;}
+.sh-btn:hover{border-color:var(--ink);transform:translateY(-2px);}
+.sh-btn-ico{font-size:20px;}
+.sh-btn.wa{background:#25D366;color:var(--w);border-color:#25D366;}
+.sh-btn.wa:hover{background:#1DA851;}
+.sh-btn.ig{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:var(--w);border:none;}
+.sh-btn.dl{background:var(--ink);color:var(--w);border-color:var(--ink);}
+.sh-btn.dl:hover{background:var(--g);border-color:var(--g);}
+.shared-msg{background:var(--g3);border:1.5px solid var(--g4);border-radius:14px;padding:12px 16px;font-size:13px;font-weight:700;color:var(--g2);text-align:center;display:none;margin-top:12px;}
+.shared-msg.show{display:block;}
+
+/* ═══════════════════════════════
+   TÉRMINOS Y PRIVACIDAD
+═══════════════════════════════ */
+.legal-wrap{max-width:760px;margin:0 auto;padding:48px 24px 80px;}
+.legal-tabs{display:flex;gap:8px;margin-bottom:32px;}
+.lt{padding:10px 20px;border-radius:50px;border:1.5px solid var(--bd);font-size:13px;font-weight:700;color:var(--mid);background:var(--w);cursor:none;transition:all .2s;font-family:'Nunito',sans-serif;}
+.lt:hover{border-color:var(--g4);}
+.lt.act{border-color:var(--ink);background:var(--ink);color:var(--w);}
+.legal-doc{background:var(--w);border:1.5px solid var(--bd);border-radius:22px;padding:36px;display:none;}
+.legal-doc.show{display:block;}
+.ld-h{font-size:26px;font-weight:900;color:var(--ink);letter-spacing:-1px;margin-bottom:6px;}
+.ld-meta{font-size:12px;color:var(--lite);margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--bd);}
+.ld-section{margin-bottom:24px;}
+.ld-sh{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:8px;letter-spacing:-.3px;}
+.ld-p{font-size:14px;color:var(--mid);line-height:1.75;}
+.ld-ul{margin:8px 0 8px 18px;display:flex;flex-direction:column;gap:5px;}
+.ld-li{font-size:14px;color:var(--mid);line-height:1.6;}
+.ld-highlight{background:var(--g3);border-left:3px solid var(--g);border-radius:0 12px 12px 0;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--g2);font-weight:600;line-height:1.6;}
+.culqi-note{background:var(--cream);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--mid);margin-top:16px;display:flex;gap:10px;align-items:flex-start;}
+.cn-ico{font-size:18px;flex-shrink:0;}
+</style>
+<script src="petcare-core.js"></script>
+</head>
+<body onload="cargarSesion()">
+<div id="screen-loading" style="position:fixed;inset:0;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:500;">
+  <div style="width:44px;height:44px;background:var(--g);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;">🐾</div>
+  <div style="font-size:14px;color:var(--lite);font-weight:600;">Cargando...</div>
+</div>
+<div id="cur"></div><div id="cur2"></div>
+
+<nav>
+  <a href="index.html" class="n-logo">
+    <div class="n-icon">🐾</div>
+    <span class="n-name">PetCare</span>
+  </a>
+  <div style="display:flex;gap:2px;margin:0 16px;">
+    <a href="consulta.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">Consultar</a>
+    <a href="pagos.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">Planes</a>
+  </div>
+  <!-- Usuario logueado (oculto por defecto, se muestra tras login) -->
+  <div id="nav-user" style="display:none;align-items:center;gap:8px;padding:6px 14px 6px 6px;background:var(--w);border:1.5px solid var(--bd);border-radius:50px;">
+    <div class="n-avatar" id="nav-avatar">M</div>
+    <span class="n-uname" id="nav-uname">Usuario</span>
+    <button onclick="logOut()" style="background:none;border:none;font-size:12px;color:var(--lite);cursor:pointer;padding:0 4px;">✕</button>
+  </div>
+  <!-- Botón login (visible cuando no hay sesión) -->
+  <button id="nav-login-btn" onclick="showPage('auth')" class="n-btn">Ingresar</button>
+</nav>
+
+<div class="page">
+
+
+<!-- ═══════════ 1. DASHBOARD ═══════════ -->
+<div class="screen fade-in" id="screen-dashboard" style="padding-bottom:60px;">
+  <div class="dash-wrap">
+
+    <!-- Sidebar -->
+    <div class="dash-sidebar">
+      <div class="user-card">
+        <div class="uc-glow"></div>
+        <div class="uc-avatar" id="uc-avatar">M</div>
+        <div class="uc-name" id="uc-name">María García</div>
+        <div class="uc-email" id="uc-email">maria@gmail.com</div>
+        <div class="uc-plan"><div class="uc-plan-dot"></div><span id="uc-plan">Plan Básico</span></div>
+        <div class="uc-renovacion">Renueva el 14 mayo 2026</div>
+        <div class="uc-stats">
+          <div class="uc-stat"><div class="uc-sn">12</div><div class="uc-sl">Consultas</div></div>
+          <div class="uc-stat"><div class="uc-sn">76</div><div class="uc-sl">Score salud</div></div>
+          <div class="uc-stat"><div class="uc-sn">1</div><div class="uc-sl">Mascota</div></div>
+          <div class="uc-stat"><div class="uc-sn">48h</div><div class="uc-sl">Seguim. activo</div></div>
+        </div>
+      </div>
+
+      <div class="sidebar-nav">
+        <button class="snav-item active" onclick="setDashTab(this,'inicio')">
+          <div class="snav-ico si-g">🏠</div>Inicio
+        </button>
+        <button class="snav-item" onclick="setDashTab(this,'mascotas')">
+          <div class="snav-ico si-b">🐾</div>Mis mascotas
+        </button>
+        <button class="snav-item" onclick="setDashTab(this,'historial')">
+          <div class="snav-ico si-p">📋</div>Historial
+        </button>
+        <button class="snav-item" onclick="setDashTab(this,'calendario')">
+          <div class="snav-ico si-o">📅</div>Calendario
+        </button>
+        <button class="snav-item" onclick="window.location.href='referidos.html'">
+          <div class="snav-ico si-g">🎁</div>Referidos
+        </button>
+        <button class="snav-item" onclick="showPage('share')">
+          <div class="snav-ico si-g">🎴</div>Compartir resultado
+        </button>
+        <button class="snav-item" onclick="window.location.href='configuracion.html'">
+          <div class="snav-ico si-b">⚙️</div>Configuración
+        </button>
+        <button class="snav-item" onclick="window.location.href='admin.html'">
+          <div class="snav-ico si-p">📊</div>Panel admin
+        </button>
+        <button class="snav-item" onclick="logOut()">
+          <div class="snav-ico" style="background:#FFF0EF;">🚪</div>Cerrar sesión
+        </button>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="dash-main">
+
+      <!-- Bienvenida -->
+      <div class="welcome-banner fade-in">
+        <div class="wb-ico">🌅</div>
+        <div>
+          <div class="wb-t">Buenos días, María 👋</div>
+          <div class="wb-s">Toby lleva 48h en seguimiento. Hoy todo va bien.</div>
+        </div>
+        <button class="wb-btn" onclick="window.location.href='consulta.html'">Nueva consulta →</button>
+      </div>
+
+      <!-- Stats rápidos -->
+      <div class="score-row">
+        <div class="score-mini">
+          <div class="sm-num" style="color:var(--g)">76<b>/100</b></div>
+          <div class="sm-lbl">Score salud</div>
+          <div class="sm-bar" style="background:var(--g3);"><div style="width:76%;height:100%;background:var(--g);border-radius:2px;"></div></div>
+        </div>
+        <div class="score-mini">
+          <div class="sm-num">12</div>
+          <div class="sm-lbl">Consultas totales</div>
+          <div class="sm-bar" style="background:#EBF4FF;"><div style="width:60%;height:100%;background:var(--sky);border-radius:2px;"></div></div>
+        </div>
+        <div class="score-mini">
+          <div class="sm-num" style="color:#F5A623">48<b>h</b></div>
+          <div class="sm-lbl">Último seguimiento</div>
+          <div class="sm-bar" style="background:#FFF8E6;"><div style="width:50%;height:100%;background:#F5A623;border-radius:2px;"></div></div>
+        </div>
+        <div class="score-mini">
+          <div class="sm-num" style="color:var(--lav)">3</div>
+          <div class="sm-lbl">Días para vacuna</div>
+          <div class="sm-bar" style="background:#F5E6FF;"><div style="width:85%;height:100%;background:var(--lav);border-radius:2px;"></div></div>
+        </div>
+      </div>
+
+      <!-- Mis mascotas -->
+      <div>
+        <div class="sec-title-row">
+          <div class="sec-h">Mis mascotas</div>
+          <button class="sec-link">+ Agregar</button>
+        </div>
+        <div class="pets-grid">
+          <div class="pet-card-d active-pet" onclick="window.location.href='mascota.html'" style="cursor:none;">
+            <div class="pet-ava" style="background:#E8FBF0;">
+              <svg viewBox="0 0 64 64" fill="none" width="40" height="40"><ellipse cx="32" cy="38" rx="18" ry="14" fill="#F5CBA7"/><circle cx="32" cy="22" r="13" fill="#F5CBA7"/><ellipse cx="19" cy="20" rx="6" ry="9" fill="#E59866" transform="rotate(-15 19 20)"/><ellipse cx="45" cy="20" rx="6" ry="9" fill="#E59866" transform="rotate(15 45 20)"/><circle cx="27" cy="21" r="3" fill="#2C2C2C"/><circle cx="37" cy="21" r="3" fill="#2C2C2C"/></svg>
+            </div>
+            <div class="pet-name-d">Toby</div>
+            <div class="pet-breed-d">Golden · 3 años</div>
+            <div class="pet-score-d ps-green">Score 76</div>
+          </div>
+          <div class="pet-card-d pet-add" onclick="alert('Agregar mascota — disponible pronto')">
+            <div class="pet-ava" style="background:var(--cream);">
+              <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><circle cx="12" cy="12" r="9" stroke="#CCC" stroke-width="1.5"/><path d="M12 8v8M8 12h8" stroke="#CCC" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div class="pet-name-d" style="color:var(--lite)">Nueva mascota</div>
+            <div class="pet-breed-d">Plan familiar: hasta 3</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Próximas acciones -->
+      <div>
+        <div class="sec-title-row"><div class="sec-h">Acciones pendientes</div></div>
+        <div class="prox-list">
+          <div class="prox-item urgent">
+            <div class="pi-dot" style="background:#F5A623"></div>
+            <div class="pi-t">Vacuna polivalente de refuerzo — Toby</div>
+            <div class="pi-w">En 3 días</div>
+            <button class="pi-btn">Recordar</button>
+          </div>
+          <div class="prox-item">
+            <div class="pi-dot" style="background:var(--g)"></div>
+            <div class="pi-t">Seguimiento 48h activo — responder cómo está Toby</div>
+            <div class="pi-w">Hoy</div>
+            <button class="pi-btn" onclick="window.location.href='whatsapp.html'">Ver WhatsApp</button>
+          </div>
+          <div class="prox-item">
+            <div class="pi-dot" style="background:var(--lav)"></div>
+            <div class="pi-t">Desparasitación trimestral</div>
+            <div class="pi-w">En 22 días</div>
+            <button class="pi-btn">Recordar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historial reciente -->
+      <div>
+        <div class="sec-title-row">
+          <div class="sec-h">Últimas consultas</div>
+          <button class="sec-link">Ver todas</button>
+        </div>
+        <div class="hist-list">
+          <div class="hist-item">
+            <div class="hi-sem hi-y"></div>
+            <div class="hi-info">
+              <div class="hi-t">Picazón en el cuello + falta de apetito</div>
+              <div class="hi-d">Hace 2 días · 10:42 am</div>
+            </div>
+            <div class="hi-pet">Toby</div>
+            <div class="hi-score" style="color:#F5A623">54</div>
+            <div class="hi-arrow">›</div>
+          </div>
+          <div class="hist-item">
+            <div class="hi-sem hi-g"></div>
+            <div class="hi-info">
+              <div class="hi-t">Control preventivo mensual</div>
+              <div class="hi-d">Hace 3 semanas</div>
+            </div>
+            <div class="hi-pet">Toby</div>
+            <div class="hi-score" style="color:var(--g)">81</div>
+            <div class="hi-arrow">›</div>
+          </div>
+          <div class="hist-item">
+            <div class="hi-sem hi-g"></div>
+            <div class="hi-info">
+              <div class="hi-t">Revisión post-vacuna</div>
+              <div class="hi-d">Hace 1 mes</div>
+            </div>
+            <div class="hi-pet">Toby</div>
+            <div class="hi-score" style="color:var(--g)">88</div>
+            <div class="hi-arrow">›</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 2. LOGIN / REGISTRO ═══════════ -->
+<div class="screen fade-in" id="screen-auth" style="padding-bottom:60px;">
+  <div class="auth-wrap">
+    <div class="auth-box">
+
+      <!-- Logo -->
+      <div style="text-align:center;margin-bottom:28px;">
+        <div style="width:52px;height:52px;background:var(--g);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px;">🐾</div>
+        <div style="font-size:18px;font-weight:900;color:var(--ink);">PetCare</div>
+      </div>
+
+      <!-- Tabs login/registro -->
+      <div class="auth-tabs" id="auth-tabs">
+        <button class="auth-tab act" onclick="setAuthTab('login')">Ingresar</button>
+        <button class="auth-tab" onclick="setAuthTab('registro')">Crear cuenta</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="tab-login">
+        <div class="auth-title">Bienvenida de vuelta</div>
+        <div class="auth-sub">Ingresa para ver el historial de tu mascota.</div>
+
+        <!-- Social login -->
+        <p style="text-align:center;font-size:12px;color:var(--lite);margin-bottom:16px;">Ingresa con tu correo y contraseña</p>
+
+        <div class="or-divider"><div class="or-line"></div>o con correo<div class="or-line"></div></div>
+
+        <div class="auth-field">
+          <label class="auth-label">Correo electrónico</label>
+          <input class="auth-input" type="email" placeholder="tu@correo.com" id="login-email">
+        </div>
+        <div class="auth-field">
+          <label class="auth-label">Contraseña</label>
+          <input class="auth-input" type="password" placeholder="••••••••" id="login-pass">
+        </div>
+        <div style="text-align:right;margin:-8px 0 14px;"><a href="#" style="font-size:12px;color:var(--g2);font-weight:700;text-decoration:none;">¿Olvidaste tu contraseña?</a></div>
+        <button class="auth-btn" onclick="doLogin()">Ingresar →</button>
+        <div class="auth-note">¿No tienes cuenta? <a onclick="setAuthTab('registro')">Créala gratis</a></div>
+      </div>
+
+      <!-- REGISTRO — 3 pasos súper simples -->
+      <div id="tab-registro" style="display:none">
+        <!-- Paso 1 -->
+        <div id="reg-step1">
+          <div class="reg-progress">
+            <div class="rp-dot act"></div><div class="rp-dot"></div><div class="rp-dot"></div>
+          </div>
+          <div class="auth-title">Crea tu cuenta</div>
+          <div class="auth-sub">Solo toma 30 segundos.</div>
+          <div class="or-divider"><div class="or-line"></div>Regístrate con correo<div class="or-line"></div></div>
+          <div class="auth-field">
+            <label class="auth-label">Tu nombre</label>
+            <input class="auth-input" type="text" placeholder="María García" id="reg-name">
+          </div>
+          <div class="auth-field">
+            <label class="auth-label">Correo electrónico</label>
+            <input class="auth-input" type="email" placeholder="correo@gmail.com" id="reg-contact">
+          </div>
+          <div class="auth-field">
+            <label class="auth-label">Contraseña</label>
+            <input class="auth-input" type="password" placeholder="Mínimo 6 caracteres" id="reg-pass">
+          </div>
+          <button class="auth-btn" onclick="nextRegStep(2)">Continuar →</button>
+          <div class="auth-note">Al registrarte aceptas los <a onclick="showPage('legal')">Términos de uso</a></div>
+        </div>
+
+        <!-- Paso 2 — mascota -->
+        <div id="reg-step2" style="display:none">
+          <div class="reg-progress">
+            <div class="rp-dot done"></div><div class="rp-dot act"></div><div class="rp-dot"></div>
+          </div>
+          <div class="auth-title">¿Cuál es tu mascota?</div>
+          <div class="auth-sub">Solo lo básico — puedes agregar más detalles después.</div>
+          <div class="species-mini">
+            <div class="sp-mini" onclick="selRegSp(this)"><span class="sp-mini-ico">🐕</span><span class="sp-mini-lbl">Perro</span></div>
+            <div class="sp-mini" onclick="selRegSp(this)"><span class="sp-mini-ico">🐈</span><span class="sp-mini-lbl">Gato</span></div>
+            <div class="sp-mini" onclick="selRegSp(this)"><span class="sp-mini-ico">🐾</span><span class="sp-mini-lbl">Otro</span></div>
+          </div>
+          <div class="auth-field">
+            <label class="auth-label">¿Cómo se llama?</label>
+            <input class="auth-input" type="text" placeholder="Ej: Toby" id="reg-petname">
+          </div>
+          <button class="auth-btn" onclick="nextRegStep(3)">Continuar →</button>
+          <button onclick="nextRegStep(3)" style="width:100%;padding:12px;background:none;border:none;font-size:13px;color:var(--lite);cursor:none;font-family:'Nunito',sans-serif;margin-top:6px;">Saltar por ahora →</button>
+        </div>
+
+        <!-- Paso 3 — verificar -->
+        <div id="reg-step3" style="display:none">
+          <div class="reg-progress">
+            <div class="rp-dot done"></div><div class="rp-dot done"></div><div class="rp-dot act"></div>
+          </div>
+          <div class="otp-wrap">
+            <div class="otp-ico">📧</div>
+            <div class="auth-title">Revisa tu correo</div>
+            <div class="auth-sub" style="margin-top:8px;">Te enviamos un link de confirmación a <strong id="reg-email-shown"></strong><br>Haz clic en el link y luego ingresa aquí.</div>
+            <div style="margin-top:28px;padding:16px;background:var(--g3);border-radius:16px;font-size:13px;color:var(--g2);font-weight:700;">
+              ✅ Cuenta creada — confirma tu email para activarla
+            </div>
+            <button class="auth-btn" style="margin-top:20px;" onclick="setAuthTab('login')">Ir a Ingresar →</button>
+            <div style="margin-top:12px;font-size:12px;color:var(--lite);">¿No llegó el correo? Revisa tu carpeta de spam.</div>
+          </div>
+        </div>
+
+        

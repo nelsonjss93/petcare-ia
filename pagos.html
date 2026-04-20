@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PetCare — Planes y Pago</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g:#2ECC71;--g2:#27AE60;--g3:#E8FBF0;--g4:#A8E6C3;
+  --cream:#FAFAF8;--ink:#111;--mid:#555;--lite:#999;--w:#fff;--bd:#E8E8E8;
+  --ease:cubic-bezier(.16,1,.3,1);--ease2:cubic-bezier(.34,1.56,.64,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased;min-height:100vh;}
+#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;will-change:transform;}
+#cur{width:10px;height:10px;background:var(--g);top:0;left:0;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;}
+#cur2{width:34px;height:34px;border:1.5px solid rgba(46,204,113,.4);top:0;left:0;transform:translate(-50%,-50%);transition:width .4s var(--ease),height .4s var(--ease);}
+body.hov #cur{width:18px;height:18px;background:var(--g2);}
+body.hov #cur2{width:56px;height:56px;border-color:rgba(46,204,113,.7);}
+@media(max-width:900px){#cur,#cur2{display:none;}body{cursor:auto;}}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;padding:0 48px;height:68px;background:rgba(250,250,248,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.n-icon{width:34px;height:34px;background:var(--g);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.n-name{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-.5px;}
+.n-back{margin-left:auto;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;padding:8px 16px;border-radius:50px;border:1.5px solid var(--bd);transition:all .2s;cursor:none;}
+.n-back:hover{color:var(--ink);border-color:var(--ink);}
+@media(max-width:900px){nav{padding:0 20px;}}
+
+/* ── PÁGINAS ── */
+.page{padding-top:68px;}
+.screen{display:none;}
+.screen.on{display:block;}
+
+/* ── PLANES ── */
+.planes-wrap{max-width:1100px;margin:0 auto;padding:60px 24px 80px;}
+.planes-head{text-align:center;margin-bottom:52px;}
+.ph-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--g);display:block;margin-bottom:10px;}
+.ph-h{font-size:clamp(32px,5vw,52px);font-weight:900;color:var(--ink);letter-spacing:-2px;line-height:1;margin-bottom:10px;}
+.ph-h span{font-weight:300;}
+.ph-sub{font-size:15px;color:var(--mid);}
+
+/* Gratis banner */
+.gratis-banner{background:var(--g3);border:1.5px solid var(--g4);border-radius:20px;padding:18px 24px;display:flex;align-items:center;gap:16px;margin-bottom:32px;}
+.gb-ico{width:42px;height:42px;border-radius:12px;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.gb-inf{flex:1;}
+.gb-t{font-size:15px;font-weight:800;color:var(--ink);}
+.gb-s{font-size:13px;color:var(--mid);margin-top:2px;}
+.gb-btn{padding:10px 22px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:13px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;white-space:nowrap;}
+.gb-btn:hover{background:var(--g);}
+
+/* Grid planes */
+.planes-grid{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:16px;margin-bottom:32px;}
+
+.plan{background:var(--w);border:1.5px solid var(--bd);border-radius:26px;padding:30px 26px;position:relative;transition:transform .3s var(--ease),box-shadow .3s;}
+.plan:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.08);}
+.plan.hot{background:var(--ink);border-color:var(--ink);}
+.plan-best{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--g);color:var(--w);font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 16px;border-radius:50px;white-space:nowrap;}
+.plan-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--lite);margin-bottom:16px;}
+.hot .plan-lbl{color:rgba(255,255,255,.4);}
+.plan-price{display:flex;align-items:baseline;gap:4px;margin-bottom:4px;}
+.plan-cur{font-size:18px;font-weight:700;color:var(--ink);}
+.hot .plan-cur{color:var(--w);}
+.plan-num{font-size:52px;font-weight:900;color:var(--ink);letter-spacing:-3px;line-height:1;}
+.hot .plan-num{color:var(--w);}
+.plan-per{font-size:13px;color:var(--lite);font-weight:400;}
+.hot .plan-per{color:rgba(255,255,255,.4);}
+.plan-desc{font-size:13px;color:var(--mid);margin:12px 0 20px;line-height:1.5;}
+.hot .plan-desc{color:rgba(255,255,255,.5);}
+.plan-ul{list-style:none;margin-bottom:24px;display:flex;flex-direction:column;gap:9px;}
+.plan-li{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--mid);line-height:1.4;}
+.hot .plan-li{color:rgba(255,255,255,.75);}
+.plan-ck{width:18px;height:18px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.ck-g{background:var(--g3);}
+.ck-w{background:rgba(255,255,255,.15);}
+.plan-cta{width:100%;padding:14px;border-radius:50px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .25s var(--ease);border:none;}
+.cta-dark{background:var(--ink);color:var(--w);}
+.cta-dark:hover{background:var(--g);}
+.cta-white{background:var(--w);color:var(--ink);}
+.cta-white:hover{background:var(--g3);color:var(--g2);}
+.cta-g{background:var(--g);color:var(--w);}
+.cta-g:hover{background:var(--g2);}
+
+/* Por consulta */
+.por-consulta{background:var(--w);border:1.5px solid var(--bd);border-radius:20px;padding:20px 24px;display:flex;align-items:center;gap:20px;margin-bottom:16px;}
+.pc-left{flex:1;}
+.pc-t{font-size:15px;font-weight:800;color:var(--ink);}
+.pc-s{font-size:13px;color:var(--mid);margin-top:3px;}
+.pc-price-big{font-size:32px;font-weight:900;color:var(--ink);letter-spacing:-1.5px;}
+.pc-price-big span{font-size:16px;font-weight:400;color:var(--lite);}
+.pc-btn{padding:12px 28px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;white-space:nowrap;}
+.pc-btn:hover{background:var(--g);}
+
+/* Métodos pago info */
+.metodos{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;}
+.met{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--w);border:1px solid var(--bd);border-radius:50px;font-size:12px;font-weight:600;color:var(--mid);}
+.met svg{flex-shrink:0;}
+.seg-note{text-align:center;font-size:12px;color:var(--lite);}
+
+@media(max-width:768px){.planes-grid{grid-template-columns:1fr;}.gratis-banner{flex-direction:column;text-align:center;}.por-consulta{flex-direction:column;text-align:center;}}
+
+/* ── CHECKOUT ── */
+.checkout-wrap{max-width:940px;margin:0 auto;padding:52px 24px 80px;display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:start;}
+@media(max-width:768px){.checkout-wrap{grid-template-columns:1fr;}.order-summary{order:-1;}}
+
+/* Resumen orden */
+.order-summary{background:var(--ink);border-radius:26px;padding:28px;position:sticky;top:88px;}
+.os-head{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:20px;}
+.os-plan{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,.08);}
+.os-ico{width:44px;height:44px;border-radius:12px;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.os-name{font-size:16px;font-weight:900;color:var(--w);letter-spacing:-.5px;}
+.os-per{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px;}
+.os-rows{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.08);}
+.os-row{display:flex;justify-content:space-between;font-size:13px;}
+.os-lbl{color:rgba(255,255,255,.4);}
+.os-val{color:var(--w);font-weight:600;}
+.os-total{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;}
+.os-tl{font-size:13px;color:rgba(255,255,255,.4);}
+.os-tv{font-size:28px;font-weight:900;color:var(--w);letter-spacing:-1.5px;}
+.os-features{display:flex;flex-direction:column;gap:7px;}
+.os-feat{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);}
+.os-feat-dot{width:6px;height:6px;border-radius:50%;background:var(--g);flex-shrink:0;}
+
+/* Formulario checkout */
+.checkout-form{}
+.cf-head{margin-bottom:28px;}
+.cf-h{font-size:28px;font-weight:900;color:var(--ink);letter-spacing:-1px;margin-bottom:4px;}
+.cf-s{font-size:14px;color:var(--mid);}
+
+/* Tabs método pago */
+.pay-tabs{display:flex;gap:8px;margin-bottom:24px;}
+.pay-tab{flex:1;padding:12px 8px;border-radius:14px;border:1.5px solid var(--bd);background:var(--w);font-size:12px;font-weight:700;color:var(--mid);cursor:none;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:5px;font-family:'Nunito',sans-serif;}
+.pay-tab:hover{border-color:var(--g4);}
+.pay-tab.act{border-color:var(--g);background:var(--g3);color:var(--g2);}
+.pay-tab-ico{font-size:20px;}
+.pay-tab-lbl{font-size:11px;font-weight:700;}
+
+/* Secciones checkout */
+.cf-section{margin-bottom:22px;}
+.cf-lbl{font-size:11px;font-weight:700;color:var(--ink);letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px;display:block;}
+.cf-input{width:100%;padding:14px 16px;border:1.5px solid var(--bd);border-radius:13px;font-size:14px;font-family:'Nunito',sans-serif;font-weight:500;color:var(--ink);background:var(--w);outline:none;cursor:none;transition:border-color .2s,box-shadow .2s;}
+.cf-input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(46,204,113,.1);}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.cf-row.tri{grid-template-columns:1fr 1fr 1fr;}
+
+/* Tarjeta visual */
+.card-visual{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);border-radius:18px;padding:22px 24px;margin-bottom:20px;position:relative;overflow:hidden;}
+.cv-chip{width:36px;height:26px;background:linear-gradient(135deg,#f0c040,#d4a017);border-radius:5px;margin-bottom:16px;}
+.cv-num{font-size:17px;font-weight:700;color:rgba(255,255,255,.9);letter-spacing:3px;margin-bottom:14px;font-family:monospace;}
+.cv-row{display:flex;justify-content:space-between;}
+.cv-lbl{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:2px;}
+.cv-val{font-size:13px;font-weight:700;color:var(--w);}
+.cv-brand{position:absolute;top:20px;right:24px;font-size:13px;font-weight:900;color:rgba(255,255,255,.4);}
+.cv-glow{position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:rgba(46,204,113,.08);pointer-events:none;}
+
+/* Yape section */
+.yape-section{text-align:center;padding:28px;background:#f0f9ff;border:1.5px solid #74C0FC;border-radius:20px;}
+.yape-qr{width:140px;height:140px;background:var(--w);border-radius:16px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bd);}
+.yape-t{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px;}
+.yape-s{font-size:13px;color:var(--mid);}
+.yape-amount{font-size:32px;font-weight:900;color:#6C2FC7;letter-spacing:-1.5px;margin:12px 0;}
+
+/* PagoEfectivo section */
+.pago-ef{text-align:center;padding:24px;background:#fff9f0;border:1.5px solid #FFB347;border-radius:20px;}
+.pe-code{font-size:32px;font-weight:900;color:var(--ink);letter-spacing:4px;margin:14px 0;font-family:monospace;}
+.pe-t{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px;}
+.pe-s{font-size:13px;color:var(--mid);line-height:1.5;}
+.pe-agents{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;}
+.pe-agent{padding:4px 12px;background:var(--w);border:1px solid var(--bd);border-radius:50px;font-size:11px;font-weight:700;color:var(--mid);}
+
+/* Botón pagar */
+.btn-pagar{width:100%;padding:18px;background:var(--g);color:var(--w);border:none;border-radius:50px;font-size:16px;font-weight:900;font-family:'Nunito',sans-serif;cursor:none;transition:all .3s var(--ease);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn-pagar:hover{background:var(--g2);transform:translateY(-2px);box-shadow:0 12px 36px rgba(46,204,113,.35);}
+.btn-pagar svg{flex-shrink:0;}
+.seg-badges{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap;}
+.seg-b{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--lite);}
+
+/* ── ÉXITO ── */
+.success-wrap{max-width:560px;margin:0 auto;padding:80px 24px;text-align:center;}
+.success-ico{width:88px;height:88px;border-radius:28px;background:var(--g3);margin:0 auto 24px;display:flex;align-items:center;justify-content:center;animation:popIn .6s var(--ease2) both;}
+@keyframes popIn{from{opacity:0;transform:scale(.8);}to{opacity:1;transform:scale(1);}}
+.success-h{font-size:32px;font-weight:900;color:var(--ink);letter-spacing:-1.5px;margin-bottom:8px;}
+.success-s{font-size:15px;color:var(--mid);line-height:1.6;margin-bottom:32px;}
+.success-card{background:var(--w);border:1.5px solid var(--bd);border-radius:22px;padding:24px;margin-bottom:24px;text-align:left;}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);}
+.sc-row:last-child{border-bottom:none;}
+.sc-lbl{font-size:13px;color:var(--mid);}
+.sc-val{font-size:13px;font-weight:700;color:var(--ink);}
+.sc-val.green{color:var(--g2);}
+.success-btns{display:flex;gap:10px;flex-direction:column;}
+.btn-main{padding:16px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:15px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .3s var(--ease);}
+.btn-main:hover{background:var(--g);}
+.btn-out{padding:14px;background:var(--w);color:var(--ink);border:2px solid var(--bd);border-radius:50px;font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;}
+.btn-out:hover{border-color:var(--ink);}
+
+/* ── BLOQUEADO ── */
+.blocked-overlay{background:var(--ink);border-radius:26px;padding:40px 32px;text-align:center;margin-bottom:24px;position:relative;overflow:hidden;}
+.bo-glow{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(46,204,113,.12) 0%,transparent 60%);pointer-events:none;}
+.bo-lock{font-size:40px;margin-bottom:16px;}
+.bo-h{font-size:24px;font-weight:900;color:var(--w);letter-spacing:-1px;margin-bottom:8px;}
+.bo-s{font-size:14px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:24px;}
+.bo-btn{padding:14px 32px;background:var(--g);color:var(--w);border:none;border-radius:50px;font-size:15px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;}
+.bo-btn:hover{background:var(--g2);}
+.bo-free{margin-top:12px;font-size:13px;color:rgba(255,255,255,.3);}
+.bo-free button{background:none;border:none;color:rgba(255,255,255,.5);font-size:13px;font-weight:700;cursor:none;text-decoration:underline;font-family:'Nunito',sans-serif;}
+
+/* Culqi badge */
+.culqi-badge{display:flex;align-items:center;gap:6px;justify-content:center;margin-top:6px;font-size:11px;color:var(--lite);}
+.culqi-logo{width:14px;height:14px;background:var(--g);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:900;color:var(--w);}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur2"></div>
+
+<nav>
+  <a href="index.html" class="n-logo">
+    <div class="n-icon">🐾</div>
+    <span class="n-name">PetCare</span>
+  </a>
+  <div style="display:flex;gap:2px;margin:0 16px;"><a href="consulta.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">Consultar</a><a href="whatsapp.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">WhatsApp</a></div>
+  <a href="dashboard.html" style="display:flex;align-items:center;gap:7px;padding:8px 14px 8px 8px;background:var(--w);border:1.5px solid var(--bd);border-radius:50px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;cursor:none;transition:all .2s;margin-right:8px;" onmouseenter="this.style.borderColor='var(--ink)'" onmouseleave="this.style.borderColor='var(--bd)'"><div style="width:22px;height:22px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--g2);">M</div>Mi cuenta</a>
+  <a href="index.html" class="n-back">← Inicio</a>
+</nav>
+
+<div class="page">
+
+<!-- ═══════════ PANTALLA: PLANES ═══════════ -->
+<div class="screen on" id="screen-planes">
+  <div class="planes-wrap">
+    <div class="planes-head">
+      <span class="ph-tag">Planes PetCare Perú</span>
+      <h1 class="ph-h">Simple.<br><span>Sin sorpresas.</span></h1>
+      <p class="ph-sub">Cancela cuando quieras. Sin contratos. Primera consulta 100% gratis.</p>
+    </div>
+
+    <!-- Banner gratis -->
+    <div class="gratis-banner">
+      <div class="gb-ico">🎁</div>
+      <div class="gb-inf">
+        <div class="gb-t">Tu primera consulta es completamente gratis</div>
+        <div class="gb-s">Sin tarjeta, sin registro complicado. Prueba el sistema y luego decides.</div>
+      </div>
+      <button class="gb-btn" onclick="window.location.href='consulta.html'">Consultar gratis →</button>
+    </div>
+
+    <!-- Grid planes -->
+    <div class="planes-grid">
+
+      <!-- Plan por consulta -->
+      <div class="plan">
+        <div class="plan-lbl">Por consulta</div>
+        <div class="plan-price">
+          <span class="plan-cur">S/</span>
+          <span class="plan-num">5</span>
+          <span style="font-size:28px;font-weight:900;color:var(--ink);letter-spacing:-1px">.90</span>
+        </div>
+        <div class="plan-per">por informe · sin compromiso</div>
+        <div class="plan-desc">Ideal para probar o consultas esporádicas.</div>
+        <ul class="plan-ul">
+          <li class="plan-li"><div class="plan-ck ck-g"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#27AE60" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>1 informe completo con IA</li>
+          <li class="plan-li"><div class="plan-ck ck-g"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#27AE60" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Semáforo de urgencia</li>
+          <li class="plan-li"><div class="plan-ck ck-g"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#27AE60" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Cuidados personalizados</li>
+          <li class="plan-li"><div class="plan-ck ck-g"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#27AE60" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Score de salud</li>
+        </ul>
+        <button class="plan-cta cta-dark" onclick="selectPlan('consulta','S/ 5.90','1 consulta')">Pagar S/ 5.90</button>
+      </div>
+
+      <!-- Plan Básico — HOT -->
+      <div class="plan hot">
+        <div class="plan-best">MÁS POPULAR</div>
+        <div class="plan-lbl">Plan Básico</div>
+        <div class="plan-price">
+          <span class="plan-cur" style="color:var(--w)">S/</span>
+          <span class="plan-num">29</span>
+          <span style="font-size:28px;font-weight:900;color:var(--w);letter-spacing:-1px">.90</span>
+        </div>
+        <div class="plan-per">al mes · 1 mascota · cancela cuando quieras</div>
+        <div class="plan-desc">Para dueños que quieren estar siempre tranquilos.</div>
+        <ul class="plan-ul">
+          <li class="plan-li"><div class="plan-ck ck-w"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Consultas ilimitadas</li>
+          <li class="plan-li"><div class="plan-ck ck-w"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Historial completo + perfil</li>
+          <li class="plan-li"><div class="plan-ck ck-w"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Calendario de vacunas y alerts</li>
+          <li class="plan-li"><div class="plan-ck ck-w"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Seguimiento 24h / 48h</li>
+          <li class="plan-li"><div class="plan-ck ck-w"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>PDF descargable por consulta</li>
+          <li class="plan-li"><div class="plan-ck ck-w"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Score de salud predictivo</li>
+        </ul>
+        <button class="plan-cta cta-g" onclick="selectPlan('basico','S/ 29.90','Plan Básico / mes')">Comenzar ahora →</button>
+      </div>
+
+      <!-- Plan Familiar -->
+      <div class="plan">
+        <div class="plan-lbl">Plan Familiar</div>
+        <div class="plan-price">
+          <span class="plan-cur">S/</span>
+          <span class="plan-num">49</span>
+          <span style="font-size:28px;font-weight:900;color:var(--ink);letter-spacing:-1px">.90</span>
+        </div>
+        <div class="plan-per">al mes · hasta 3 mascotas</div>
+        <div class="plan-desc">Para familias con varias mascotas.</div>
+        <ul class="plan-ul">
+          <li class="plan-li"><div class="plan-ck ck-g"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#27AE60" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Todo lo del plan básico</li>
+          <li class="plan-li"><div class="plan-ck ck-g"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#27AE60" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Hasta 3 mascotas</li>
+          <li class="plan-li"><div class="plan-ck ck-g"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#27AE60" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Historial individual por mascota</li>
+          <li class="plan-li"><div class="plan-ck ck-g"><svg viewBox="0 0 10 10" fill="none" width="10" height="10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#27AE60" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Alertas personalizadas por mascota</li>
+        </ul>
+        <button class="plan-cta cta-dark" onclick="selectPlan('familiar','S/ 49.90','Plan Familiar / mes')">Elegir familiar</button>
+      </div>
+
+    </div>
+
+    <!-- Por consulta rápido -->
+    <div class="por-consulta">
+      <div class="pc-left">
+        <div class="pc-t">¿Solo quieres una consulta puntual?</div>
+        <div class="pc-s">Sin suscripción. Pagas solo cuando necesitas.</div>
+      </div>
+      <div class="pc-price-big">S/ 5.90 <span>/ consulta</span></div>
+      <button class="pc-btn" onclick="selectPlan('consulta','S/ 5.90','1 consulta')">Pagar ahora</button>
+    </div>
+
+    <!-- Métodos de pago -->
+    <div class="metodos">
+      <div class="met"><svg viewBox="0 0 32 20" width="28" height="17"><rect width="32" height="20" rx="3" fill="#1A1F71"/><text x="4" y="14" fill="white" font-size="8" font-weight="bold" font-family="sans-serif">VISA</text></svg>Visa</div>
+      <div class="met"><svg viewBox="0 0 32 20" width="28" height="17"><rect width="32" height="20" rx="3" fill="#EB001B"/><circle cx="12" cy="10" r="6" fill="#EB001B"/><circle cx="20" cy="10" r="6" fill="#F79E1B"/><path d="M16 5.5a6 6 0 010 9 6 6 0 010-9z" fill="#FF5F00"/></svg>Mastercard</div>
+      <div class="met">🟣 Yape</div>
+      <div class="met">🔵 Plin</div>
+      <div class="met">💳 PagoEfectivo</div>
+      <div class="met">🏦 BCP · Interbank · BBVA</div>
+    </div>
+    <div class="seg-note">Pagos procesados por <strong>Culqi</strong> · Certificado PCI DSS · Cifrado SSL 256-bit</div>
+  </div>
+</div>
+
+<!-- ═══════════ PANTALLA: CHECKOUT ═══════════ -->
+<div class="screen" id="screen-checkout">
+  <div class="checkout-wrap">
+
+    <!-- Formulario -->
+    <div class="checkout-form">
+      <div class="cf-head">
+        <div class="cf-h">Completa tu pago</div>
+        <div class="cf-s">Seguro y procesado por Culqi en Perú 🇵🇪</div>
+      </div>
+
+      <!-- Email -->
+      <div class="cf-section">
+        <label class="cf-lbl">Correo electrónico</label>
+        <input class="cf-input" type="email" placeholder="tu@correo.com" id="cf-email" oninput="updateCard()">
+      </div>
+
+      <!-- Nombre -->
+      <div class="cf-section">
+        <label class="cf-lbl">Nombre completo</label>
+        <input class="cf-input" type="text" placeholder="Como aparece en tu DNI" id="cf-name" oninput="updateCard()">
+      </div>
+
+      <!-- Método de pago tabs -->
+      <div class="cf-section">
+        <label class="cf-lbl">Método de pago</label>
+        <div class="pay-tabs">
+          <button class="pay-tab act" onclick="setPayTab(this,'tarjeta')">
+            <span class="pay-tab-ico">💳</span>
+            <span class="pay-tab-lbl">Tarjeta</span>
+          </button>
+          <button class="pay-tab" onclick="setPayTab(this,'yape')">
+            <span class="pay-tab-ico">🟣</span>
+            <span class="pay-tab-lbl">Yape / Plin</span>
+          </button>
+          <button class="pay-tab" onclick="setPayTab(this,'efectivo')">
+            <span class="pay-tab-ico">🏪</span>
+            <span class="pay-tab-lbl">PagoEfectivo</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TARJETA -->
+      <div id="tab-tarjeta">
+        <div class="card-visual" id="card-vis">
+          <div class="cv-glow"></div>
+          <div class="cv-brand" id="cv-brand">•••• ••••</div>
+          <div class="cv-chip"></div>
+          <div class="cv-num" id="cv-num">•••• •••• •••• ••••</div>
+          <div class="cv-row">
+            <div><div class="cv-lbl">Titular</div><div class="cv-val" id="cv-name">TU NOMBRE</div></div>
+            <div><div class="cv-lbl">Vence</div><div class="cv-val" id="cv-exp">MM/AA</div></div>
+          </div>
+        </div>
+        <div class="cf-section">
+          <label class="cf-lbl">Número de tarjeta</label>
+          <input class="cf-input" type="text" placeholder="0000 0000 0000 0000" maxlength="19" id="card-num" oninput="fmtCard(this)" onkeypress="return event.charCode>=48&&event.charCode<=57">
+        </div>
+        <div class="cf-row">
+          <div>
+            <label class="cf-lbl">Vencimiento</label>
+            <input class="cf-input" type="text" placeholder="MM/AA" maxlength="5" id="card-exp" oninput="fmtExp(this)">
+          </div>
+          <div>
+            <label class="cf-lbl">CVV</label>
+            <input class="cf-input" type="text" placeholder="123" maxlength="4" id="card-cvv">
+          </div>
+        </div>
+      </div>
+
+      <!-- YAPE -->
+      <div id="tab-yape" style="display:none">
+        <div class="yape-section">
+          <div class="yape-qr">
+            <svg viewBox="0 0 80 80" width="80" height="80">
+              <rect width="80" height="80" fill="white"/>
+              <rect x="10" y="10" width="20" height="20" fill="#6C2FC7"/>
+              <rect x="14" y="14" width="12" height="12" fill="white"/>
+              <rect x="16" y="16" width="8" height="8" fill="#6C2FC7"/>
+              <rect x="50" y="10" width="20" height="20" fill="#6C2FC7"/>
+              <rect x="54" y="14" width="12" height="12" fill="white"/>
+              <rect x="56" y="16" width="8" height="8" fill="#6C2FC7"/>
+              <rect x="10" y="50" width="20" height="20" fill="#6C2FC7"/>
+              <rect x="14" y="54" width="12" height="12" fill="white"/>
+              <rect x="16" y="56" width="8" height="8" fill="#6C2FC7"/>
+              <rect x="36" y="10" width="6" height="6" fill="#6C2FC7"/>
+              <rect x="36" y="22" width="6" height="6" fill="#6C2FC7"/>
+              <rect x="36" y="36" width="6" height="6" fill="#6C2FC7"/>
+              <rect x="48" y="36" width="6" height="6" fill="#6C2FC7"/>
+              <rect x="60" y="36" width="6" height="6" fill="#6C2FC7"/>
+              <rect x="36" y="48" width="6" height="6" fill="#6C2FC7"/>
+              <rect x="48" y="48" width="6" height="6" fill="#6C2FC7"/>
+              <rect x="60" y="60" width="6" height="6" fill="#6C2FC7"/>
+              <rect x="48" y="60" width="6" height="6" fill="#6C2FC7"/>
+            </svg>
+          </div>
+          <div class="yape-t">Escanea con Yape o Plin</div>
+          <div class="yape-amount" id="yape-amount">S/ 29.90</div>
+          <div class="yape-s">Número: <strong>987 654 321</strong> · A nombre de PetCare SAC</div>
+          <div class="yape-s" style="margin-top:8px;color:var(--lite);font-size:12px;">El pago se confirmará automáticamente en 30 segundos</div>
+        </div>
+      </div>
+
+      <!-- PAGO EFECTIVO -->
+      <div id="tab-efectivo" style="display:none">
+        <div class="pago-ef">
+          <div class="pe-t">Tu código de pago</div>
+          <div class="pe-code" id="pe-code">PET-7842-3910</div>
+          <div class="pe-s">Presenta este código en cualquier agente autorizado y paga en efectivo. Válido por <strong>48 horas</strong>.</div>
+          <div class="pe-agents">
+            <span class="pe-agent">Agente BCP</span>
+            <span class="pe-agent">Western Union</span>
+            <span class="pe-agent">Tambo+</span>
+            <span class="pe-agent">KasNet</span>
+            <span class="pe-agent">Interbank</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-pagar" onclick="procesarPago()" id="btn-pagar">
+        <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><rect x="2" y="5" width="16" height="12" rx="2" stroke="white" stroke-width="1.5"/><path d="M2 9h16" stroke="white" stroke-width="1.5"/><circle cx="6" cy="13" r="1.5" fill="white"/></svg>
+        <span id="btn-pagar-txt">Pagar ahora</span>
+      </button>
+
+      <div class="seg-badges">
+        <div class="seg-b">🔒 Pago seguro SSL</div>
+        <div class="seg-b">🛡️ PCI DSS certificado</div>
+        <div class="seg-b">✓ Protección Culqi</div>
+      </div>
+      <div class="culqi-badge">
+        <div class="culqi-logo">C</div>
+        Procesado por Culqi · Grupo Credicorp
+      </div>
+    </div>
+
+    <!-- Resumen -->
+    <div class="order-summary">
+      <div class="os-head">Resumen de tu orden</div>
+      <div class="os-plan">
+        <div class="os-ico">🐾</div>
+        <div>
+          <div class="os-name" id="os-plan-name">Plan Básico</div>
+          <div class="os-per" id="os-plan-per">Facturación mensual</div>
+        </div>
+      </div>
+      <div class="os-rows">
+        <div class="os-row"><span class="os-lbl">Subtotal</span><span class="os-val" id="os-sub">S/ 25.34</span></div>
+        <div class="os-row"><span class="os-lbl">IGV (18%)</span><span class="os-val" id="os-igv">S/ 4.56</span></div>
+        <div class="os-row"><span class="os-lbl">Comisión Culqi</span><span class="os-val" id="os-com">S/ 1.03</span></div>
+      </div>
+      <div class="os-total">
+        <span class="os-tl">Total</span>
+        <span class="os-tv" id="os-total">S/ 29.90</span>
+      </div>
+      <div class="os-features">
+        <div class="os-feat"><div class="os-feat-dot"></div>Activación inmediata</div>
+        <div class="os-feat"><div class="os-feat-dot"></div>Cancela cuando quieras</div>
+        <div class="os-feat"><div class="os-feat-dot"></div>Sin contratos ni letra pequeña</div>
+        <div class="os-feat"><div class="os-feat-dot"></div>Soporte en español</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ PANTALLA: ÉXITO ═══════════ -->
+<div class="screen" id="screen-success">
+  <div class="success-wrap">
+    <div class="success-ico">
+      <svg viewBox="0 0 48 48" fill="none" width="52" height="52"><circle cx="24" cy="24" r="20" fill="#2ECC71"/><path d="M14 24l7 7 13-13" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="success-h">¡Pago confirmado!</div>
+    <div class="success-s">Tu plan está activo. Ya puedes hacer consultas ilimitadas para <strong id="suc-plan">tu mascota</strong>.</div>
+
+    <div class="success-card">
+      <div class="sc-row"><span class="sc-lbl">Plan</span><span class="sc-val" id="suc-plan-name">Plan Básico</span></div>
+      <div class="sc-row"><span class="sc-lbl">Monto pagado</span><span class="sc-val green" id="suc-amount">S/ 29.90</span></div>
+      <div class="sc-row"><span class="sc-lbl">Método</span><span class="sc-val" id="suc-method">Visa •••• 4242</span></div>
+      <div class="sc-row"><span class="sc-lbl">Número de orden</span><span class="sc-val">#PTC-<span id="suc-order"></span></span></div>
+      <div class="sc-row"><span class="sc-lbl">Estado</span><span class="sc-val green">✓ Aprobado · Culqi</span></div>
+    </div>
+
+    <div class="success-btns">
+      <button class="btn-main" onclick="window.location.href='consulta.html'">Hacer mi primera consulta →</button>
+      <button class="btn-out" onclick="showScreen('planes')">Volver a planes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PANTALLA: RESULTADO BLOQUEADO ═══════════ -->
+<div class="screen" id="screen-blocked">
+  <div style="max-width:640px;margin:0 auto;padding:60px 24px;">
+    <div class="blocked-overlay">
+      <div class="bo-glow"></div>
+      <div class="bo-lock">🔒</div>
+      <div class="bo-h">Tu informe está listo</div>
+      <div class="bo-s">Hemos analizado los síntomas de tu mascota. Para ver el resultado completo — semáforo de urgencia, cuidados personalizados y score de salud — elige un plan.</div>
+      <button class="bo-btn" onclick="showScreen('planes')">Ver planes desde S/ 5.90 →</button>
+      <div class="bo-free">¿Primera vez? <button onclick="showScreen('success');document.getElementById('suc-plan').textContent='tu mascota';document.getElementById('suc-plan-name').textContent='Consulta Gratis';document.getElementById('suc-amount').textContent='S/ 0.00';document.getElementById('suc-method').textContent='Promoción';document.getElementById('suc-order').textContent=Math.floor(Math.random()*90000+10000);">Usar mi consulta gratis</button></div>
+    </div>
+    <!-- Preview borroso del resultado -->
+    <div style="filter:blur(6px);pointer-events:none;opacity:.5;background:var(--w);border-radius:22px;padding:24px;border:1.5px solid var(--bd);">
+      <div style="height:18px;background:var(--bd);border-radius:6px;width:60%;margin-bottom:12px;"></div>
+      <div style="height:14px;background:var(--bd);border-radius:6px;width:40%;margin-bottom:20px;"></div>
+      <div style="height:60px;background:#FFF8E6;border-radius:14px;margin-bottom:12px;"></div>
+      <div style="height:14px;background:var(--bd);border-radius:6px;width:80%;margin-bottom:8px;"></div>
+      <div style="height:14px;background:var(--bd);border-radius:6px;width:65%;margin-bottom:8px;"></div>
+      <div style="height:14px;background:var(--bd);border-radius:6px;width:70%;"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* CURSOR */
+const dot=document.getElementById('cur'),ring=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;dot.style.left=mx+'px';dot.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,input,.pay-tab,.plan').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));});
+
+let currentPlan={name:'Plan Básico',price:'S/ 29.90',per:'Plan Básico / mes'};
+let currentPayTab='tarjeta';
+
+/* PANTALLAS */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.getElementById('screen-'+id).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* SELECCIONAR PLAN */
+function selectPlan(tipo,precio,per){
+  currentPlan={name:per,price:precio,per:per};
+  document.getElementById('os-plan-name').textContent=per;
+  document.getElementById('os-plan-per').textContent=tipo==='consulta'?'Pago único':'Facturación mensual · cancela cuando quieras';
+  document.getElementById('btn-pagar-txt').textContent='Pagar '+precio;
+
+  // Calcular desglose (precio ya incluye todo)
+  const raw=parseFloat(precio.replace('S/ ',''));
+  const sub=(raw/1.18).toFixed(2);
+  const igv=(raw-sub).toFixed(2);
+  const com=(raw*0.0344).toFixed(2);
+  document.getElementById('os-sub').textContent='S/ '+sub;
+  document.getElementById('os-igv').textContent='S/ '+igv;
+  document.getElementById('os-com').textContent='S/ '+com;
+  document.getElementById('os-total').textContent=precio;
+  document.getElementById('yape-amount').textContent=precio;
+
+  showScreen('checkout');
+}
+
+/* TABS DE PAGO */
+function setPayTab(el,tab){
+  document.querySelectorAll('.pay-tab').forEach(t=>t.classList.remove('act'));
+  el.classList.add('act');
+  currentPayTab=tab;
+  document.getElementById('tab-tarjeta').style.display=tab==='tarjeta'?'block':'none';
+  document.getElementById('tab-yape').style.display=tab==='yape'?'block':'none';
+  document.getElementById('tab-efectivo').style.display=tab==='efectivo'?'block':'none';
+
+  const txt={tarjeta:'Pagar '+currentPlan.price,yape:'Confirmar pago por Yape',efectivo:'Generar código de pago'};
+  document.getElementById('btn-pagar-txt').textContent=txt[tab];
+}
+
+/* FORMATEO TARJETA */
+function fmtCard(el){
+  let v=el.value.replace(/\D/g,'').substring(0,16);
+  el.value=v.match(/.{1,4}/g)?.join(' ')||v;
+  document.getElementById('cv-num').textContent=v.padEnd(16,'•').match(/.{1,4}/g).join(' ');
+  // Detectar brand
+  const brand=v[0]==='4'?'VISA':v[0]==='5'?'Mastercard':v.substring(0,2)==='34'||v.substring(0,2)==='37'?'Amex':'';
+  document.getElementById('cv-brand').textContent=brand||'•••• ••••';
+}
+function fmtExp(el){
+  let v=el.value.replace(/\D/g,'');
+  if(v.length>=2)v=v.substring(0,2)+'/'+v.substring(2,4);
+  el.value=v;
+  document.getElementById('cv-exp').textContent=v||'MM/AA';
+}
+function updateCard(){
+  const name=document.getElementById('cf-name').value.toUpperCase()||'TU NOMBRE';
+  document.getElementById('cv-name').textContent=name.substring(0,20);
+}
+
+/* PROCESAR PAGO */
+function procesarPago(){
+  const btn=document.getElementById('btn-pagar');
+  btn.textContent='Procesando...';
+  btn.style.background='var(--mid)';
+  btn.disabled=true;
+
+  setTimeout(()=>{
+    // Simular respuesta Culqi exitosa
+    const order=Math.floor(Math.random()*90000+10000);
+    const cardNum=document.getElementById('card-num')?.value||'';
+    const last4=cardNum.replace(/\s/g,'').slice(-4)||'4242';
+    const method=currentPayTab==='tarjeta'?'Visa •••• '+last4:currentPayTab==='yape'?'Yape / Plin':'PagoEfectivo';
+
+    document.getElementById('suc-plan').textContent='tu mascota';
+    document.getElementById('suc-plan-name').textContent=currentPlan.name;
+    document.getElementById('suc-amount').textContent=currentPlan.price;
+    document.getElementById('suc-method').textContent=method;
+    document.getElementById('suc-order').textContent=order;
+
+    showScreen('success');
+    btn.textContent='Pagar ahora';
+    btn.style.background='var(--g)';
+    btn.disabled=false;
+    launchConfetti();
+  },2200);
+}
+
+/* CONFETTI */
+function launchConfetti(){
+  const cv=document.createElement('canvas');
+  cv.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:9999;';
+  document.body.appendChild(cv);
+  const ctx=cv.getContext('2d');
+  cv.width=window.innerWidth;cv.height=window.innerHeight;
+  const colors=['#2ECC71','#A8E6C3','#FFB347','#74C0FC','#C084FC'];
+  const pts=Array.from({length:80},()=>({x:Math.random()*cv.width,y:-20,w:5+Math.random()*7,h:3+Math.random()*5,c:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,vr:(Math.random()-.5)*8,a:1}));
+  let fr=0;(function draw(){ctx.clearRect(0,0,cv.width,cv.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.a-=.01;ctx.save();ctx.globalAlpha=Math.max(0,p.a);ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});fr++;if(fr<150)requestAnimationFrame(draw);else document.body.removeChild(cv);})();
+}
+
+// Generar código PagoEfectivo aleatorio
+document.getElementById('pe-code').textContent='PET-'+Math.floor(Math.random()*9000+1000)+'-'+Math.floor(Math.random()*9000+1000);
+
+// Demo: mostrar pantalla bloqueada si viene de consulta sin plan
+// showScreen('blocked');
+</script>
+</body>
+</html>
