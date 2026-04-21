@@ -3,893 +3,707 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>PetCare — Consulta</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>PetCare — Consultar síntomas</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --g:#2ECC71;--g2:#27AE60;--g3:#E8FBF0;--g4:#A8E6C3;
-  --coral:#FF6B6B;--peach:#FFB347;--sky:#74C0FC;--lav:#C084FC;
-  --cream:#FAFAF8;--ink:#111;--mid:#555;--lite:#999;--w:#fff;--bd:#E8E8E8;
-  --ease:cubic-bezier(.16,1,.3,1);--ease2:cubic-bezier(.34,1.56,.64,1);
+  --g:#00C853;--g2:#00A846;--g3:#E8FFF0;--g4:#B2FFD1;
+  --ink:#0A0A0A;--mid:#5A5A6E;--lite:#9898A8;--w:#fff;
+  --bd:#EBEBF0;--cream:#F8F8FC;
+  --red:#FF3B5C;--yellow:#FF9F0A;--purple:#C084FC;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --shadow:0 4px 24px rgba(0,0,0,.07);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;cursor:none;-webkit-font-smoothing:antialiased;min-height:100vh;}
-#cur,#cur2{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;will-change:transform;}
-#cur{width:10px;height:10px;background:var(--g);top:0;left:0;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;}
-#cur2{width:34px;height:34px;border:1.5px solid rgba(46,204,113,.4);top:0;left:0;transform:translate(-50%,-50%);transition:width .4s var(--ease),height .4s var(--ease);}
-body.hov #cur{width:18px;height:18px;background:var(--g2);}
-body.hov #cur2{width:56px;height:56px;border-color:rgba(46,204,113,.7);}
-@media(max-width:900px){#cur,#cur2{display:none;}body{cursor:auto;}}
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;padding:0 48px;height:68px;background:rgba(250,250,248,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);}
-.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.n-icon{width:34px;height:34px;background:var(--g);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;transition:transform .3s var(--ease2);}
-.n-logo:hover .n-icon{transform:rotate(-10deg) scale(1.1);}
-.n-name{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-.5px;}
-.n-back{margin-left:auto;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;padding:8px 16px;border-radius:50px;border:1.5px solid var(--bd);transition:all .2s;cursor:none;}
-.n-back:hover{color:var(--ink);border-color:var(--ink);}
-@media(max-width:900px){nav{padding:0 20px;}}
-.page{padding-top:68px;min-height:100vh;}
-.stepper-wrap{max-width:780px;margin:0 auto;padding:40px 24px 0;}
-.stepper{display:flex;align-items:flex-start;margin-bottom:44px;}
-.s-step{display:flex;align-items:center;flex:1;}
-.s-step:last-child{flex:0;}
-.s-col{display:flex;flex-direction:column;align-items:center;}
-.s-circle{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;border:2px solid var(--bd);background:var(--w);color:var(--lite);transition:all .4s var(--ease);flex-shrink:0;}
-.s-circle.act{background:var(--ink);border-color:var(--ink);color:var(--w);}
-.s-circle.done{background:var(--g);border-color:var(--g);color:var(--w);}
-.s-lbl{font-size:10px;font-weight:700;color:var(--lite);margin-top:5px;white-space:nowrap;transition:color .3s;}
-.s-lbl.act{color:var(--ink);}
-.s-lbl.done{color:var(--g2);}
-.s-line{flex:1;height:2px;background:var(--bd);margin:0 6px;margin-top:-18px;transition:background .4s;}
-.s-line.done{background:var(--g);}
-.panel{max-width:780px;margin:0 auto;padding:0 24px 80px;}
-.screen{display:none;animation:fadeUp .4s var(--ease) both;}
-.screen.on{display:block;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
-.sc-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--g);display:block;margin-bottom:8px;}
-.sc-h{font-size:clamp(26px,4vw,38px);font-weight:900;color:var(--ink);letter-spacing:-1.5px;line-height:1;margin-bottom:6px;}
-.sc-h span{font-weight:300;}
-.sc-sub{font-size:14px;color:var(--mid);line-height:1.6;margin-bottom:28px;}
-.sp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px;}
-.sp-card{background:var(--w);border:2px solid var(--bd);border-radius:22px;padding:22px 12px;text-align:center;cursor:none;transition:all .25s var(--ease2);display:flex;flex-direction:column;align-items:center;gap:10px;}
-.sp-card:hover{border-color:var(--g4);transform:translateY(-3px);}
-.sp-card.sel{border-color:var(--g);background:var(--g3);transform:translateY(-3px);}
-.sp-ill{width:68px;height:68px;border-radius:18px;display:flex;align-items:center;justify-content:center;}
-.sp-name{font-size:15px;font-weight:800;color:var(--ink);}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-.frow.tri{grid-template-columns:1fr 1fr 1fr;}
-.fg{display:flex;flex-direction:column;gap:5px;}
-.fg.full{grid-column:1/-1;}
-label{font-size:11px;font-weight:700;color:var(--ink);letter-spacing:.3px;text-transform:uppercase;}
-input,select,textarea{width:100%;padding:13px 15px;border:1.5px solid var(--bd);border-radius:13px;font-size:14px;font-family:'Nunito',sans-serif;font-weight:500;color:var(--ink);background:var(--w);outline:none;cursor:none;transition:border-color .2s,box-shadow .2s;appearance:none;}
-input:focus,select:focus,textarea:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(46,204,113,.1);}
-textarea{resize:vertical;min-height:90px;line-height:1.6;}
-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
-.chips{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:22px;}
-.chip{padding:9px 16px;border-radius:50px;border:1.5px solid var(--bd);font-size:13px;font-weight:700;color:var(--mid);background:var(--w);cursor:none;transition:all .2s var(--ease2);display:flex;align-items:center;gap:7px;}
-.chip:hover{border-color:var(--g4);color:var(--ink);}
-.chip.sel{border-color:var(--g);background:var(--g3);color:var(--g2);}
-.chip-dot{width:7px;height:7px;border-radius:50%;background:var(--bd);transition:background .2s;flex-shrink:0;}
-.chip.sel .chip-dot{background:var(--g);}
-.urg-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px;}
-.urg-card{padding:16px;border-radius:16px;border:2px solid var(--bd);cursor:none;transition:all .2s var(--ease2);background:var(--w);text-align:center;}
-.urg-card:hover{transform:translateY(-2px);}
-.urg-card.sg{border-color:var(--g);background:var(--g3);}
-.urg-card.sy{border-color:#F5A623;background:#FFF8E6;}
-.urg-card.sr{border-color:#FF6B6B;background:#FFF0EF;}
-.urg-dot{width:14px;height:14px;border-radius:50%;margin:0 auto 8px;}
-.ud-g{background:var(--g);}.ud-y{background:#F5A623;}.ud-r{background:#FF6B6B;}
-.urg-lbl{font-size:12px;font-weight:800;color:var(--ink);margin-bottom:3px;}
-.urg-desc{font-size:11px;color:var(--lite);}
-.sec-lbl{font-size:11px;font-weight:700;color:var(--ink);letter-spacing:.3px;text-transform:uppercase;margin-bottom:10px;margin-top:22px;display:block;}
-.cc-card{background:var(--w);border:1.5px solid var(--bd);border-radius:18px;padding:18px 20px;margin-bottom:12px;}
-.cc-q{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:10px;}
-.cc-opts{display:flex;flex-wrap:wrap;gap:7px;}
-.cc-opt{padding:8px 16px;border-radius:50px;border:1.5px solid var(--bd);font-size:13px;font-weight:600;color:var(--mid);background:var(--w);cursor:none;transition:all .2s;font-family:'Nunito',sans-serif;}
-.cc-opt:hover{border-color:var(--g4);}
-.cc-opt.sel{border-color:var(--g);background:var(--g3);color:var(--g2);}
-.upload-z{border:2px dashed var(--bd);border-radius:22px;padding:44px 28px;text-align:center;transition:all .3s;cursor:none;background:var(--w);position:relative;overflow:hidden;}
-.upload-z:hover,.upload-z.drag{border-color:var(--g);background:var(--g3);}
-.upload-z input{position:absolute;inset:0;opacity:0;cursor:none;width:100%;height:100%;}
-.uz-ico{width:56px;height:56px;border-radius:18px;background:var(--g3);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;}
-.uz-t{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:5px;}
-.uz-s{font-size:13px;color:var(--lite);margin-bottom:14px;}
-.uz-btn{display:inline-block;padding:10px 22px;background:var(--ink);color:var(--w);border-radius:50px;font-size:13px;font-weight:700;}
-.prev-wrap{display:none;border-radius:18px;overflow:hidden;aspect-ratio:16/9;background:#f0f0f0;position:relative;}
-.prev-wrap img{width:100%;height:100%;object-fit:cover;}
-.prev-rm{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.5);border:none;color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:none;}
-.uz-skip{text-align:center;margin-top:14px;font-size:13px;color:var(--lite);}
-.uz-skip button{background:none;border:none;color:var(--g2);font-weight:700;font-size:13px;font-family:'Nunito',sans-serif;cursor:none;text-decoration:underline;}
-.snav{display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:20px;border-top:1px solid var(--bd);}
-.btn-prev{padding:13px 26px;background:transparent;color:var(--mid);border:1.5px solid var(--bd);border-radius:50px;font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;}
-.btn-prev:hover{border-color:var(--ink);color:var(--ink);}
-.btn-next{padding:14px 34px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:15px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .3s var(--ease);display:flex;align-items:center;gap:9px;}
-.btn-next:hover{background:var(--g);transform:translateY(-2px);box-shadow:0 10px 30px rgba(46,204,113,.3);}
-.btn-next .arr{transition:transform .3s;}
-.btn-next:hover .arr{transform:translateX(4px);}
-.btn-next:disabled{opacity:.4;pointer-events:none;}
-.loading-wrap{text-align:center;padding:72px 24px;}
-.load-pet{width:88px;height:88px;border-radius:26px;background:var(--g3);margin:0 auto 24px;display:flex;align-items:center;justify-content:center;animation:petb 1s var(--ease2) infinite alternate;}
-@keyframes petb{from{transform:translateY(0);}to{transform:translateY(-12px);}}
-.load-h{font-size:22px;font-weight:900;color:var(--ink);letter-spacing:-1px;margin-bottom:6px;}
-.load-s{font-size:14px;color:var(--mid);}
-.load-bar{width:260px;height:4px;background:var(--bd);border-radius:4px;margin:22px auto 0;overflow:hidden;}
-.load-fill{height:100%;border-radius:4px;background:var(--g);width:0;transition:width .5s var(--ease);}
-.load-steps{max-width:260px;margin:20px auto 0;display:flex;flex-direction:column;gap:8px;}
-.ls{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--lite);transition:color .3s;}
-.ls.act{color:var(--ink);font-weight:700;}
-.ls.done{color:var(--g2);}
-.ls-d{width:7px;height:7px;border-radius:50%;background:var(--bd);flex-shrink:0;transition:background .3s;}
-.ls.done .ls-d{background:var(--g);}
-.ls.act .ls-d{background:var(--ink);}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-.res-hero{background:var(--ink);border-radius:26px;padding:30px;margin-bottom:16px;position:relative;overflow:hidden;}
-.rh-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 70% at 85% 50%,rgba(46,204,113,.13) 0%,transparent 60%);}
-.rh-top{display:flex;align-items:center;gap:14px;margin-bottom:24px;position:relative;z-index:1;}
-.rh-ava{width:52px;height:52px;border-radius:15px;background:var(--g3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.rh-name{font-size:18px;font-weight:900;color:var(--w);letter-spacing:-.5px;}
-.rh-meta{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px;}
-.rh-live{margin-left:auto;display:flex;align-items:center;gap:6px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);border-radius:50px;padding:5px 12px;flex-shrink:0;}
-.rh-ldot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:pulse 1.5s infinite;}
-.rh-lt{font-size:11px;font-weight:700;color:var(--g);}
-.sem{display:flex;align-items:center;gap:18px;position:relative;z-index:1;}
-.sem-track{display:flex;gap:7px;}
-.sem-b{width:13px;height:13px;border-radius:50%;transition:opacity .4s;}
-.sem-b.off{opacity:.18;}
-.sb-g{background:var(--g);}.sb-y{background:#F5A623;}.sb-r{background:#FF6B6B;}
-.sem-etiq{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:3px;}
-.sem-tit{font-size:30px;font-weight:900;letter-spacing:-1px;line-height:1;}
-.sem-sub{font-size:13px;margin-top:4px;color:rgba(255,255,255,.5);}
-.sv .sem-tit{color:var(--g);}.sa .sem-tit{color:#F5A623;}.sr-u .sem-tit{color:#FF6B6B;}
-.score-banner{background:var(--w);border:1.5px solid var(--bd);border-radius:22px;padding:20px 22px;margin-bottom:14px;display:flex;align-items:center;gap:20px;}
-.score-ring{position:relative;flex-shrink:0;}
-.score-ring svg{transform:rotate(-90deg);}
-.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:var(--ink);}
-.score-info{flex:1;}
-.score-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--lite);margin-bottom:3px;}
-.score-tit{font-size:18px;font-weight:900;color:var(--ink);letter-spacing:-.5px;margin-bottom:3px;}
-.score-desc{font-size:12px;color:var(--mid);margin-bottom:10px;}
-.sbar-row{display:flex;align-items:center;gap:10px;margin-bottom:5px;}
-.sbar-lbl{font-size:11px;color:var(--lite);width:80px;flex-shrink:0;}
-.sbar-track{flex:1;height:4px;background:var(--bd);border-radius:2px;overflow:hidden;}
-.sbar-fill{height:100%;border-radius:2px;transition:width 1s var(--ease);}
-.alerta-r{background:#FFF0EF;border:1.5px solid #FFCDD2;border-radius:18px;padding:18px 20px;display:flex;gap:12px;margin-bottom:14px;}
-.ar-ico{font-size:22px;flex-shrink:0;margin-top:1px;}
-.ar-t{font-size:14px;font-weight:800;color:#D94040;margin-bottom:3px;}
-.ar-s{font-size:13px;color:#C0392B;line-height:1.5;}
-.cierre-res{background:var(--w);border:1.5px solid var(--g4);border-radius:20px;padding:20px 22px;margin-bottom:14px;}
-.cr-head{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
-.cr-dot{width:9px;height:9px;border-radius:50%;background:var(--g);animation:pulse 1.5s infinite;flex-shrink:0;}
-.cr-t{font-size:14px;font-weight:800;color:var(--ink);}
-.cr-q{font-size:13px;font-weight:700;color:var(--mid);margin-bottom:8px;}
-.cr-opts{display:flex;flex-wrap:wrap;gap:7px;}
-.cr-opt{padding:7px 14px;border-radius:50px;border:1.5px solid var(--bd);font-size:12px;font-weight:700;color:var(--mid);background:var(--w);cursor:none;transition:all .2s;font-family:'Nunito',sans-serif;}
-.cr-opt:hover{border-color:var(--g4);}
-.cr-opt.sel{border-color:var(--g);background:var(--g3);color:var(--g2);}
-.cr-resp{margin-top:12px;padding:12px 14px;background:var(--g3);border-radius:12px;font-size:13px;color:var(--g2);font-weight:600;display:none;line-height:1.5;}
-.cr-resp.on{display:block;}
-.ajuste-extra{background:var(--g3);border:1.5px solid var(--g4);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--g2);font-weight:600;display:none;margin-top:10px;line-height:1.5;}
-.ajuste-extra.on{display:block;}
-.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-.rc{background:var(--w);border:1.5px solid var(--bd);border-radius:22px;padding:20px 22px;transition:transform .3s var(--ease);}
-.rc:hover{transform:translateY(-2px);}
-.rc.full{grid-column:1/-1;}
-.rc.dark{background:var(--ink);border-color:var(--ink);position:relative;overflow:hidden;}
-.rc-glow{position:absolute;top:-20px;right:-20px;width:110px;height:110px;border-radius:50%;background:rgba(46,204,113,.07);pointer-events:none;}
-.rc-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:11px;}
-.rc-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--lite);margin-bottom:10px;}
-.rc.dark .rc-lbl{color:rgba(255,255,255,.3);}
-.care-list{display:flex;flex-direction:column;gap:8px;}
-.care-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);}
-.care-item:last-child{border-bottom:none;padding-bottom:0;}
-.care-ck{width:20px;height:20px;border-radius:6px;background:var(--g3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-.care-txt{font-size:13px;color:var(--ink);font-weight:500;line-height:1.5;}
-.com-num{font-size:36px;font-weight:900;color:var(--g);letter-spacing:-2px;line-height:1;}
-.com-sub{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:12px;margin-top:2px;line-height:1.4;}
-.com-barra{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:12px;overflow:hidden;}
-.com-fill{height:100%;border-radius:2px;background:var(--g);transition:width 1.2s var(--ease);}
-.com-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-.com-etiq{font-size:12px;color:rgba(255,255,255,.4);}
-.com-val{font-size:13px;font-weight:700;color:var(--w);}
-.prod-list{display:flex;flex-direction:column;gap:8px;}
-.prod-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--cream);border:1px solid var(--bd);cursor:none;transition:all .2s;}
-.prod-item:hover{border-color:var(--g4);background:var(--g3);}
-.prod-ico{width:32px;height:32px;border-radius:8px;background:var(--w);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.prod-inf{flex:1;}
-.prod-n{font-size:13px;font-weight:700;color:var(--ink);}
-.prod-w{font-size:11px;color:var(--lite);margin-top:1px;}
-.prod-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:50px;background:var(--g3);color:var(--g2);white-space:nowrap;}
-.cal-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd);}
-.cal-item:last-child{border-bottom:none;}
-.cal-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.cd-g{background:var(--g);}.cd-y{background:#F5A623;}.cd-p{background:var(--lav);}
-.cal-n{font-size:13px;font-weight:700;color:var(--ink);}
-.cal-d{font-size:11px;color:var(--lite);margin-top:1px;}
-.cal-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:50px;margin-left:auto;white-space:nowrap;}
-.cb-g{background:var(--g3);color:var(--g2);}
-.cb-y{background:#FFF8E6;color:#C49000;}
-.cb-p{background:#F0EBF9;color:#6b3fa0;}
-.next-item{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:13px;background:var(--cream);border:1.5px solid var(--bd);margin-bottom:8px;}
-.next-item:last-child{margin-bottom:0;}
-.next-item.urg{border-color:#FF6B6B;background:#FFF0EF;}
-.next-n{width:26px;height:26px;border-radius:7px;background:var(--ink);color:var(--w);font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.next-item.urg .next-n{background:#FF6B6B;}
-.next-t{font-size:13px;font-weight:600;color:var(--ink);flex:1;line-height:1.4;}
-.next-w{font-size:11px;color:var(--lite);white-space:nowrap;}
-.followup{background:var(--g3);border:1.5px solid var(--g4);border-radius:22px;padding:22px 24px;margin-bottom:14px;}
-.fu-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.fu-ico{width:34px;height:34px;border-radius:10px;background:var(--g);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.fu-t{font-size:15px;font-weight:900;color:var(--ink);}
-.fu-sub{font-size:13px;color:var(--mid);margin-bottom:14px;line-height:1.5;}
-.fu-opts{display:flex;gap:8px;flex-wrap:wrap;}
-.fu-btn{padding:10px 18px;border-radius:50px;border:1.5px solid var(--g4);font-size:13px;font-weight:700;background:var(--w);color:var(--ink);cursor:none;transition:all .2s;font-family:'Nunito',sans-serif;}
-.fu-btn:hover{border-color:var(--g);background:var(--g);color:var(--w);}
-.fu-resp{margin-top:12px;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:600;display:none;line-height:1.5;}
-.fu-resp.on{display:block;}
-.fu-verde{background:var(--w);color:var(--g2);border:1px solid var(--g4);}
-.fu-amarillo{background:#FFF8E6;color:#C49000;}
-.fu-rojo{background:#FFF0EF;color:#D94040;}
-.res-ctas{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
-.btn-main{padding:14px 28px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;cursor:none;transition:all .3s var(--ease);display:flex;align-items:center;gap:7px;}
-.btn-main:hover{background:var(--g);transform:translateY(-2px);box-shadow:0 10px 30px rgba(46,204,113,.3);}
-.btn-out{padding:13px 22px;background:var(--w);color:var(--ink);border:2px solid var(--bd);border-radius:50px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:none;transition:all .2s;display:flex;align-items:center;gap:7px;}
-.btn-out:hover{border-color:var(--ink);}
-.btn-g{background:var(--g);color:var(--w);border-color:var(--g);}
-.btn-g:hover{background:var(--g2);border-color:var(--g2);transform:translateY(-2px);}
-#confetti{position:fixed;inset:0;pointer-events:none;z-index:9000;}
-@media(max-width:640px){
-  .frow,.frow.tri{grid-template-columns:1fr;}
-  .urg-grid{grid-template-columns:1fr;}
-  .res-grid{grid-template-columns:1fr;}
-  .res-ctas,.fu-opts{flex-direction:column;}
-  .score-banner{flex-direction:column;text-align:center;}
-  .stepper-wrap,.panel{padding-left:16px;padding-right:16px;}
-}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);cursor:none;-webkit-font-smoothing:antialiased;}
 
-/* ── FREEMIUM LOCK ── */
-.free-section{position:relative;min-height:200px;}
-.lock-overlay{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 0 24px;margin-top:-60px;position:relative;z-index:4;}
-.lock-box{background:var(--w);border:1.5px solid var(--bd);border-radius:22px;padding:24px 28px;text-align:center;max-width:360px;width:100%;box-shadow:0 12px 48px rgba(0,0,0,.14);position:relative;z-index:5;}
-.lb-ico{font-size:28px;margin-bottom:10px;}
-.lb-t{font-size:16px;font-weight:900;color:var(--ink);letter-spacing:-.5px;margin-bottom:6px;}
-.lb-s{font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:18px;}
-.lb-price-row{display:flex;gap:8px;margin-bottom:14px;}
-.lb-opt{flex:1;border:1.5px solid var(--bd);border-radius:14px;padding:12px 8px;cursor:none;transition:all .2s;text-align:center;}
-.lb-opt:hover{border-color:var(--g4);}
-.lb-opt.featured{border-color:var(--g);background:var(--g3);}
-.lb-opt-price{font-size:18px;font-weight:900;color:var(--ink);letter-spacing:-1px;}
-.lb-opt.featured .lb-opt-price{color:var(--g2);}
-.lb-opt-lbl{font-size:10px;font-weight:700;color:var(--lite);margin-top:2px;}
-.lb-opt.featured .lb-opt-lbl{color:var(--g2);}
-.lb-btn{width:100%;padding:14px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:14px;font-weight:900;font-family:'Nunito',sans-serif;cursor:none;transition:all .3s var(--ease);margin-bottom:8px;}
-.lb-btn:hover{background:var(--g);transform:translateY(-2px);box-shadow:0 8px 24px rgba(46,204,113,.3);}
-.lb-free-link{font-size:12px;color:var(--lite);background:none;border:none;cursor:none;font-family:'Nunito',sans-serif;}
-.lb-free-link span{color:var(--g2);font-weight:700;}
-/* Blur del contenido bloqueado */
-.locked-content{opacity:.18;pointer-events:none;user-select:none;transition:opacity .4s,filter .4s;filter:blur(3px);}
-.locked-content.unlocked{opacity:1;filter:none;pointer-events:auto;}
-/* Badge gratis encima del resultado */
-.free-badge{display:inline-flex;align-items:center;gap:7px;background:var(--g3);border:1.5px solid var(--g4);border-radius:50px;padding:6px 16px;font-size:12px;font-weight:700;color:var(--g2);margin-bottom:14px;}
-.free-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:pulse 1.5s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-/* Rojo urgente — siempre visible */
-.red-unlock{background:#FFF0EF;border:1.5px solid #FFCDD2;border-radius:16px;padding:16px 20px;margin-bottom:14px;display:none;}
-.red-unlock.show{display:flex;align-items:flex-start;gap:12px;}
-.ru-ico{font-size:20px;flex-shrink:0;}
-.ru-t{font-size:14px;font-weight:800;color:#D94040;margin-bottom:4px;}
-.ru-s{font-size:13px;color:#C0392B;line-height:1.5;}
-/* Unlock animation */
-@keyframes unlockPop{from{opacity:0;transform:scale(.95);}to{opacity:1;transform:scale(1);}}
-.unlocked-msg{background:var(--g3);border:1.5px solid var(--g4);border-radius:14px;padding:12px 16px;text-align:center;font-size:13px;font-weight:700;color:var(--g2);display:none;margin-bottom:12px;animation:unlockPop .4s var(--ease2) both;}
-.unlocked-msg.show{display:block;}
+/* CURSOR */
+#cursor{position:fixed;width:12px;height:12px;background:var(--g);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid rgba(0,200,83,.4);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);will-change:transform;transition:width .35s var(--ease),height .35s var(--ease);}
+body.ch #cursor{width:6px;height:6px;}
+body.ch #cursor-ring{width:50px;height:50px;}
+@media(max-width:768px){#cursor,#cursor-ring{display:none;}body{cursor:auto;}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;padding:0 32px;background:rgba(248,248,252,.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(235,235,240,.8);}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:none;}
+.n-logo-icon{width:32px;height:32px;background:var(--g);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.n-logo-name{font-size:17px;font-weight:700;color:var(--ink);}
+.n-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.n-btn{padding:8px 18px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:none;transition:all .2s;}
+.n-btn:hover{background:#222;}
+.n-back{padding:8px 16px;background:none;border:1px solid var(--bd);border-radius:50px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:none;color:var(--mid);transition:all .2s;}
+.n-back:hover{border-color:var(--ink);color:var(--ink);}
+
+/* LAYOUT */
+.page{padding-top:64px;min-height:100vh;}
+.consulta-wrap{max-width:760px;margin:0 auto;padding:40px 24px 80px;}
+@media(max-width:768px){.consulta-wrap{padding:24px 16px 60px;}}
+
+/* PROGRESS BAR */
+.progress-bar{height:3px;background:var(--bd);border-radius:2px;margin-bottom:36px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--g);border-radius:2px;transition:width .4s var(--ease);}
+
+/* STEP HEADER */
+.step-header{margin-bottom:28px;}
+.step-tag{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.step-tag::before{content:'';width:20px;height:1.5px;background:var(--g);}
+.step-h{font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-1px;line-height:1.2;margin-bottom:8px;}
+.step-sub{font-size:14px;color:var(--mid);line-height:1.6;}
+
+/* CARD */
+.card{background:var(--w);border:1px solid var(--bd);border-radius:20px;padding:24px;margin-bottom:16px;}
+.card-title{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--lite);margin-bottom:16px;}
+
+/* MASCOTA INFO */
+.mascota-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:500px){.mascota-grid{grid-template-columns:1fr;}}
+.field-group{display:flex;flex-direction:column;gap:5px;}
+.field-label{font-size:11px;font-weight:600;color:var(--ink);text-transform:uppercase;letter-spacing:.3px;}
+.field-input{padding:10px 13px;border:1.5px solid var(--bd);border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--w);outline:none;cursor:none;transition:border-color .2s;}
+.field-input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(0,200,83,.1);}
+.field-input::placeholder{color:var(--lite);}
+.field-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%239898A8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+
+/* SÍNTOMAS CHIPS */
+.sintomas-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.sintoma-chip{padding:8px 16px;border:1.5px solid var(--bd);border-radius:50px;font-size:13px;font-weight:500;color:var(--mid);background:var(--w);cursor:none;transition:all .2s;display:flex;align-items:center;gap:6px;user-select:none;}
+.sintoma-chip:hover{border-color:var(--g4);color:var(--ink);}
+.sintoma-chip.sel{border-color:var(--g);background:var(--g3);color:var(--g2);font-weight:600;}
+.sintoma-chip .chip-dot{width:6px;height:6px;border-radius:50%;background:var(--bd);flex-shrink:0;transition:background .2s;}
+.sintoma-chip.sel .chip-dot{background:var(--g);}
+
+/* TEXTAREA */
+.desc-textarea{width:100%;padding:14px;border:1.5px solid var(--bd);border-radius:14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--w);outline:none;cursor:none;resize:vertical;min-height:100px;line-height:1.6;transition:border-color .2s;}
+.desc-textarea:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(0,200,83,.1);}
+.desc-textarea::placeholder{color:var(--lite);}
+.char-count{font-size:11px;color:var(--lite);text-align:right;margin-top:4px;}
+
+/* URGENCIA */
+.urgencia-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+@media(max-width:500px){.urgencia-grid{grid-template-columns:1fr;}}
+.urg-card{border:1.5px solid var(--bd);border-radius:14px;padding:16px;text-align:center;cursor:none;transition:all .2s;background:var(--w);}
+.urg-card:hover{border-color:#ddd;transform:translateY(-1px);}
+.urg-card.sel-g{border-color:var(--g);background:var(--g3);}
+.urg-card.sel-y{border-color:var(--yellow);background:#FFF8EE;}
+.urg-card.sel-r{border-color:var(--red);background:#FFF0F3;}
+.urg-dot{width:12px;height:12px;border-radius:50%;margin:0 auto 10px;}
+.urg-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.urg-sub{font-size:11px;color:var(--lite);}
+
+/* PREGUNTAS EXTRA */
+.pregunta-card{background:var(--w);border:1px solid var(--bd);border-radius:16px;padding:20px;margin-bottom:12px;}
+.preg-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.preg-title::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--g);flex-shrink:0;}
+.opciones{display:flex;flex-wrap:wrap;gap:8px;}
+.opcion{padding:7px 16px;border:1.5px solid var(--bd);border-radius:50px;font-size:13px;font-weight:500;color:var(--mid);background:var(--w);cursor:none;transition:all .2s;}
+.opcion:hover{border-color:#ccc;color:var(--ink);}
+.opcion.sel{border-color:var(--g);background:var(--g3);color:var(--g2);font-weight:600;}
+
+/* BTN ANALIZAR */
+.btn-analizar{width:100%;padding:15px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:none;transition:all .25s var(--ease);position:relative;overflow:hidden;margin-top:8px;}
+.btn-analizar:hover{background:#1a1a1a;transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.2);}
+.btn-analizar:disabled{opacity:.5;pointer-events:none;}
+.btn-analizar.loading{pointer-events:none;}
+.btn-analizar .btn-text{transition:opacity .2s;}
+.btn-analizar.loading .btn-text{opacity:0;}
+.btn-spinner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none;}
+.btn-analizar.loading .btn-spinner{display:block;}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+
+/* LOADING STATE */
+#estado-analizando{display:none;text-align:center;padding:60px 24px;}
+.analiz-anim{width:72px;height:72px;background:var(--g3);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 20px;animation:breathe 2s ease-in-out infinite;}
+@keyframes breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+.analiz-title{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:8px;}
+.analiz-steps{display:flex;flex-direction:column;gap:6px;max-width:300px;margin:20px auto 0;}
+.analiz-step{font-size:13px;color:var(--lite);padding:6px 14px;border-radius:8px;transition:all .3s;}
+.analiz-step.active{color:var(--g2);background:var(--g3);font-weight:600;}
+
+/* RESULTADO */
+#resultado{display:none;}
+.res-header{text-align:center;padding:32px 24px 24px;background:var(--w);border:1px solid var(--bd);border-radius:20px;margin-bottom:16px;}
+.sem-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:50px;font-size:12px;font-weight:700;margin-bottom:16px;}
+.sem-verde{background:var(--g3);color:var(--g2);}
+.sem-amarillo{background:#FFF8EE;color:#B8720A;}
+.sem-rojo{background:#FFF0F3;color:#CC1E3C;}
+.sem-dot{width:8px;height:8px;border-radius:50%;}
+.sem-dot-verde{background:var(--g);}
+.sem-dot-amarillo{background:var(--yellow);}
+.sem-dot-rojo{background:var(--red);}
+.res-score-big{font-size:72px;font-weight:900;letter-spacing:-3px;line-height:1;}
+.score-verde{color:var(--g);}
+.score-amarillo{color:var(--yellow);}
+.score-rojo{color:var(--red);}
+.res-titulo{font-size:20px;font-weight:700;color:var(--ink);margin:8px 0 4px;}
+.res-tranq{font-size:14px;color:var(--mid);line-height:1.6;max-width:460px;margin:0 auto;}
+
+.res-causa{background:var(--w);border:1px solid var(--bd);border-radius:16px;padding:20px;margin-bottom:12px;}
+.res-section-tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--lite);margin-bottom:10px;}
+.res-causa-text{font-size:14px;color:var(--mid);line-height:1.7;}
+
+.res-cuidados{background:var(--w);border:1px solid var(--bd);border-radius:16px;padding:20px;margin-bottom:12px;}
+.cuidado-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd);}
+.cuidado-item:last-child{border-bottom:none;padding-bottom:0;}
+.cuidado-check{width:22px;height:22px;border-radius:6px;background:var(--g3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.cuidado-check svg{width:12px;height:12px;}
+.cuidado-text{font-size:14px;color:var(--ink);line-height:1.5;}
+
+.res-productos{background:var(--w);border:1px solid var(--bd);border-radius:16px;padding:20px;margin-bottom:12px;}
+.producto-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd);}
+.producto-item:last-child{border-bottom:none;padding-bottom:0;}
+.prod-icon{width:36px;height:36px;border-radius:10px;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.prod-name{font-size:14px;font-weight:600;color:var(--ink);}
+.prod-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:50px;margin-top:2px;display:inline-block;}
+.prod-tag-rel{background:var(--g3);color:var(--g2);}
+.prod-tag-prev{background:#EEF2FF;color:#4F46E5;}
+
+.res-alerta{background:#FFF0F3;border:1px solid #FFB8C6;border-radius:16px;padding:20px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;}
+.alerta-icon{font-size:24px;flex-shrink:0;}
+.alerta-text{font-size:14px;color:#CC1E3C;font-weight:600;line-height:1.6;}
+
+.res-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+@media(max-width:500px){.res-actions{grid-template-columns:1fr;}}
+.btn-nueva{padding:13px;background:var(--ink);color:var(--w);border:none;border-radius:50px;font-size:14px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:none;transition:all .2s;}
+.btn-nueva:hover{background:var(--g2);}
+.btn-guardar{padding:13px;background:var(--w);color:var(--ink);border:1.5px solid var(--bd);border-radius:50px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:none;transition:all .2s;}
+.btn-guardar:hover{border-color:var(--ink);}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp .4s var(--ease) both;}
+.fade-up-1{animation-delay:.05s;}
+.fade-up-2{animation-delay:.1s;}
+.fade-up-3{animation-delay:.15s;}
+.fade-up-4{animation-delay:.2s;}
+.fade-up-5{animation-delay:.25s;}
 </style>
 <script src="petcare-core.js"></script>
 </head>
 <body>
-<div id="cur"></div><div id="cur2"></div>
-<canvas id="confetti"></canvas>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
 
 <nav>
   <a href="index.html" class="n-logo">
-    <div class="n-icon">🐾</div>
-    <span class="n-name">PetCare</span>
+    <div class="n-logo-icon">🐾</div>
+    <span class="n-logo-name">PetCare</span>
   </a>
-  <div style="display:flex;gap:2px;margin:0 16px;"><a href="pagos.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">Planes</a><a href="whatsapp.html" style="padding:8px 14px;font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;border-radius:8px;cursor:none;transition:all .2s;" onmouseenter="this.style.background='rgba(46,204,113,.1)'" onmouseleave="this.style.background='transparent'">WhatsApp</a></div>
-  <a href="dashboard.html" style="display:flex;align-items:center;gap:7px;padding:8px 14px 8px 8px;background:var(--w);border:1.5px solid var(--bd);border-radius:50px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;cursor:none;transition:all .2s;margin-right:8px;" onmouseenter="this.style.borderColor='var(--ink)'" onmouseleave="this.style.borderColor='var(--bd)'"><div style="width:22px;height:22px;border-radius:50%;background:var(--g3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--g2);">M</div>Mi cuenta</a>
-  <a href="index.html" class="n-back">← Inicio</a>
+  <div class="n-right">
+    <button onclick="history.back()" class="n-back">← Volver</button>
+    <button onclick="window.location.href='dashboard.html'" class="n-btn" id="nav-dash" style="display:none">Mi cuenta</button>
+  </div>
 </nav>
 
 <div class="page">
-<div class="stepper-wrap">
-  <div class="stepper">
-    <div class="s-step"><div class="s-col"><div class="s-circle act" id="sc1">1</div><div class="s-lbl act" id="sl1">Mascota</div></div><div class="s-line" id="ln1"></div></div>
-    <div class="s-step"><div class="s-col"><div class="s-circle" id="sc2">2</div><div class="s-lbl" id="sl2">Síntomas</div></div><div class="s-line" id="ln2"></div></div>
-    <div class="s-step"><div class="s-col"><div class="s-circle" id="sc3">3</div><div class="s-lbl" id="sl3">Foto</div></div><div class="s-line" id="ln3"></div></div>
-    <div class="s-step"><div class="s-col"><div class="s-circle" id="sc4">4</div><div class="s-lbl" id="sl4">Resultado</div></div></div>
+<div class="consulta-wrap">
+
+  <!-- PROGRESS -->
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill" style="width:20%"></div>
   </div>
-</div>
 
-<div class="panel">
+  <!-- ═══ FORMULARIO ═══ -->
+  <div id="formulario">
 
-<!-- STEP 1 -->
-<div class="screen on" id="s1">
-  <span class="sc-tag">Paso 1 de 3</span>
-  <h1 class="sc-h">¿Quién necesita<br><span>orientación hoy?</span></h1>
-  <p class="sc-sub">Cuéntanos sobre tu mascota para personalizar el análisis.</p>
-
-  <div class="sp-grid">
-    <div class="sp-card" onclick="selSp(this,'Perro')">
-      <div class="sp-ill" style="background:#E8FBF0">
-        <svg viewBox="0 0 64 64" fill="none" width="46" height="46"><ellipse cx="32" cy="38" rx="18" ry="14" fill="#F5CBA7"/><circle cx="32" cy="22" r="13" fill="#F5CBA7"/><ellipse cx="19" cy="20" rx="6" ry="9" fill="#E59866" transform="rotate(-15 19 20)"/><ellipse cx="45" cy="20" rx="6" ry="9" fill="#E59866" transform="rotate(15 45 20)"/><circle cx="27" cy="21" r="3" fill="#2C2C2C"/><circle cx="28" cy="20" r="1" fill="white"/><circle cx="37" cy="21" r="3" fill="#2C2C2C"/><circle cx="38" cy="20" r="1" fill="white"/><ellipse cx="32" cy="27" rx="5" ry="3.5" fill="#E59866"/><circle cx="32" cy="26" r="2" fill="#C0392B"/><ellipse cx="20" cy="50" rx="6" ry="4" fill="#F5CBA7"/><ellipse cx="44" cy="50" rx="6" ry="4" fill="#F5CBA7"/></svg>
+    <!-- PASO 1: Mascota -->
+    <div id="paso1">
+      <div class="step-header fade-up">
+        <div class="step-tag">Paso 1 de 3</div>
+        <h1 class="step-h">¿Quién necesita ayuda?</h1>
+        <p class="step-sub">Cuéntanos sobre tu mascota para personalizar el análisis.</p>
       </div>
-      <span class="sp-name">Perro</span>
-    </div>
-    <div class="sp-card" onclick="selSp(this,'Gato')">
-      <div class="sp-ill" style="background:#FFF0E6">
-        <svg viewBox="0 0 64 64" fill="none" width="46" height="46"><ellipse cx="32" cy="40" rx="16" ry="12" fill="#BDC3C7"/><circle cx="32" cy="24" r="12" fill="#BDC3C7"/><polygon points="20,16 16,4 26,12" fill="#BDC3C7"/><polygon points="21,15 17,5 25,12" fill="#FADBD8"/><polygon points="44,16 48,4 38,12" fill="#BDC3C7"/><polygon points="43,15 47,5 39,12" fill="#FADBD8"/><ellipse cx="27" cy="23" rx="3" ry="3.5" fill="#27AE60"/><ellipse cx="37" cy="23" rx="3" ry="3.5" fill="#27AE60"/><ellipse cx="27" cy="23" rx="1" ry="2" fill="#1A1A1A"/><ellipse cx="37" cy="23" rx="1" ry="2" fill="#1A1A1A"/><polygon points="32,27 30,29 34,29" fill="#E74C3C"/></svg>
-      </div>
-      <span class="sp-name">Gato</span>
-    </div>
-    <div class="sp-card" onclick="selSp(this,'Otro')">
-      <div class="sp-ill" style="background:#F5E6FF">
-        <svg viewBox="0 0 64 64" fill="none" width="46" height="46"><circle cx="32" cy="34" r="16" fill="#E8D5F5"/><circle cx="24" cy="28" r="3.5" fill="#C084FC"/><circle cx="40" cy="28" r="3.5" fill="#C084FC"/><path d="M25 39 Q32 45 39 39" stroke="#C084FC" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="20" cy="20" rx="5" ry="9" fill="#E8D5F5"/><ellipse cx="44" cy="20" rx="5" ry="9" fill="#E8D5F5"/><text x="32" y="57" text-anchor="middle" font-size="10" fill="#C084FC" font-family="sans-serif" font-weight="bold">...</text></svg>
-      </div>
-      <span class="sp-name">Otro</span>
-    </div>
-  </div>
 
-  <div class="frow">
-    <div class="fg"><label>Nombre</label><input type="text" id="p-name" placeholder="Ej: Toby" oninput="chk1()"></div>
-    <div class="fg"><label>Raza (opcional)</label><input type="text" id="p-breed" placeholder="Ej: Golden Retriever"></div>
-  </div>
-  <div class="frow tri">
-    <div class="fg"><label>Edad</label><input type="number" id="p-age" placeholder="años" min="0" max="30"></div>
-    <div class="fg"><label>Sexo</label><select id="p-sex"><option value="">—</option><option>Macho</option><option>Hembra</option></select></div>
-    <div class="fg"><label>Peso (kg)</label><input type="number" id="p-w" placeholder="kg" min="0"></div>
-  </div>
-  <div class="snav">
-    <div></div>
-    <button class="btn-next" id="btn1" onclick="go(2)" disabled>Continuar <span class="arr">→</span></button>
-  </div>
-</div>
-
-<!-- STEP 2 -->
-<div class="screen" id="s2">
-  <span class="sc-tag">Paso 2 de 3</span>
-  <h1 class="sc-h">¿Qué está<br><span>pasando hoy?</span></h1>
-  <p class="sc-sub">Selecciona síntomas y cuéntanos con detalle — entre más info, más preciso el resultado.</p>
-
-  <div class="chips" id="chips-wrap">
-    <div class="chip" onclick="togChip(this)"><span class="chip-dot"></span>Falta de apetito</div>
-    <div class="chip" onclick="togChip(this)"><span class="chip-dot"></span>Vómitos</div>
-    <div class="chip" onclick="togChip(this)"><span class="chip-dot"></span>Diarrea</div>
-    <div class="chip" onclick="togChip(this)"><span class="chip-dot"></span>Letargo</div>
-    <div class="chip" onclick="togChip(this)"><span class="chip-dot"></span>Picazón / rascado</div>
-    <div class="chip" onclick="togChip(this)"><span class="chip-dot"></span>Estornudos</div>
-    <div class="chip" onclick="togChip(this)"><span class="chip-dot"></span>Cojera</div>
-    <div class="chip" onclick="togChip(this)"><span class="chip-dot"></span>Ojos llorosos</div>
-    <div class="chip" onclick="togChip(this)"><span class="chip-dot"></span>Pérdida de pelo</div>
-    <div class="chip" onclick="togChip(this)"><span class="chip-dot"></span>Hinchazón</div>
-    <div class="chip" onclick="togChip(this)"><span class="chip-dot"></span>Secreción nasal</div>
-    <div class="chip" onclick="togChip(this)"><span class="chip-dot"></span>Herida o corte</div>
-  </div>
-
-  <div class="fg" style="margin-bottom:22px"><label>Descripción libre</label><textarea id="sym-detail" placeholder="Ej: Lleva 2 días así, come menos y se rasca el cuello constantemente..."></textarea></div>
-
-  <label class="sec-lbl" style="margin-top:0">¿Qué tan urgente te parece?</label>
-  <div class="urg-grid">
-    <div class="urg-card" onclick="selUrg(this,'verde')"><div class="urg-dot ud-g"></div><div class="urg-lbl">Puede esperar</div><div class="urg-desc">Sin emergencia, quiero revisarlo</div></div>
-    <div class="urg-card" onclick="selUrg(this,'amarillo')"><div class="urg-dot ud-y"></div><div class="urg-lbl">Me preocupa</div><div class="urg-desc">Lleva más de un día así</div></div>
-    <div class="urg-card" onclick="selUrg(this,'rojo')"><div class="urg-dot ud-r"></div><div class="urg-lbl">Es urgente</div><div class="urg-desc">Necesita atención pronto</div></div>
-  </div>
-
-  <label class="sec-lbl">Cuéntanos un poco más para personalizar tu resultado</label>
-  <div class="cc-card"><div class="cc-q">¿Cuánto tiempo lleva con estos síntomas?</div><div class="cc-opts"><button class="cc-opt" onclick="selCC(this,'dur','Menos de 24h')">Menos de 24h</button><button class="cc-opt" onclick="selCC(this,'dur','1 a 3 días')">1 a 3 días</button><button class="cc-opt" onclick="selCC(this,'dur','Más de 3 días')">Más de 3 días</button><button class="cc-opt" onclick="selCC(this,'dur','Semanas')">Semanas</button></div></div>
-  <div class="cc-card"><div class="cc-q">¿Ha comido hoy con normalidad?</div><div class="cc-opts"><button class="cc-opt" onclick="selCC(this,'com','Sí, normal')">Sí, normal</button><button class="cc-opt" onclick="selCC(this,'com','Poco')">Poco, menos que siempre</button><button class="cc-opt" onclick="selCC(this,'com','Nada')">No ha comido nada</button></div></div>
-  <div class="cc-card"><div class="cc-q">¿Ha tenido este problema antes?</div><div class="cc-opts"><button class="cc-opt" onclick="selCC(this,'hist','Primera vez')">Primera vez</button><button class="cc-opt" onclick="selCC(this,'hist','Una vez antes')">Sí, una vez antes</button><button class="cc-opt" onclick="selCC(this,'hist','Se repite')">Se repite con frecuencia</button></div></div>
-
-  <div class="snav">
-    <button class="btn-prev" onclick="go(1)">← Atrás</button>
-    <button class="btn-next" onclick="go(3)">Continuar <span class="arr">→</span></button>
-  </div>
-</div>
-
-<!-- STEP 3 -->
-<div class="screen" id="s3">
-  <span class="sc-tag">Paso 3 de 3</span>
-  <h1 class="sc-h">¿Tienes foto<br><span>del síntoma?</span></h1>
-  <p class="sc-sub">Una imagen mejora mucho el análisis. Si no tienes, puedes omitir este paso.</p>
-  <div class="upload-z" id="uz" ondragover="dragOv(event)" ondragleave="dragLv()" ondrop="dropF(event)">
-    <input type="file" accept="image/*" onchange="handleF(event)" id="fi">
-    <div class="uz-ico"><svg viewBox="0 0 48 48" fill="none" width="30" height="30"><path d="M24 16v16M16 24l8-8 8 8" stroke="#27AE60" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="10" y="34" width="28" height="3" rx="1.5" fill="#A8E6C3"/></svg></div>
-    <div class="uz-t">Arrastra tu foto aquí</div>
-    <div class="uz-s">JPG, PNG o HEIC · Máx 10MB</div>
-    <div class="uz-btn">Seleccionar archivo</div>
-  </div>
-  <div class="prev-wrap" id="pw"><img id="pi" src="" alt="preview"><button class="prev-rm" onclick="rmPhoto()">×</button></div>
-  <div class="uz-skip"><button onclick="goAnal()">Omitir y analizar sin foto →</button></div>
-  <div class="snav">
-    <button class="btn-prev" onclick="go(2)">← Atrás</button>
-    <button class="btn-next" onclick="goAnal()">Analizar ahora <span class="arr">→</span></button>
-  </div>
-</div>
-
-<!-- LOADING -->
-<div class="screen" id="s-load">
-  <div class="loading-wrap">
-    <div class="load-pet" id="load-pet">
-      <svg viewBox="0 0 64 64" fill="none" width="52" height="52"><ellipse cx="32" cy="38" rx="18" ry="14" fill="#F5CBA7"/><circle cx="32" cy="22" r="13" fill="#F5CBA7"/><ellipse cx="19" cy="20" rx="6" ry="9" fill="#E59866" transform="rotate(-15 19 20)"/><ellipse cx="45" cy="20" rx="6" ry="9" fill="#E59866" transform="rotate(15 45 20)"/><circle cx="27" cy="21" r="3" fill="#2C2C2C"/><circle cx="37" cy="21" r="3" fill="#2C2C2C"/><ellipse cx="32" cy="27" rx="5" ry="3.5" fill="#E59866"/><circle cx="32" cy="26" r="2" fill="#C0392B"/></svg>
-    </div>
-    <div class="load-h">Analizando a <span id="ld-name">tu mascota</span>...</div>
-    <div class="load-s">Generando tu informe personalizado</div>
-    <div class="load-bar"><div class="load-fill" id="ld-fill"></div></div>
-    <div class="load-steps">
-      <div class="ls" id="ls1"><span class="ls-d"></span>Analizando síntomas</div>
-      <div class="ls" id="ls2"><span class="ls-d"></span>Evaluando urgencia</div>
-      <div class="ls" id="ls3"><span class="ls-d"></span>Personalizando cuidados</div>
-      <div class="ls" id="ls4"><span class="ls-d"></span>Calculando score de salud</div>
-      <div class="ls" id="ls5"><span class="ls-d"></span>Buscando casos similares</div>
-      <div class="ls" id="ls6"><span class="ls-d"></span>Preparando tu informe</div>
-    </div>
-  </div>
-</div>
-
-<!-- RESULTADO -->
-<div class="screen" id="s-res">
-
-  <!-- BADGE GRATIS -->
-  <div class="free-badge"><div class="free-badge-dot"></div>Resultado listo — primera consulta gratis</div>
-
-  <!-- ✅ SIEMPRE VISIBLE: semáforo + score -->
-  <div class="res-hero">
-    <div class="rh-glow"></div>
-    <div class="rh-top">
-      <div class="rh-ava" id="res-ava"><svg viewBox="0 0 64 64" fill="none" width="34" height="34"><ellipse cx="32" cy="38" rx="18" ry="14" fill="#F5CBA7"/><circle cx="32" cy="22" r="13" fill="#F5CBA7"/><ellipse cx="19" cy="20" rx="6" ry="9" fill="#E59866" transform="rotate(-15 19 20)"/><ellipse cx="45" cy="20" rx="6" ry="9" fill="#E59866" transform="rotate(15 45 20)"/><circle cx="27" cy="21" r="3" fill="#2C2C2C"/><circle cx="37" cy="21" r="3" fill="#2C2C2C"/></svg></div>
-      <div><div class="rh-name" id="res-name">—</div><div class="rh-meta" id="res-meta">—</div></div>
-      <div class="rh-live"><div class="rh-ldot"></div><span class="rh-lt">Análisis completo</span></div>
-    </div>
-    <div class="sem">
-      <div class="sem-track"><div class="sem-b sb-g" id="bg"></div><div class="sem-b sb-y" id="by"></div><div class="sem-b sb-r" id="br"></div></div>
-      <div id="sem-cont">
-        <div class="sem-etiq">Nivel de urgencia</div>
-        <div class="sem-tit" id="sem-tit">—</div>
-        <div class="sem-sub" id="sem-sub">—</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 🔴 SOLO ROJO: aviso siempre visible aunque no haya pagado -->
-  <div class="red-unlock" id="red-unlock">
-    <div class="ru-ico">⚠️</div>
-    <div>
-      <div class="ru-t">Lleva a <span id="ru-name">tu mascota</span> al veterinario hoy</div>
-      <div class="ru-s">Los síntomas indican urgencia real. No esperes. Ve al veterinario más cercano ahora — esto no puede manejarse solo en casa.</div>
-    </div>
-  </div>
-
-  <!-- ✅ SIEMPRE VISIBLE: score -->
-  <div class="score-banner">
-    <div class="score-ring">
-      <svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#E8E8E8" stroke-width="6"/><circle cx="40" cy="40" r="32" fill="none" stroke="#2ECC71" stroke-width="6" stroke-linecap="round" stroke-dasharray="201" id="score-arc" stroke-dashoffset="201"/></svg>
-      <div class="score-num" id="score-num">0</div>
-    </div>
-    <div class="score-info">
-      <div class="score-lbl">Score de salud</div>
-      <div class="score-tit" id="score-tit">—</div>
-      <div class="score-desc" id="score-desc">—</div>
-      <div class="sbar-row"><span class="sbar-lbl">Vacunas</span><div class="sbar-track"><div class="sbar-fill" id="sb-vac" style="width:0;background:#2ECC71"></div></div></div>
-      <div class="sbar-row"><span class="sbar-lbl">Síntomas</span><div class="sbar-track"><div class="sbar-fill" id="sb-sym" style="width:0;background:#F5A623"></div></div></div>
-      <div class="sbar-row"><span class="sbar-lbl">Historial</span><div class="sbar-track"><div class="sbar-fill" id="sb-hist" style="width:0;background:#74C0FC"></div></div></div>
-    </div>
-  </div>
-
-  <!-- ✅ VISIBLE: pregunta de comportamiento -->
-  <div class="cierre-res">
-    <div class="cr-head"><div class="cr-dot"></div><span class="cr-t">Una última pregunta para afinar tu resultado</span></div>
-    <div class="cr-q">¿Cómo describirías el comportamiento general de <span id="cr-petname">tu mascota</span> hoy?</div>
-    <div class="cr-opts">
-      <button class="cr-opt" onclick="respCierre(this,'normal')">Activo y normal</button>
-      <button class="cr-opt" onclick="respCierre(this,'algo_bajo')">Algo más quieto</button>
-      <button class="cr-opt" onclick="respCierre(this,'muy_bajo')">Muy decaído</button>
-    </div>
-    <div class="cr-resp" id="cr-resp"></div>
-  </div>
-
-  <!-- 🔒 BLOQUEADO: grid de detalles con overlay de pago -->
-  <div class="unlocked-msg" id="unlocked-msg">✅ ¡Acceso completo desbloqueado! Aquí están todos los detalles.</div>
-
-  <div class="free-section">
-    <!-- Contenido bloqueado -->
-    <div class="locked-content" id="locked-content">
-      <div class="res-grid">
-        <div class="rc full">
-          <div class="rc-ico" style="background:#E8FBF0"><svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M4.5 12.5l4 4 11-11" stroke="#27AE60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="rc-lbl">Cuidados en casa</div>
-          <div class="care-list" id="care-list"></div>
-          <div class="ajuste-extra" id="ajuste-extra"></div>
-        </div>
-        <div class="rc dark">
-          <div class="rc-glow"></div>
-          <div class="rc-lbl">Casos similares</div>
-          <div class="com-num" id="com-num">—</div>
-          <div class="com-sub" id="com-sub">—</div>
-          <div class="com-barra"><div class="com-fill" id="com-fill" style="width:0"></div></div>
-          <div class="com-row"><span class="com-etiq">Mejoraron en casa</span><span class="com-val" id="com-v1">—</span></div>
-          <div class="com-row"><span class="com-etiq">Visitaron al vet</span><span class="com-val" id="com-v2">—</span></div>
-          <div class="com-row"><span class="com-etiq">Tiempo promedio</span><span class="com-val" id="com-v3">—</span></div>
-        </div>
-        <div class="rc">
-          <div class="rc-ico" style="background:#FFF0E6"><svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="#E59866" stroke-width="1.8" stroke-linecap="round"/><line x1="3" y1="6" x2="21" y2="6" stroke="#E59866" stroke-width="1.8"/></svg></div>
-          <div class="rc-lbl">Productos recomendados</div>
-          <div class="prod-list" id="prod-list"></div>
-        </div>
-        <div class="rc">
-          <div class="rc-ico" style="background:#EBF4FF"><svg viewBox="0 0 24 24" fill="none" width="18" height="18"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#74C0FC" stroke-width="1.8"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#74C0FC" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-          <div class="rc-lbl">Calendario de salud</div>
-          <div id="cal-list"></div>
-        </div>
-        <div class="rc full">
-          <div class="rc-ico" style="background:#F5E6FF"><svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M9 11l3 3L22 4" stroke="#C084FC" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="#C084FC" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-          <div class="rc-lbl">Próximos pasos</div>
-          <div id="next-list"></div>
-        </div>
-      </div>
-      <div class="followup">
-        <div class="fu-head">
-          <div class="fu-ico"><svg viewBox="0 0 24 24" fill="none" width="17" height="17"><circle cx="12" cy="12" r="9" stroke="white" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-          <span class="fu-t">Seguimiento a las 24h y 48h</span>
-        </div>
-        <div class="fu-sub">Te preguntaremos mañana cómo evoluciona <strong id="fu-name">tu mascota</strong>.</div>
-        <div class="fu-opts">
-          <button class="fu-btn" onclick="fuResp(this,'tranquilo')">Me quedé tranquilo</button>
-          <button class="fu-btn" onclick="fuResp(this,'duda')">Tengo alguna duda</button>
-          <button class="fu-btn" onclick="fuResp(this,'preocupado')">Sigo preocupado</button>
-        </div>
-        <div class="fu-resp" id="fu-resp"></div>
-      </div>
-    </div>
-
-    <!-- OVERLAY DE PAGO -->
-    <div class="lock-overlay" id="lock-overlay">
-      <div class="lock-box">
-        <div class="lb-ico">🔒</div>
-        <div class="lb-t">Tu informe completo está listo</div>
-        <div class="lb-s">El semáforo y el score son gratis siempre. Para ver los <strong>cuidados específicos</strong>, productos recomendados, calendario y seguimiento 24h:</div>
-        <div class="lb-price-row">
-          <div class="lb-opt" onclick="selectLbPlan(this,'consulta')">
-            <div class="lb-opt-price">S/ 5.90</div>
-            <div class="lb-opt-lbl">Este informe</div>
+      <div class="card fade-up fade-up-1">
+        <div class="card-title">Información básica</div>
+        <div class="mascota-grid">
+          <div class="field-group" style="grid-column:1/-1">
+            <label class="field-label">Nombre de tu mascota</label>
+            <input class="field-input" type="text" id="pet-nombre" placeholder="Ej: Toby, Luna, Bully..." autocomplete="off">
           </div>
-          <div class="lb-opt featured" onclick="selectLbPlan(this,'basico')">
-            <div class="lb-opt-price">S/ 29.90</div>
-            <div class="lb-opt-lbl">Plan mensual ∞</div>
+          <div class="field-group">
+            <label class="field-label">Especie</label>
+            <select class="field-input field-select" id="pet-especie">
+              <option value="perro">🐕 Perro</option>
+              <option value="gato">🐈 Gato</option>
+              <option value="conejo">🐰 Conejo</option>
+              <option value="ave">🦜 Ave</option>
+              <option value="otro">🐾 Otro</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Raza (opcional)</label>
+            <input class="field-input" type="text" id="pet-raza" placeholder="Ej: Golden, Mestizo...">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Edad</label>
+            <select class="field-input field-select" id="pet-edad">
+              <option value="">No sé</option>
+              <option value="0.5">Menos de 1 año</option>
+              <option value="1">1 año</option>
+              <option value="2">2 años</option>
+              <option value="3">3 años</option>
+              <option value="4">4 años</option>
+              <option value="5">5 años</option>
+              <option value="6">6 años</option>
+              <option value="8">7-8 años</option>
+              <option value="10">9-10 años</option>
+              <option value="12">Más de 10 años</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Peso aproximado</label>
+            <select class="field-input field-select" id="pet-peso">
+              <option value="">No sé</option>
+              <option value="2">Menos de 3 kg</option>
+              <option value="5">3-7 kg</option>
+              <option value="12">8-15 kg</option>
+              <option value="22">16-28 kg</option>
+              <option value="35">Más de 28 kg</option>
+            </select>
           </div>
         </div>
-        <button class="lb-btn" onclick="unlockResult()">Ver informe completo →</button>
-        <button class="lb-free-link" onclick="unlockDemo()">Solo ver demo <span>→</span></button>
       </div>
+
+      <button class="btn-analizar fade-up fade-up-2" onclick="irPaso2()">
+        <span class="btn-text">Continuar →</span>
+        <div class="btn-spinner"></div>
+      </button>
+    </div>
+
+    <!-- PASO 2: Síntomas -->
+    <div id="paso2" style="display:none">
+      <div class="step-header fade-up">
+        <div class="step-tag">Paso 2 de 3</div>
+        <h1 class="step-h" id="paso2-titulo">¿Qué le pasa a tu mascota?</h1>
+        <p class="step-sub">Selecciona todos los síntomas que nota. Entre más detalles, mejor el análisis.</p>
+      </div>
+
+      <div class="card fade-up fade-up-1">
+        <div class="card-title">Síntomas observados</div>
+        <div class="sintomas-grid" id="sintomas-container">
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Falta de apetito')"><span class="chip-dot"></span>Falta de apetito</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Vómitos')"><span class="chip-dot"></span>Vómitos</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Diarrea')"><span class="chip-dot"></span>Diarrea</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Letargo / sin energía')"><span class="chip-dot"></span>Letargo / sin energía</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Picazón o rascado')"><span class="chip-dot"></span>Picazón o rascado</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Caída de pelo')"><span class="chip-dot"></span>Caída de pelo</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Manchas en la piel')"><span class="chip-dot"></span>Manchas en la piel</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Estornudos')"><span class="chip-dot"></span>Estornudos</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Ojos llorosos o rojos')"><span class="chip-dot"></span>Ojos llorosos o rojos</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Cojera')"><span class="chip-dot"></span>Cojera</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Hinchazón')"><span class="chip-dot"></span>Hinchazón</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Secreción nasal')"><span class="chip-dot"></span>Secreción nasal</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Herida o corte')"><span class="chip-dot"></span>Herida o corte</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Pérdida de peso')"><span class="chip-dot"></span>Pérdida de peso</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Tos')"><span class="chip-dot"></span>Tos</div>
+          <div class="sintoma-chip" onclick="toggleSintoma(this,'Dificultad para respirar')"><span class="chip-dot"></span>Dificultad para respirar</div>
+        </div>
+      </div>
+
+      <div class="card fade-up fade-up-2">
+        <div class="card-title">Descripción libre <span style="font-weight:400;color:var(--lite)">(importante)</span></div>
+        <textarea class="desc-textarea" id="descripcion" placeholder="Describe con tus propias palabras qué está pasando. Por ejemplo: 'Le noto una mancha rojiza en el lomo desde hace 3 días, se rasca mucho ahí y está perdiendo pelo en esa zona'..." oninput="updateCharCount(this)"></textarea>
+        <div class="char-count"><span id="char-count">0</span> caracteres</div>
+      </div>
+
+      <div class="card fade-up fade-up-3">
+        <div class="card-title">¿Qué tan urgente te parece?</div>
+        <div class="urgencia-grid">
+          <div class="urg-card" onclick="selUrgencia(this,'Puede esperar')">
+            <div class="urg-dot" style="background:var(--g)"></div>
+            <div class="urg-title">Puede esperar</div>
+            <div class="urg-sub">Sin emergencia, quiero revisarlo</div>
+          </div>
+          <div class="urg-card" onclick="selUrgencia(this,'Me preocupa')">
+            <div class="urg-dot" style="background:var(--yellow)"></div>
+            <div class="urg-title">Me preocupa</div>
+            <div class="urg-sub">Lleva más de un día así</div>
+          </div>
+          <div class="urg-card" onclick="selUrgencia(this,'Es urgente')">
+            <div class="urg-dot" style="background:var(--red)"></div>
+            <div class="urg-title">Es urgente</div>
+            <div class="urg-sub">Necesita atención pronto</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-analizar fade-up fade-up-4" onclick="irPaso3()">
+        <span class="btn-text">Continuar →</span>
+        <div class="btn-spinner"></div>
+      </button>
+      <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--lite);cursor:none;" onclick="irPaso1()">← Volver</p>
+    </div>
+
+    <!-- PASO 3: Preguntas extra -->
+    <div id="paso3" style="display:none">
+      <div class="step-header fade-up">
+        <div class="step-tag">Paso 3 de 3</div>
+        <h1 class="step-h">Un poco más de detalle</h1>
+        <p class="step-sub">Estas preguntas ayudan a la IA a ser más precisa. Contesta las que puedas.</p>
+      </div>
+
+      <div class="pregunta-card fade-up fade-up-1">
+        <div class="preg-title">¿Cuánto tiempo lleva con estos síntomas?</div>
+        <div class="opciones" id="duracion-opts">
+          <div class="opcion" onclick="selOpcion(this,'duracion')">Menos de 24h</div>
+          <div class="opcion" onclick="selOpcion(this,'duracion')">1 a 3 días</div>
+          <div class="opcion" onclick="selOpcion(this,'duracion')">Más de 3 días</div>
+          <div class="opcion" onclick="selOpcion(this,'duracion')">Semanas</div>
+        </div>
+      </div>
+
+      <div class="pregunta-card fade-up fade-up-2">
+        <div class="preg-title">¿Ha comido hoy con normalidad?</div>
+        <div class="opciones" id="comida-opts">
+          <div class="opcion" onclick="selOpcion(this,'comida')">Sí, normal</div>
+          <div class="opcion" onclick="selOpcion(this,'comida')">Poco, menos de siempre</div>
+          <div class="opcion" onclick="selOpcion(this,'comida')">No ha comido nada</div>
+        </div>
+      </div>
+
+      <div class="pregunta-card fade-up fade-up-3">
+        <div class="preg-title">¿Cómo describirías su comportamiento general hoy?</div>
+        <div class="opciones" id="comportamiento-opts">
+          <div class="opcion" onclick="selOpcion(this,'comportamiento')">Activo y normal</div>
+          <div class="opcion" onclick="selOpcion(this,'comportamiento')">Algo más quieto</div>
+          <div class="opcion" onclick="selOpcion(this,'comportamiento')">Muy decaído</div>
+        </div>
+      </div>
+
+      <div class="pregunta-card fade-up fade-up-4">
+        <div class="preg-title">¿Está al día con vacunas y desparasitación?</div>
+        <div class="opciones" id="vacunas-opts">
+          <div class="opcion" onclick="selOpcion(this,'vacunas')">Sí, al día</div>
+          <div class="opcion" onclick="selOpcion(this,'vacunas')">No estoy seguro</div>
+          <div class="opcion" onclick="selOpcion(this,'vacunas')">No, está atrasado</div>
+        </div>
+      </div>
+
+      <button class="btn-analizar fade-up fade-up-5" onclick="analizar()" id="btn-analizar-final">
+        <span class="btn-text">🔍 Analizar con IA</span>
+        <div class="btn-spinner"></div>
+      </button>
+      <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--lite);cursor:none;" onclick="irPaso2()">← Volver</p>
+    </div>
+
+  </div><!-- #formulario -->
+
+  <!-- ═══ ANALIZANDO ═══ -->
+  <div id="estado-analizando">
+    <div class="analiz-anim" id="analiz-emoji">🔍</div>
+    <div class="analiz-title">Analizando síntomas...</div>
+    <p style="font-size:13px;color:var(--lite);margin-top:6px;">La IA está revisando el caso de <strong id="analiz-petname">tu mascota</strong></p>
+    <div class="analiz-steps">
+      <div class="analiz-step active" id="step-a1">📋 Revisando síntomas descritos</div>
+      <div class="analiz-step" id="step-a2">🧬 Identificando causas probables</div>
+      <div class="analiz-step" id="step-a3">💡 Generando recomendaciones</div>
+      <div class="analiz-step" id="step-a4">✅ Preparando tu resultado</div>
     </div>
   </div>
 
-  <div class="res-ctas" id="res-ctas" style="display:none">
-    <button class="btn-main" onclick="dlPDF()"><svg viewBox="0 0 20 20" fill="none" width="16" height="16"><path d="M3 17h14M10 3v10M6 9l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Descargar PDF</button>
-    <button class="btn-out btn-g" onclick="newConsult()">+ Nueva consulta</button>
-    <button class="btn-out" onclick="doShare()"><svg viewBox="0 0 20 20" fill="none" width="15" height="15"><circle cx="15" cy="4" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="16" r="2" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="10" r="2" stroke="currentColor" stroke-width="1.5"/><path d="M13 5l-6 3.5M13 15l-6-3.5" stroke="currentColor" stroke-width="1.5"/></svg>Compartir</button>
-  </div>
+  <!-- ═══ RESULTADO ═══ -->
+  <div id="resultado">
 
-</div>
+    <div class="res-header fade-up">
+      <div class="sem-badge" id="res-badge">
+        <div class="sem-dot sem-dot-verde"></div>
+        <span>Situación controlable</span>
+      </div>
+      <div class="res-score-big score-verde" id="res-score">82</div>
+      <div style="font-size:13px;color:var(--lite);margin-top:4px;">Índice de salud</div>
+      <div class="res-titulo" id="res-titulo">Diagnóstico</div>
+      <div class="res-tranq" id="res-tranq">Mensaje tranquilizador aquí</div>
+    </div>
+
+    <div class="res-causa fade-up fade-up-1">
+      <div class="res-section-tag">¿Qué está pasando?</div>
+      <div class="res-causa-text" id="res-causa-text">Explicación aquí</div>
+    </div>
+
+    <div class="res-cuidados fade-up fade-up-2">
+      <div class="res-section-tag">Cuidados en casa</div>
+      <div id="res-cuidados-list"></div>
+    </div>
+
+    <div class="res-productos fade-up fade-up-3" id="res-productos-card" style="display:none">
+      <div class="res-section-tag">Productos recomendados para este caso</div>
+      <div id="res-productos-list"></div>
+    </div>
+
+    <div class="res-alerta fade-up fade-up-4" id="res-alerta" style="display:none">
+      <div class="alerta-icon">⚠️</div>
+      <div class="alerta-text" id="res-alerta-text">Alerta aquí</div>
+    </div>
+
+    <div class="res-actions fade-up fade-up-5">
+      <button class="btn-nueva" onclick="nuevaConsulta()">Nueva consulta</button>
+      <button class="btn-guardar" onclick="guardarResultado()">Guardar resultado</button>
+    </div>
+
+  </div><!-- #resultado -->
+
 </div>
 </div>
 
 <script>
-const dot=document.getElementById('cur'),ring=document.getElementById('cur2');
+// ═══ CURSOR ═══
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
 let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;dot.style.left=mx+'px';dot.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
-document.querySelectorAll('a,button,input,select,textarea,.sp-card,.chip,.urg-card,.upload-z,.cc-opt,.cr-opt,.fu-btn,.prod-item').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));});
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function anim(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim);})();
+document.addEventListener('mouseover',e=>{if(e.target.matches('a,button,input,select,textarea,[onclick],.sintoma-chip,.opcion,.urg-card,.sp-card'))document.body.classList.add('ch');});
+document.addEventListener('mouseout',e=>{if(e.target.matches('a,button,input,select,textarea,[onclick],.sintoma-chip,.opcion,.urg-card,.sp-card'))document.body.classList.remove('ch');});
 
-const S={sp:'',name:'',breed:'',age:'',sex:'',w:'',chips:[],urg:'verde',dur:'',com:'',hist:'',foto:false};
+// ═══ STATE ═══
+const state = {
+  nombre:'', especie:'perro', raza:'', edad:'', peso:'',
+  sintomas:[], descripcion:'', urgencia:'',
+  duracion:'', comida:'', comportamiento:'', vacunas:''
+};
 
-function selSp(el,sp){document.querySelectorAll('.sp-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');S.sp=sp;chk1();}
-function chk1(){const n=document.getElementById('p-name').value.trim();const b=document.getElementById('btn1');const ok=S.sp&&n;b.disabled=!ok;b.style.opacity=ok?1:.4;}
-document.getElementById('p-name').addEventListener('input',chk1);
-function togChip(el){el.classList.toggle('sel');const t=el.textContent.trim();if(el.classList.contains('sel'))S.chips.push(t);else S.chips=S.chips.filter(c=>c!==t);}
-let urgEl=null;
-function selUrg(el,u){if(urgEl)urgEl.classList.remove('sg','sy','sr');urgEl=el;S.urg=u;el.classList.add(u==='verde'?'sg':u==='amarillo'?'sy':'sr');}
-function selCC(el,key,val){S[key]=val;el.closest('.cc-opts').querySelectorAll('.cc-opt').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
+// ═══ NAV USER ═══
+window.addEventListener('supa:ready', async ()=>{
+  const user = await PetCare.Auth.getUser();
+  if(user) document.getElementById('nav-dash').style.display='block';
+});
 
-function go(n){
-  if(n===2){S.name=document.getElementById('p-name').value.trim();S.breed=document.getElementById('p-breed').value.trim();S.age=document.getElementById('p-age').value;S.sex=document.getElementById('p-sex').value;S.w=document.getElementById('p-w').value;}
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
-  document.getElementById('s'+n).classList.add('on');
-  updStep(n);window.scrollTo({top:0,behavior:'smooth'});
+// ═══ CHAR COUNT ═══
+function updateCharCount(el){
+  document.getElementById('char-count').textContent = el.value.length;
 }
-function updStep(n){
-  for(let i=1;i<=4;i++){
-    const c=document.getElementById('sc'+i),l=document.getElementById('sl'+i);
-    c.classList.remove('act','done');l.classList.remove('act','done');
-    if(i<n){c.classList.add('done');l.classList.add('done');c.innerHTML='✓';}
-    else if(i===n){c.classList.add('act');l.classList.add('act');c.textContent=i;}
-    else c.textContent=i;
-    if(i<4)document.getElementById('ln'+i).classList.toggle('done',i<n);
+
+// ═══ TOGGLE SÍNTOMA ═══
+function toggleSintoma(el, nombre){
+  el.classList.toggle('sel');
+  const idx = state.sintomas.indexOf(nombre);
+  if(idx > -1) state.sintomas.splice(idx,1);
+  else state.sintomas.push(nombre);
+}
+
+// ═══ URGENCIA ═══
+let urgSel = null;
+function selUrgencia(el, val){
+  if(urgSel) urgSel.classList.remove('sel-g','sel-y','sel-r');
+  urgSel = el;
+  state.urgencia = val;
+  if(val==='Puede esperar') el.classList.add('sel-g');
+  else if(val==='Me preocupa') el.classList.add('sel-y');
+  else el.classList.add('sel-r');
+}
+
+// ═══ OPCIONES ═══
+function selOpcion(el, grupo){
+  const container = el.parentElement;
+  container.querySelectorAll('.opcion').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  state[grupo] = el.textContent.trim();
+}
+
+// ═══ PASOS ═══
+function setProgress(pct){ document.getElementById('progress-fill').style.width = pct+'%'; }
+
+function irPaso1(){
+  document.getElementById('paso2').style.display='none';
+  document.getElementById('paso1').style.display='block';
+  setProgress(20);
+  scrollTo(0,0);
+}
+
+function irPaso2(){
+  const nombre = document.getElementById('pet-nombre').value.trim();
+  if(!nombre){ PetCare.Utils.toast('Escribe el nombre de tu mascota','err'); return; }
+  state.nombre = nombre;
+  state.especie = document.getElementById('pet-especie').value;
+  state.raza = document.getElementById('pet-raza').value.trim();
+  state.edad = document.getElementById('pet-edad').value;
+  state.peso = document.getElementById('pet-peso').value;
+  document.getElementById('paso2-titulo').textContent = `¿Qué le pasa a ${nombre}?`;
+  document.getElementById('paso1').style.display='none';
+  document.getElementById('paso2').style.display='block';
+  setProgress(50);
+  scrollTo(0,0);
+}
+
+function irPaso3(){
+  if(state.sintomas.length === 0 && !document.getElementById('descripcion').value.trim()){
+    PetCare.Utils.toast('Selecciona al menos un síntoma o describe qué pasa','err');
+    return;
   }
-}
-function handleF(e){const f=e.target.files[0];if(f)showPrev(f);}
-function dragOv(e){e.preventDefault();document.getElementById('uz').classList.add('drag');}
-function dragLv(){document.getElementById('uz').classList.remove('drag');}
-function dropF(e){e.preventDefault();dragLv();const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))showPrev(f);}
-function showPrev(f){const r=new FileReader();r.onload=ev=>{document.getElementById('pi').src=ev.target.result;document.getElementById('pw').style.display='block';document.getElementById('uz').style.display='none';S.foto=true;};r.readAsDataURL(f);}
-function rmPhoto(){document.getElementById('pw').style.display='none';document.getElementById('uz').style.display='block';document.getElementById('fi').value='';S.foto=false;}
-
-// ── ANÁLISIS REAL CON IA ──────────────────────────────────
-let _resultadoIA = null; // resultado guardado de la IA
-
-function goAnal(){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
-  document.getElementById('s-load').classList.add('on');
-  updStep(4);
-  document.getElementById('ld-name').textContent=S.name||'tu mascota';
-  window.scrollTo({top:0,behavior:'smooth'});
-  runLoad();
+  state.descripcion = document.getElementById('descripcion').value.trim();
+  document.getElementById('paso2').style.display='none';
+  document.getElementById('paso3').style.display='block';
+  setProgress(80);
+  scrollTo(0,0);
 }
 
-async function runLoad(){
-  const fill=document.getElementById('ld-fill');
-  // Animación de carga mientras la IA trabaja
-  const steps=[{id:'ls1',p:18,d:350},{id:'ls2',p:36,d:900},{id:'ls3',p:55,d:1550},{id:'ls4',p:72,d:2150},{id:'ls5',p:88,d:2750},{id:'ls6',p:100,d:3200}];
-  steps.forEach((s,i)=>{
-    setTimeout(()=>{if(i>0)document.getElementById(steps[i-1].id)?.classList.remove('act');document.getElementById(s.id)?.classList.add('act');fill.style.width=s.p+'%';},s.d);
-    setTimeout(()=>{document.getElementById(s.id)?.classList.remove('act');document.getElementById(s.id)?.classList.add('done');},s.d+450);
-  });
-  // Llamada real a la IA
+// ═══ ANIMACIÓN PASOS ═══
+function animarPasos(){
+  const steps = ['step-a1','step-a2','step-a3','step-a4'];
+  const emojis = ['🔍','🧬','💡','✅'];
+  let i = 0;
+  return setInterval(()=>{
+    steps.forEach(s=>document.getElementById(s)?.classList.remove('active'));
+    if(i < steps.length){
+      document.getElementById(steps[i])?.classList.add('active');
+      document.getElementById('analiz-emoji').textContent = emojis[i];
+    }
+    i++;
+  }, 1400);
+}
+
+// ═══ ANALIZAR ═══
+async function analizar(){
+  const btn = document.getElementById('btn-analizar-final');
+  btn.classList.add('loading');
+
+  document.getElementById('formulario').style.display='none';
+  document.getElementById('estado-analizando').style.display='block';
+  document.getElementById('analiz-petname').textContent = state.nombre || 'tu mascota';
+  const interval = animarPasos();
+  scrollTo(0,0);
+
   try {
-    _resultadoIA = await PetCare.Analisis.analizar({
-      nombreMascota: S.name || 'Mascota',
-      especie:       S.sp   || 'perro',
-      raza:          S.breed,
-      edad:          document.getElementById('p-age')?.value,
-      peso:          document.getElementById('p-w')?.value,
-      sintomas:      S.chips,
-      descripcion:   document.getElementById('sym-detail')?.value,
-      urgenciaUser:  S.urg,
-      duracion:      S.dur
+    await PetCare.Auth.ready();
+
+    const resultado = await PetCare.Analisis.analizar({
+      nombreMascota: state.nombre,
+      especie: state.especie,
+      raza: state.raza,
+      edad: state.edad,
+      peso: state.peso,
+      sintomas: state.sintomas,
+      descripcion: state.descripcion,
+      urgenciaUser: state.urgencia,
+      duracion: state.duracion,
+      comportamiento: `Comida: ${state.comida}. Comportamiento: ${state.comportamiento}. Vacunas: ${state.vacunas}`
     });
-    // Guardar en Supabase (en background, sin bloquear)
-    const user = await PetCare.Auth.getUser().catch(()=>null);
-    PetCare.Analisis.guardar({
-      userId:    user?.id,
-      mascotaId: null,
-      entrada:   { nombreMascota:S.name, especie:S.sp, sintomas:S.chips,
-                   descripcion:document.getElementById('sym-detail')?.value,
-                   urgenciaUser:S.urg, duracion:S.dur, tieneFoto:S.foto },
-      resultado: _resultadoIA
-    }).catch(()=>{});
-    // Esperar a que termine la animación antes de mostrar resultado
-    setTimeout(showRes, Math.max(0, 3800));
-  } catch(err) {
-    console.error('Error IA:', err);
-    // Si falla la IA, usar valores por defecto con el nivel del usuario
-    _resultadoIA = {
-      semaforo: S.urg || 'amarillo',
-      score:    S.urg==='verde'?72:S.urg==='rojo'?28:52,
-      titulo:   'Análisis completado',
-      cuidados: ['Mantén a tu mascota en reposo y tranquila.',
-                 'Ofrece agua fresca constantemente.',
-                 'Monitorea la evolución cada 4-6 horas.',
-                 'Si no hay mejora en 24h, consulta al veterinario.'],
-      productos:[],
-      alerta_vet: S.urg==='rojo'?'Visita al veterinario hoy.':null,
-      resumen:  'Hemos registrado los síntomas. Aplica los cuidados indicados y monitorea la evolución.'
-    };
-    PetCare.Utils.toast('Modo sin conexión — resultado estimado','warn');
-    setTimeout(showRes, 3800);
+
+    clearInterval(interval);
+    mostrarResultado(resultado);
+
+    // Guardar si hay usuario
+    const user = await PetCare.Auth.getUser();
+    if(user){
+      PetCare.Analisis.guardar({
+        userId: user.id,
+        entrada: { nombreMascota:state.nombre, especie:state.especie, sintomas:state.sintomas, descripcion:state.descripcion, urgenciaUser:state.urgencia, duracion:state.duracion },
+        resultado
+      });
+    }
+  } catch(e) {
+    clearInterval(interval);
+    console.error(e);
+    PetCare.Utils.toast('Error al analizar. Intenta de nuevo.','err');
+    document.getElementById('estado-analizando').style.display='none';
+    document.getElementById('formulario').style.display='block';
+    document.getElementById('paso3').style.display='block';
+    btn.classList.remove('loading');
   }
 }
 
-function showRes(){
-  // Usar resultado de la IA si está disponible
-  const res = _resultadoIA || {};
-  const u = res.semaforo || S.urg || 'amarillo';
-  const name=S.name||'Tu mascota',chips=S.chips;
-  const titles={verde:'Puede esperar',amarillo:'Atención pronto',rojo:'Urgente'};
-  const subs={verde:'Situación leve — manejable en casa con los cuidados indicados.',amarillo:'Requiere atención en las próximas 24h. Monitorea de cerca.',rojo:'Visita al veterinario lo antes posible.'};
+// ═══ MOSTRAR RESULTADO ═══
+function mostrarResultado(r){
+  document.getElementById('estado-analizando').style.display='none';
+  document.getElementById('resultado').style.display='block';
+  setProgress(100);
+  scrollTo(0,0);
 
-  document.getElementById('sem-tit').textContent=res.titulo||titles[u];
-  document.getElementById('sem-sub').textContent=res.resumen||subs[u];
-  const sc=document.getElementById('sem-cont');
-  sc.className=u==='verde'?'sv':u==='amarillo'?'sa':'sr-u';
-  document.getElementById('bg').classList.toggle('off',u!=='verde');
-  document.getElementById('by').classList.toggle('off',u!=='amarillo');
-  document.getElementById('br').classList.toggle('off',u!=='rojo');
+  const sem = r.semaforo || 'verde';
+  const score = r.score ?? 70;
 
-  document.getElementById('res-name').textContent=name;
-  const meta=[S.sp,S.breed,S.age?(S.age+' año'+(S.age!=1?'s':'')):null,S.sex].filter(Boolean).join(' · ');
-  document.getElementById('res-meta').textContent=meta||S.sp||'Mascota';
-  document.getElementById('fu-name').textContent=name;
-  document.getElementById('cr-petname').textContent=name;
+  // Badge
+  const badge = document.getElementById('res-badge');
+  const labels = {verde:'Situación controlable',amarillo:'Requiere atención',rojo:'Consulta urgente'};
+  badge.className = `sem-badge sem-${sem}`;
+  badge.innerHTML = `<div class="sem-dot sem-dot-${sem}"></div><span>${labels[sem]}</span>`;
 
-  // Alerta roja manejada por checkRedAlert() con retardo
+  // Score
+  const scoreEl = document.getElementById('res-score');
+  scoreEl.textContent = score;
+  scoreEl.className = `res-score-big score-${sem}`;
 
-  const scoreMap={verde:{t:'Buen estado general',d:'Salud estable con síntoma leve detectado.'},amarillo:{t:'Requiere atención',d:'Hay síntomas que deben vigilarse de cerca.'},rojo:{t:'Estado crítico',d:'Síntomas de riesgo. Atención prioritaria.'}};
-  const sd=scoreMap[u]||scoreMap.amarillo;
-  const scoreReal = res.score || (u==='verde'?76:u==='rojo'?28:54);
-  setTimeout(()=>{
-    animScore(scoreReal);
-    document.getElementById('score-tit').textContent=sd.t;
-    document.getElementById('score-desc').textContent=sd.d;
-    setTimeout(()=>{
-      const vac=u==='verde'?85:u==='amarillo'?60:30;
-      const sym=u==='verde'?25:u==='amarillo'?62:92;
-      const hist=S.hist==='Se repite'?35:S.hist==='Una vez antes'?65:90;
-      document.getElementById('sb-vac').style.width=vac+'%';
-      document.getElementById('sb-sym').style.width=sym+'%';
-      document.getElementById('sb-hist').style.width=hist+'%';
-    },150);
-  },250);
+  // Título y tranquilizador
+  document.getElementById('res-titulo').textContent = r.titulo || 'Análisis completado';
+  document.getElementById('res-tranq').textContent = r.tranquilizador || '';
 
-  const cuidadosList = (res.cuidados && res.cuidados.length) ? res.cuidados : buildCuidados(name,chips,u,S.dur,S.com);
-  document.getElementById('care-list').innerHTML=cuidadosList.map(t=>`<div class="care-item"><div class="care-ck"><svg viewBox="0 0 12 12" fill="none" width="12" height="12"><path d="M2 6l3 3 5-5" stroke="#27AE60" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="care-txt">${t}</span></div>`).join('');
+  // Causa
+  document.getElementById('res-causa-text').textContent = r.causa_probable || '';
 
-  const comMap={verde:{n:'1.847',pct:89,v1:'89% — en 2 días',v2:'11%',v3:'2.4 días'},amarillo:{n:'934',pct:71,v1:'71% — en 3-4 días',v2:'29%',v3:'3.8 días'},rojo:{n:'612',pct:44,v1:'44% — con tratamiento',v2:'56%',v3:'1.2 días'}};
-  const cd=comMap[u];
-  document.getElementById('com-num').textContent=cd.n;
-  document.getElementById('com-sub').textContent=`dueños tuvieron síntomas similares a los de ${name}`;
-  document.getElementById('com-v1').textContent=cd.v1;
-  document.getElementById('com-v2').textContent=cd.v2;
-  document.getElementById('com-v3').textContent=cd.v3;
-  setTimeout(()=>{document.getElementById('com-fill').style.width=cd.pct+'%';},400);
+  // Cuidados
+  const cuidadosList = document.getElementById('res-cuidados-list');
+  cuidadosList.innerHTML = '';
+  (r.cuidados || []).forEach(c=>{
+    cuidadosList.innerHTML += `
+      <div class="cuidado-item">
+        <div class="cuidado-check">
+          <svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#00C853" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="cuidado-text">${c}</div>
+      </div>`;
+  });
 
-  document.getElementById('prod-list').innerHTML=buildProds(chips,u).map(p=>`<div class="prod-item"><div class="prod-ico">${p.ico}</div><div class="prod-inf"><div class="prod-n">${p.n}</div><div class="prod-w">${p.w}</div></div><span class="prod-badge">${p.b}</span></div>`).join('');
-
-  const hoy=new Date();
-  const fd=(days)=>{const d=new Date(hoy);d.setDate(d.getDate()+days);return d.toLocaleDateString('es-PE',{day:'numeric',month:'short'});};
-  document.getElementById('cal-list').innerHTML=[
-    {dot:'cd-g',n:'Seguimiento 24h',d:'Mañana — '+fd(1),b:'cb-g',bt:'Próximo'},
-    {dot:'cd-g',n:'Seguimiento 48h',d:fd(2)+' — ver evolución',b:'cb-g',bt:'Próximo'},
-    {dot:'cd-y',n:'Revisión general recomendada',d:'En 15 días — '+fd(15),b:'cb-y',bt:'Pronto'},
-    {dot:'cd-p',n:'Vacuna de refuerzo anual',d:'Próximo mes',b:'cb-p',bt:'Planificado'},
-    {dot:'cd-p',n:'Desparasitación trimestral',d:'En 3 meses',b:'cb-p',bt:'Planificado'},
-  ].map(c=>`<div class="cal-item"><div class="cal-dot ${c.dot}"></div><div style="flex:1"><div class="cal-n">${c.n}</div><div class="cal-d">${c.d}</div></div><span class="cal-badge ${c.b}">${c.bt}</span></div>`).join('');
-
-  document.getElementById('next-list').innerHTML=buildPasos(u,S.hist,name).map((p,i)=>`<div class="next-item${p.urg?' urg':''}"><div class="next-n">${i+1}</div><span class="next-t">${p.t}</span><span class="next-w">${p.w}</span></div>`).join('');
-
-  document.getElementById('s-load').classList.remove('on');
-  document.getElementById('s-res').classList.add('on');
-  window.scrollTo({top:0,behavior:'smooth'});
-  // Freemium: resetear al mostrar resultado
-  isUnlocked = false;
-  document.getElementById('locked-content').classList.remove('unlocked');
-  document.getElementById('lock-overlay').style.display = 'flex';
-  document.getElementById('res-ctas').style.display = 'none';
-  document.getElementById('unlocked-msg').classList.remove('show');
-  document.getElementById('red-unlock').classList.remove('show');
-  // Si es rojo: desbloquear automáticamente y mostrar alerta
-  setTimeout(() => checkRedAlert(u, name), 1800);
-}
-
-function buildCuidados(name,chips,u,dur,com){
-  const base=[`Mantén a ${name} en un lugar tranquilo, sin corrientes de aire ni ruidos fuertes.`,'Ofrece agua fresca constantemente — la hidratación acelera la recuperación.'];
-  if(com==='Nada'||com==='Poco'){base.push(`Ofrece comida blanda en porciones pequeñas — arroz blanco con pollo hervido funciona muy bien para ${S.sp==='Gato'?'gatos':'perros'}.`);if(com==='Nada')base.push('Si no come en las próximas 24h, prioriza la consulta con un profesional.');}
-  else base.push('Mantén su rutina de alimentación normal para reducir el estrés.');
-  if(chips.includes('Picazón / rascado')||chips.includes('Pérdida de pelo')){base.push('Limpia el área afectada con solución salina tibia — un movimiento suave hacia afuera.');base.push('Considera un collar isabelino si el rascado está generando heridas.');}
-  if(chips.includes('Vómitos')||chips.includes('Diarrea')){base.push('Ayuno corto de 2-4 horas antes de volver a dar comida blanda.');if(chips.includes('Vómitos'))base.push('Si los vómitos superan 5 episodios en 24h, busca atención profesional.');}
-  if(chips.includes('Cojera')){base.push('Limita el movimiento y evita superficies resbalosas o escaleras.');base.push('Revisa si hay cuerpo extraño entre las almohadillas o las patas.');}
-  if(chips.includes('Ojos llorosos')||chips.includes('Secreción nasal'))base.push('Limpia suavemente con gasa húmeda — sin presionar. Un pase hacia afuera del ojo.');
-  if(dur==='Más de 3 días'||dur==='Semanas')base.push('El síntoma lleva varios días — documenta los cambios con fotos o notas de voz para mostrar al veterinario.');
-  if(u==='rojo')base.unshift('Mientras te diriges a la clínica, envuelve a '+name+' en una manta cálida y mantenlo tranquilo.');
-  return base.slice(0,6);
-}
-function buildProds(chips,u){
-  const p=[];
-  if(u==='rojo'||chips.includes('Vómitos')||chips.includes('Diarrea'))p.push({ico:'💧',n:'Suero oral para mascotas',w:'Previene deshidratación',b:'Prioritario'});
-  if(chips.includes('Picazón / rascado')||chips.includes('Pérdida de pelo'))p.push({ico:'🧴',n:'Shampoo medicado antipulgas',w:'Para picazón y dermatitis',b:'Recomendado'});
-  if(chips.includes('Vómitos')||chips.includes('Diarrea')||chips.includes('Falta de apetito'))p.push({ico:'🌿',n:'Probiótico digestivo',w:'Restaura la flora intestinal',b:'Complementario'});
-  if(chips.includes('Ojos llorosos'))p.push({ico:'👁️',n:'Colirio veterinario',w:'Para ojos irritados',b:'Según síntoma'});
-  if(chips.includes('Herida o corte'))p.push({ico:'🩹',n:'Clorhexidina al 2%',w:'Antiséptico suave para heridas',b:'Esencial'});
-  if(p.length===0)p.push({ico:'💊',n:'Suplemento multivitamínico',w:'Fortalece el sistema inmune',b:'Preventivo'},{ico:'🦷',n:'Pasta dental veterinaria',w:'Higiene dental regular',b:'Preventivo'});
-  return p.slice(0,4);
-}
-function buildPasos(u,hist,name){
-  const p=[];
-  if(u==='rojo')p.push({t:`Dirígete con ${name} a una clínica veterinaria de inmediato`,w:'Ahora',urg:true});
-  p.push({t:'Aplica los cuidados en casa indicados hoy mismo',w:'Hoy'});
-  p.push({t:`Monitorea la evolución de ${name} cada 4-6 horas`,w:'Hoy'});
-  if(u!=='rojo')p.push({t:'Responde el seguimiento de 24h — te llegarán las instrucciones',w:'Mañana'});
-  if(u==='amarillo'||u==='rojo')p.push({t:'Agenda cita veterinaria si no hay mejoría visible',w:'48h'});
-  if(hist==='Se repite')p.push({t:`Este síntoma se repite — considera un chequeo anual para ${name}`,w:'Este mes'});
-  p.push({t:'Mantén el calendario de vacunas y desparasitación al día',w:'Siempre'});
-  return p.slice(0,5);
-}
-
-function animScore(target){
-  const arc=document.getElementById('score-arc'),numEl=document.getElementById('score-num');
-  const circ=2*Math.PI*32;let cur=0;const dur=1200;const start=performance.now();
-  function step(now){const prog=Math.min((now-start)/dur,1);const ease=1-Math.pow(1-prog,3);cur=Math.round(ease*target);numEl.textContent=cur;arc.style.strokeDashoffset=circ-(circ*cur/100);arc.style.stroke=cur>=70?'#2ECC71':cur>=45?'#F5A623':'#FF6B6B';if(prog<1)requestAnimationFrame(step);}
-  requestAnimationFrame(step);
-}
-
-function respCierre(el,val){
-  document.querySelectorAll('.cr-opt').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');
-  const msgs={normal:`Bien — si está activo y alerta, el pronóstico es positivo con los cuidados indicados. Monitorea cualquier cambio.`,algo_bajo:`Entendido. Un poco de quietud es normal con síntomas presentes. Si mañana sigue igual, activa el seguimiento.`,muy_bajo:`Eso merece atención adicional. Si está muy decaído, considera adelantar la visita profesional aunque sea hoy.`};
-  const resp=document.getElementById('cr-resp');resp.textContent=msgs[val];resp.classList.add('on');
-  if(val==='muy_bajo'){const aj=document.getElementById('ajuste-extra');aj.textContent='Ajuste adicional: dado que está muy decaído, suma "Reposo completo en zona cálida y silenciosa" a los cuidados de hoy.';aj.classList.add('on');}
-}
-function fuResp(el,tipo){
-  document.querySelectorAll('.fu-btn').forEach(b=>{b.style.background='';b.style.color='';b.style.borderColor='';});
-  el.style.background=tipo==='tranquilo'?'var(--g)':tipo==='duda'?'#F5A623':'#FF6B6B';
-  el.style.color='#fff';el.style.borderColor='transparent';
-  const msgs={tranquilo:`Nos alegra. Te recordaremos mañana para ver cómo sigue ${S.name||'tu mascota'} — no tienes que hacer nada más hoy.`,duda:`Anotado. Si quieres resolver la duda ahora, inicia una nueva consulta con esa pregunta específica.`,preocupado:`Lo entendemos. Si la preocupación es alta, no esperes — visita al veterinario hoy. Estaremos contigo en el seguimiento de mañana.`};
-  const r=document.getElementById('fu-resp');r.textContent=msgs[tipo];r.className='fu-resp on '+(tipo==='tranquilo'?'fu-verde':tipo==='duda'?'fu-amarillo':'fu-rojo');
-}
-function confetti(){
-  const cv=document.getElementById('confetti');if(!cv)return;const ctx=cv.getContext('2d');
-  cv.width=window.innerWidth;cv.height=window.innerHeight;
-  const colors=['#2ECC71','#A8E6C3','#FFB347','#74C0FC','#C084FC'];
-  const pts=Array.from({length:70},()=>({x:Math.random()*cv.width,y:-20,w:5+Math.random()*7,h:3+Math.random()*5,c:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,vr:(Math.random()-.5)*8,a:1}));
-  let fr=0;(function draw(){ctx.clearRect(0,0,cv.width,cv.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.a-=.009;ctx.save();ctx.globalAlpha=Math.max(0,p.a);ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});fr++;if(fr<160)requestAnimationFrame(draw);else ctx.clearRect(0,0,cv.width,cv.height);})();
-}
-function dlPDF(){alert('Generando PDF de '+(S.name||'tu mascota')+'... (disponible en plan premium)');}
-function doShare(){navigator.share?navigator.share({title:'Consulta PetCare',text:`Revisé a ${S.name||'mi mascota'} con PetCare AI 🐾`,url:window.location.href}):alert('Copia el link para compartir 🐾');}
-function newConsult(){
-  Object.assign(S,{sp:'',name:'',breed:'',age:'',sex:'',w:'',chips:[],urg:'verde',dur:'',com:'',hist:'',foto:false});
-  document.querySelectorAll('.sp-card,.chip,.urg-card,.cc-opt,.cr-opt,.fu-btn').forEach(el=>el.classList.remove('sel','sg','sy','sr'));
-  urgEl=null;
-  ['p-name','p-breed','p-age','p-w','sym-detail'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('p-sex').value='';
-  rmPhoto();
-  document.getElementById('fu-resp').className='fu-resp';
-  document.getElementById('cr-resp').className='cr-resp';
-  document.getElementById('ajuste-extra').className='ajuste-extra';
-  go(1);
-}
-/* ── FREEMIUM LOGIC ── */
-let selectedPlan = 'basico';
-let isUnlocked = false;
-
-
-function selectLbPlan(el, plan) {
-  document.querySelectorAll('.lb-opt').forEach(o => o.classList.remove('featured'));
-  el.classList.add('featured');
-  selectedPlan = plan;
-}
-
-function unlockResult() {
-  if(isUnlocked)return;
-  isUnlocked = true;
-  // Quitar blur y overlay
-  document.getElementById('locked-content').classList.add('unlocked');
-  document.getElementById('lock-overlay').style.display = 'none';
-  document.getElementById('res-ctas').style.display = 'flex';
-  // Mostrar mensaje de éxito
-  const msg = document.getElementById('unlocked-msg');
-  msg.classList.add('show');
-  setTimeout(() => msg.classList.remove('show'), 3000);
-  // Scroll suave al contenido
-  setTimeout(() => {
-    document.getElementById('locked-content').scrollIntoView({behavior:'smooth', block:'start'});
-  }, 300);
-  // Confetti si es la primera vez
-  confetti();
-}
-
-function unlockDemo() {
-  // Demo gratuita — muestra el contenido sin pagar (simulación)
-  unlockResult();
-}
-
-// Mostrar aviso rojo automáticamente si urgencia es roja
-function checkRedAlert(urgencia, petName) {
-  const el = document.getElementById('red-unlock');
-  const nameEl = document.getElementById('ru-name');
-  if (urgencia === 'rojo') {
-    if (nameEl) nameEl.textContent = petName || 'tu mascota';
-    el.classList.add('show');
-    // Para rojo: desbloquear automáticamente los cuidados (por ética)
-    setTimeout(() => unlockResult(), 800);
+  // Productos — solo mostrar si son relevantes
+  const productos = (r.productos || []).filter(p => p && p.trim().length > 0);
+  if(productos.length > 0){
+    document.getElementById('res-productos-card').style.display='block';
+    const prodList = document.getElementById('res-productos-list');
+    prodList.innerHTML = '';
+    const iconos = ['💊','🧴','🛁','🍖','💉','🔬'];
+    productos.forEach((p,i)=>{
+      prodList.innerHTML += `
+        <div class="producto-item">
+          <div class="prod-icon">${iconos[i%iconos.length]}</div>
+          <div>
+            <div class="prod-name">${p}</div>
+            <span class="prod-tag prod-tag-rel">Recomendado para este caso</span>
+          </div>
+        </div>`;
+    });
   }
+
+  // Alerta vet
+  if(r.alerta_vet && r.alerta_vet !== 'null'){
+    document.getElementById('res-alerta').style.display='flex';
+    document.getElementById('res-alerta-text').textContent = r.alerta_vet;
+  }
+
+  // Guardar resultado en memoria para botón guardar
+  window._lastResultado = r;
 }
 
+// ═══ NUEVA CONSULTA ═══
+function nuevaConsulta(){
+  state.sintomas=[];
+  state.descripcion='';
+  state.urgencia='';
+  document.querySelectorAll('.sintoma-chip.sel').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('.opcion.sel').forEach(o=>o.classList.remove('sel'));
+  document.querySelectorAll('.urg-card').forEach(c=>c.classList.remove('sel-g','sel-y','sel-r'));
+  document.getElementById('descripcion').value='';
+  document.getElementById('char-count').textContent='0';
+  document.getElementById('resultado').style.display='none';
+  document.getElementById('res-productos-card').style.display='none';
+  document.getElementById('res-alerta').style.display='none';
+  document.getElementById('formulario').style.display='block';
+  document.getElementById('paso3').style.display='none';
+  document.getElementById('paso2').style.display='block';
+  setProgress(50);
+  scrollTo(0,0);
+  if(urgSel){urgSel=null;}
+}
+
+// ═══ GUARDAR ═══
+async function guardarResultado(){
+  const user = await PetCare.Auth.getUser();
+  if(!user){
+    PetCare.Utils.toast('Inicia sesión para guardar','warn');
+    setTimeout(()=>window.location.href='dashboard.html',1500);
+    return;
+  }
+  PetCare.Utils.toast('Resultado guardado en tu historial ✓','ok');
+}
 </script>
 </body>
 </html>
