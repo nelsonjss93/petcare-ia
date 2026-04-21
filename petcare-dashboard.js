@@ -1,9 +1,59 @@
-async function cargarSesion(){var L=document.getElementById('screen-loading');try{await PetCare.Auth.ready();var user=await PetCare.Auth.getUser();if(!user){L.style.display='none';document.getElementById('screen-auth').classList.add('on');document.getElementById('nav-login-btn').style.display='block';return;}var nombre=user.user_metadata&&user.user_metadata.nombre?user.user_metadata.nombre:user.email.split('@')[0];var ini=nombre[0].toUpperCase();document.getElementById('uc-name').textContent=nombre;document.getElementById('uc-email').textContent=user.email;document.getElementById('uc-avatar').textContent=ini;document.getElementById('nav-avatar').textContent=ini;document.getElementById('nav-uname').textContent=nombre;document.getElementById('nav-user').style.display='flex';document.getElementById('nav-login-btn').style.display='none';document.getElementById('screen-dashboard').classList.add('on');}catch(e){document.getElementById('screen-auth').classList.add('on');}finally{L.style.display='none';}}
-function logOut(){PetCare.Auth.logout();}
-function showPage(p){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});var el=document.getElementById('screen-'+p);if(el)el.classList.add('on');}
-function setAuthTab(t){document.getElementById('tab-login').style.display=t==='login'?'block':'none';document.getElementById('tab-registro').style.display=t==='registro'?'block':'none';document.querySelectorAll('.auth-tab').forEach(function(b,i){b.classList.toggle('act',(t==='login'&&i===0)||(t==='registro'&&i===1));});}
-function nextRegStep(n){document.querySelectorAll('[id^="reg-step"]').forEach(function(s){s.style.display='none';});var s=document.getElementById('reg-step'+n);if(s)s.style.display='block';if(n===3){var e=document.getElementById('reg-contact');if(e&&e.value)document.getElementById('reg-email-shown').textContent=e.value;}}
-function selRegSp(el){document.querySelectorAll('.sp-mini').forEach(function(s){s.classList.remove('sel');});el.classList.add('sel');}
-function setDashTab(btn){document.querySelectorAll('.snav-item').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');}
-async function doLogin(){var email=document.getElementById('login-email').value.trim();var pass=document.getElementById('login-pass').value;if(!email||!pass)return PetCare.Utils.toast('Completa los campos','err');try{await PetCare.Auth.login({contacto:email,password:pass});window.location.reload();}catch(e){PetCare.Utils.toast(e.message||'Error al ingresar','err');}}
-async function doRegister(){var nombre=document.getElementById('reg-name').value.trim();var contacto=document.getElementById('reg-contact').value.trim();var password=document.getElementById('reg-pass').value;var petEl=document.getElementById('reg-petname');var nombreMascota=petEl?petEl.value.trim():'';var espSel=document.querySelector('.sp-mini.sel .sp-mini-lbl');var especie=espSel?espSel.textContent.toLowerCase():'perro';if(!nombre||!contacto||!password)return PetCare.Utils.toast('Completa todos los campos','err');try{await PetCare.Auth.register({nombre:nombre,contacto:contacto,password:password,nombreMascota:nombreMascota,especie:especie});nextRegStep(3);}catch(e){PetCare.Utils.toast(e.message||'Error al registrarse','err');}}
+// petcare-dashboard.js v2 — Lógica de sesión y dashboard
+
+async function cargarSesion() {
+  const L = document.getElementById('screen-loading');
+  try {
+    await PetCare.Auth.ready();
+    const user = await PetCare.Auth.getUser();
+
+    if (!user) {
+      // No hay sesión → mostrar login
+      if (L) L.classList.add('hide');
+      document.getElementById('screen-auth').classList.add('on');
+      document.getElementById('nav-login-btn').style.display = 'block';
+      return;
+    }
+
+    // Guardar user globalmente
+    window._currentUser = user;
+
+    // Datos del usuario
+    const nombre = user.user_metadata?.nombre || user.email?.split('@')[0] || 'Usuario';
+    const ini = nombre[0].toUpperCase();
+
+    // Actualizar UI
+    document.getElementById('uc-name').textContent = nombre;
+    document.getElementById('uc-email').textContent = user.email || '';
+    document.getElementById('uc-avatar').textContent = ini;
+    document.getElementById('nav-avatar').textContent = ini;
+    document.getElementById('nav-uname').textContent = nombre;
+    document.getElementById('nav-user').style.display = 'flex';
+    document.getElementById('nav-login-btn').style.display = 'none';
+    document.getElementById('wb-greeting').textContent = getGreeting() + ', ' + nombre + ' 👋';
+
+    // Mostrar dashboard
+    document.getElementById('screen-dashboard').classList.add('on');
+
+    // Cargar datos
+    await cargarHistorial();
+    await cargarMascotas();
+
+    // Código referido
+    const code = 'PC-' + user.id.substring(0, 6).toUpperCase();
+    const refEl = document.getElementById('ref-code');
+    if (refEl) refEl.textContent = code;
+
+  } catch (e) {
+    console.error('Error en cargarSesion:', e);
+    document.getElementById('screen-auth')?.classList.add('on');
+  } finally {
+    if (L) L.classList.add('hide');
+  }
+}
+
+function logOut() { PetCare.Auth.logout(); }
+function showPage(p) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  const el = document.getElementById('screen-' + p);
+  if (el) el.classList.add('on');
+}
